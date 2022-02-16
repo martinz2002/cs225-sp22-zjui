@@ -39,4 +39,4 @@
 *.tar.*
 
 # VSCode
-.vscode\*
+*.json
