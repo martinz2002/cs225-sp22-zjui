@@ -28,7 +28,7 @@ int main()
     int n, m, gcd;
     cout << "Enter two positive integers.\n";
     cin >> n >> m;
-    if (n >0 && m >= 0)
+    if (n >0 && m > 0)
     {
         gcd = euklid(n, m);
         cout << "The greatest common divisor of " << n << " and " << m << " is " << gcd << ".\n";
