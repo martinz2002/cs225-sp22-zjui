@@ -5,21 +5,16 @@ For how to write such kind of document, i.e. markdown files, please turn to webp
 
 For free markdown editor, you may download Typora(dev-release) [here](https://zjueducn-my.sharepoint.com/:u:/g/personal/3200110643_zju_edu_cn/EYOKnIDPgpZApbrRz0bf8isBiPs0RYjpMHB9t7JYEPOqlg?e=ZbNPPw).
 
-## To-do
+You may also turn to `Markdown_Reference.md` in this directory for quick grammar reference. This reference is copied from Typora's Docs.
 
-### Assignment #0
-**The list should be sorted from current to past.**
 
-- [ ] [anonymous] Learn `Markdown`.
-- [x] [dayday] Update `README.md`.
-### Assignment #-1
-This is a demo for the to-do list.
-- [ ] [张三] 张三需要做的事。
-- [x] [李四] 李四已经完成的事。
 
-You should write the code in the following way:
+## Current Working Status
 
-```markdown
-- [ ] [张三] 张三需要做的事。
-- [x] [李四] 李四已经完成的事。
-```
+### Assignment 1
+
+（未开始）
+
+### Assignment 2
+
+（未开始）
