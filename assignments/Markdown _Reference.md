@@ -27,7 +27,7 @@ Headers use 1-6 hash (`#`) characters at the start of the line, corresponding to
 ###### This is an H6
 ```
 
-In Typora, input ‘#’s followed by title content, and press `Return` key will create a header.
+In Typora, input '#'s followed by title content, and press `Return` key will create a header.
 
 ### Blockquotes
 
@@ -39,11 +39,16 @@ Markdown uses email-style > characters for block quoting. They are presented as:
 > This is second pragraph. Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
 
 
-
 > This is another blockquote with one paragraph. There is three empty line to seperate two blockquote.
 ```
 
-In Typora, inputting ‘>’ followed by your quote contents will generate a quote block. Typora will insert a proper ‘>’ or line break for you. Nested block quotes (a block quote inside another block quote) by adding additional levels of ‘>’.
+> This is a blockquote with two paragraphs. This is first paragraph.
+>
+> This is second pragraph. Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+
+> This is another blockquote with one paragraph. There is three empty line to seperate two blockquote.
+
+In Typora, inputting '>' followed by your quote contents will generate a quote block. Typora will insert a proper '>' or line break for you. Nested block quotes (a block quote inside another block quote) by adding additional levels of '>'.
 
 ### Lists
 
@@ -62,6 +67,16 @@ Input `1. list item 1` will create an ordered list - their markdown source code 
 2. 	Green
 3.	Blue
 ```
+## un-ordered list
+*   Red
+*   Green
+*   Blue
+
+## ordered list
+1.  Red
+2. 	Green
+3.	Blue
+
 
 ### Task List
 
@@ -74,6 +89,11 @@ Task lists are lists with items marked as either [ ] or [x] (incomplete or compl
 - [ ] incomplete
 - [x] completed
 ```
+- [ ] a task list item
+- [ ] list syntax required
+- [ ] normal **formatting**, @mentions, #1234 refs
+- [ ] incomplete
+- [x] completed
 
 You can change the complete/incomplete state by clicking on the checkbox before the item.
 
@@ -99,6 +119,16 @@ markdown = Redcarpet.new("Hello World!")
 puts markdown.to_html
 ```
 ````
+```js
+function test() {
+  console.log("notice the blank line before this function?");
+}
+```
+```ruby
+require 'redcarpet'
+markdown = Redcarpet.new("Hello World!")
+puts markdown.to_html
+```
 
 ### Math Blocks
 
@@ -116,7 +146,7 @@ $$
 $$
 
 
-In the markdown source file, the math block is a $\LaTeX$ expression wrapped by a pair of ‘$$’ marks:
+In the markdown source file, the math block is a $\LaTeX$ expression wrapped by a pair of `$$` marks:
 
 ``` markdown
 $$
@@ -146,6 +176,10 @@ In markdown source code, they look like:
 | Content Cell  | Content Cell  |
 | Content Cell  | Content Cell  |
 ```
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
 
 You can also include inline Markdown such as links, bold, italics, or strikethrough in the table.
 
@@ -158,6 +192,11 @@ Finally, by including colons (`:`) within the header row, you can define text in
 | col 2 is      | centered        |   $12 |
 | zebra stripes | are neat        |    $1 |
 ```
+| Left-Aligned  | Center Aligned  | Right Aligned |
+| :------------ |:---------------:| -----:|
+| col 3 is      | some wordy text | $1600 |
+| col 2 is      | centered        |   $12 |
+| zebra stripes | are neat        |    $1 |
 
 A colon on the left-most side indicates a left-aligned column; a colon on the right-most side indicates a right-aligned column; a colon on both sides indicates a center-aligned column.
 
@@ -175,7 +214,7 @@ You can create footnotes like this[^footnote].
 
 [^footnote]: Here is the *text* of the **footnote**.
 
-Hover over the ‘footnote’ superscript to see content of the footnote.
+Hover over the 'footnote' superscript to see content of the footnote.
 
 ### Horizontal Rules
 
@@ -189,7 +228,7 @@ Typora now supports [YAML Front Matter](http://jekyllrb.com/docs/frontmatter/). 
 
 ### Table of Contents (TOC)
 
-Input `[toc]` and press the `Return` key. This will create a  “Table of Contents” section. The TOC extracts all headers from the document, and its contents are updated automatically as you add to the document.
+Input `[toc]` and press the `Return` key. This will create a  "Table of Contents" section. The TOC extracts all headers from the document, and its contents are updated automatically as you add to the document.
 
 ## Span Elements
 
@@ -201,7 +240,7 @@ Markdown supports two styles of links: inline and reference.
 
 In both styles, the link text is delimited by [square brackets].
 
-To create an inline link, use a set of regular parentheses immediately after the link text’s closing square bracket. Inside the parentheses, put the URL where you want the link to point, along with an optional title for the link, surrounded in quotes. For example:
+To create an inline link, use a set of regular parentheses immediately after the link text's closing square bracket. Inside the parentheses, put the URL where you want the link to point, along with an optional title for the link, surrounded in quotes. For example:
 
 ``` markdown
 This is [an example](http://example.com/ "Title") inline link.
@@ -239,7 +278,7 @@ This is [an example][id] reference-style link.
 
 [id]: http://example.com/	"Optional Title Here"
 
-The implicit link name shortcut allows you to omit the name of the link, in which case the link text itself is used as the name. Just use an empty set of square brackets — for example, to link the word “Google” to the google.com web site, you could simply write:
+The implicit link name shortcut allows you to omit the name of the link, in which case the link text itself is used as the name. Just use an empty set of square brackets — for example, to link the word “Google" to the google.com web site, you could simply write:
 
 ``` markdown
 [Google][]
@@ -270,7 +309,7 @@ Images have similar syntax as links, but they require an additional `!` char bef
 
 You are able to use drag & drop to insert an image from an image file or your web browser. You can modify the markdown source code by clicking on the image. A relative path will be used if the image that is added using drag & drop is in same directory or sub-directory as the document you're currently editing.
 
-If you’re using markdown for building websites, you may specify a URL prefix for the image preview on your local computer with property `typora-root-url` in YAML Front Matters. For example, input `typora-root-url:/User/Abner/Website/typora.io/` in YAML Front Matters, and then `![alt](/blog/img/test.png)` will be treated as `![alt](file:///User/Abner/Website/typora.io/blog/img/test.png)` in Typora.
+If you're using markdown for building websites, you may specify a URL prefix for the image preview on your local computer with property `typora-root-url` in YAML Front Matters. For example, input `typora-root-url:/User/Abner/Website/typora.io/` in YAML Front Matters, and then `![alt](/blog/img/test.png)` will be treated as `![alt](file:///User/Abner/Website/typora.io/blog/img/test.png)` in Typora.
 
 You can find more details [here](https://support.typora.io/Images/).
 
@@ -356,7 +395,7 @@ User can trigger auto-complete suggestions for emoji by pressing `ESC` key, or t
 
 To use this feature, please enable it first in the `Preference` Panel -> `Markdown` Tab. Then, use `$` to wrap a TeX command. For example: `$\lim_{x \to \infty} \exp(-x) = 0$` will be rendered as LaTeX command.
 
-To trigger inline preview for inline math: input “$”, then press the `ESC` key, then input a TeX command.
+To trigger inline preview for inline math: input “$", then press the `ESC` key, then input a TeX command.
 
 You can find more details [here](https://support.typora.io/Math/).
 
