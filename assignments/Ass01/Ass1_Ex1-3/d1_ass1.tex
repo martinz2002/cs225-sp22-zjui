@@ -1,0 +1,67 @@
+% -------------------------------------------
+%          请使用XeTeX, XeLaTeX编译
+%        -----------------------------
+%        | Group Assignment Template |
+%        -----------------------------
+%         Author: Zhong Tiantian
+%         Date Created: Feb 21, 2022
+%         Date Modified: Feb 22, 2022
+%         
+% -------------------------------------------
+%
+%
+
+\documentclass[answers]{exam}
+% \usepackage{ctex}   % 引入中文支持
+\usepackage{graphicx}   % 支持图像
+\usepackage{hyperref}   % 支持引用（书签引用）
+\usepackage{amsmath}    % 支持数学
+\usepackage{amsfonts}   % 支持数学字体
+\usepackage{amssymb}    % 支持数学符号
+\usepackage[linesnumbered,ruled,lined,boxed,commentsnumbered]{algorithm2e}% 支持伪代码
+
+% --- set math font ---
+\usepackage{mathptm}   % 设置数学公式字体为 Adobe Times
+\usepackage{bm}         % 在数学公式中启用粗体
+% ---------------------
+\usepackage{booktabs}   % 启用书签
+% \usepackage[scale=0.8]{geometry}    % 设置页边距
+\usepackage{fontspec}   % 启用自定义字体
+
+% \unframedsolutions  % 设置Solution不带边框
+\setmainfont{Times New Roman} % 设置正文字体为 Times New Roman
+
+% ------ 页面设置 ------
+
+\setlength\linefillheight{.5in} % 行间距
+\pagestyle{headandfoot} % 引入页眉和页脚
+\firstpageheadrule  % 首页页眉横线
+\firstpagefootrule
+\runningheadrule    %正文页页眉横线
+\runningfootrule
+\firstpagefooter{\large{D1}}{}{--\thepage--}    % 首页页脚
+\runningfooter{\large{D1}}{}{--\thepage--}  % 正文页页脚
+
+\renewenvironment{solution}{\textsc{\textbf{Solution:}} \par}{}
+
+
+% ------ ！！！！填写作业标题！！！！
+\firstpageheader{ZJUI CS225 D1}{\huge{\textbf{Homework 1}}\\ \small{Jiang Wenhan, Li Rong, Zhong Tiantian, Zhou Ruidi}}{Last Modified:\\ \today}   % 首页页眉{左}{中}{右}
+\runningheader{CS225\\Homework 1}{}{Last Modified:\\ \today}  % 正文页眉
+% ------ ！！！！填写作业标题！！！！
+
+\begin{document}
+
+\begin{questions}
+
+	\include{ex1.tex}
+	\input{ex2.tex}
+	\input{ex3.tex}
+
+	% 第四大题
+	\question
+	\begin{solution}
+		Please refer to the code bundle submitted.
+	\end{solution}
+\end{questions}
+\end{document}
