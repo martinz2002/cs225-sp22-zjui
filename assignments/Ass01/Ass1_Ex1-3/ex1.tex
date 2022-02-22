@@ -1,0 +1,12 @@
+\question
+% Question 1 solved by Tiantian.
+\begin{solution}
+    % 在这里写第一题的解答。
+    We suppose the list $L$ has members: $length$ denoting the length of the list, or number of elements in the list; $data[i]$ denoting the $i$-th element of the list. Assuming the index starts from 1.
+
+    Therefore, just cut down the length of $l$ to disable elements after the $i$-th in the list and w obtain $L.length := L.length-k$,
+    so the elements $data[i+1, i+2, \cdots, length]$ will be "ignored", or deleted.
+
+    Since this only requires one instruction thus the complexity has nothing to do with $k$, the answer should be $\Theta(1)$.
+    
+\end{solution}
