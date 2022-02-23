@@ -215,6 +215,10 @@ void AList<T>::delete_last(int k)
     {
         numitems -= k;
     }
+    else
+    {
+        exit(EXIT_FAILURE);
+    }
     return void;
     // this member function needs to be implemented
 }
