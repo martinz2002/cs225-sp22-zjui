@@ -93,7 +93,9 @@
 		\part
 		\begin{solution}
 			% 第二题(i)的解答
-			Solution to 2(i)
+			When function $g: T^\prime \times T^\prime \rightarrow T^\prime$ satisfies a rule similar to "Law of Association". Denoting a list as $t$, of which the $i$-th element is $t_i$, the sublist containing $a$-th to $b$-th element is $t_{a..b}$. The condition is that for every $k_1, k_2$ satisfying $a < k_1, k_2 < b$, we have $g(t_{a..k_1}, t_{k_1 + 1 .. b}) = g(t_{a..k_2}, t_{k_2 + 1 .. b})$.
+
+			The reason for this requirement is, any list $l$ with more than three elements can be divided into two lists in $n-1$ ways, where $n$ is the length of the list $l$. Assuming $g(t_{a..k_1}, t_{k_1 + 1 .. b}) \neq g(t_{a..k_2}, t_{k_2 + 1 .. b})$, we find if the division happens at the $k$-th element, i.e. dividing the list into $t_{a..k}$ and $t_{k+1..b}$, the result depends on the value of $k$, which is against definity.
 		\end{solution}
 		\part
 		\begin{solution}
