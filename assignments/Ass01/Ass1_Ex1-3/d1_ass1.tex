@@ -1,4 +1,4 @@
-% -------------------------------------------
+
 %          请使用XeTeX, XeLaTeX编译
 %        -----------------------------
 %        | Group Assignment Template |
@@ -93,24 +93,167 @@
 		\part
 		\begin{solution}
 			% 第二题(i)的解答
-			Solution to 2(i)
+			When function $g: T^\prime \times T^\prime \rightarrow T^\prime$ satisfies a rule similar to "Law of Association". Denoting a list as $t$, of which the $i$-th element is $t_i$, the sublist containing $a$-th to $b$-th element is $t_{a..b}$. The condition is that for every $k_1, k_2$ satisfying $a < k_1, k_2 < b$, we have $g(t_{a..k_1}, t_{k_1 + 1 .. b}) = g(t_{a..k_2}, t_{k_2 + 1 .. b})$.
+
+			The reason for this requirement is, any list $l$ with more than three elements can be divided into two lists in $n-1$ ways, where $n$ is the length of the list $l$. Assuming $g(t_{a..k_1}, t_{k_1 + 1 .. b}) \neq g(t_{a..k_2}, t_{k_2 + 1 .. b})$, we find if the division happens at the $k$-th element, i.e. dividing the list into $t_{a..k}$ and $t_{k+1..b}$, the result depends on the value of $k$, which is against definity.
 		\end{solution}
 		\part
 		\begin{solution}
 			% 第二题(ii)的解答
-			Solution to 2(ii)
-		\end{solution}
+			\paragraph{Length of the list} For the first operation, we iterate every element until reaching the end of the list.
+			% \begin{algorithm}
+			% 	\SetKwData{Len}{len}\SetKwData{List}{list}
+			% 	\SetKwInOut{Input}{Input}
+			% 	\SetKwInOut{Output}{Output}
+			% 	\SetKwFunction{Return}{Return}
+			% 	% \BlankLine
+			% 	\Input{A list}
+			% 	\Output{The length of the list}
+			% 	\BlankLine
+			% 	$\Len \gets 0$ \\
+				
+				
 
+			% 	\caption{Get List Length \texttt{get_lenth{my_list[]}}}\label{algoGetLen}
+			% \end{algorithm}
+
+% 			\begin{lstlisting}
+% int countlength(TList l, int index)
+% {
+% 	// END_OF_LIST is a pre-defined symbol for (length+1)-th element
+% 	if (l[0] == END_OF_LIST)
+% 		return 0;
+
+% 	// lastElements(int i) is a member function of class List, returning the sublist containing all elements from the i-th to the end of l
+% 	if (l.getItem[index] == END_OF_LIST)
+% 		return 1;
+% 	else
+% 		return (countlength(l.lastElements(index + 1));
+% }
+% 			\end{lstlisting}
+		
+\begin{algorithm}
+	\SetKwData{List}{list}
+	\SetKwData{Index}{id}
+	\SetKwData{EOL}{EndOfList}
+	\SetKwData{Length}{length}
+	\SetKwFunction{GetItem}{GetItem}
+	\SetKwFunction{lastElements}{lastElements}
+	\SetKwFunction{getLength}{getLength}
+	\SetKwFunction{return}{return}
+	\SetKwInOut{Input}{input}
+	\SetKwInOut{Output}{output}
+	
+	\Input{A \List}
+	\Output{The \Length of \List}
+
+	\BlankLine
+
+	\Begin(\getLength){
+		\If{$\List[\Index]$ reaches \EOL}{
+		\eIf{$\Index = 0$}{return zero length}{\return $1$}
+		\Return{\getLength(\List, \Index+1)}
+		}
+
+	\caption{Get list length}
+	\label{algo_Length}
+	}
+
+\end{algorithm}
+
+			\paragraph{Perform a function to all element} For the second operation, assuming the function $f$ accepts an element $x$ in $l$. For our structural recursion, refer to Algorithm \ref{algo_Functions}.
+			
+			\begin{algorithm}
+				\caption{Do a Function for All Elements}
+				\label{algo_Functions}
+				\SetKwInOut{Input}{input}
+				\SetKwInOut{Output}{Output}
+				\SetKwData{List}{list}
+				\SetKwData{Index}{id}
+				\SetKwData{Length}{length}
+				\SetKwData{Result}{result}
+				\SetKwFunction{Return}{return}\
+				\SetKwFunction{Function}{Function}
+
+				\Input{\List, the \Index of currently processing element, the array of \Result[] containing return values for all element before the \Index-th}
+				\Output{\Result[] containing return values for all elements}
+
+				\BlankLine
+
+				\Begin(\Function){
+					\If{$\Length = 0$}{
+						Return the value for an empty \List, and exit
+					}
+					
+					\If{$\Index = \Length - 1$}{
+						Return in \Result[\Index] the function value
+					}
+
+					\If{$\Index < \Length$}{
+						Compute the function value
+
+						$\Result[\Index] \gets $ the function value
+
+						Call \Function($\List$, $\Index + 1$, $\Result[]$)
+					}
+				}
+
+
+			\end{algorithm}
+
+			\paragraph{Find sublists}For the structural recursion, time consuming (time complexity) is $\Theta(1)$ for one loop. And it will recursive for n times which means the time complexity will be $\Theta(n)$. Refer to Algorithm \ref{algo_Sublists}
+
+			\begin{algorithm}
+				\label{algo_Sublists}
+				\SetKwData{List}{list}
+				\SetKwData{Index}{id}
+				\SetKwData{SubList}{sublist}
+				\SetKwInOut{Input}{input}
+				\SetKwInOut{Output}{output}
+				\SetKwFunction{Append}{Append}
+				\SetKwFunction{FindSublists}{findSublist}
+				\SetKwFunction{Length}{length}
+				
+				\caption{Find Sublists}
+				
+				\Input{A list $\List$, an index $id$}
+				\Output{The sublist of elements in list satisfying condition $\varphi$}
+
+				\BlankLine
+
+				\Begin(\FindSublists){
+					\If{$\Index == 0$}{Exit the call and return to caller with an empty \SubList}
+					\If{$\Index > \Length(\List)$}{Exit this call}
+					\If{$\List[\Index]$ satisfies condition $\varphi$}{\Append(\List[\Index], \SubList)}
+					\FindSublists($\List, \Index+1$)
+				}
+
+			\end{algorithm}
+
+		\end{solution}
 		\part
 		\begin{solution}
 			% 第二题(iii)的解答
-			Solution to 2(iii)
+			Complexity for all operations are $\Theta(n)$, because they all iterate from the first element to the last, each element costing a constant time.
 		\end{solution}
 	\end{parts}
 
 	\question
 	\begin{solution}
 		% 第三题
+		Please refer to Figure \ref{fig_ex3}. The left half is denoted as Figure I, and right Figure II.
+		\begin{enumerate}
+			\item As mentioned in figure I, when we have two stacks, we can store the first data in the stack I and then we should store other data in stack II (FI: FIRST INPUT)
+			\item When we need data, we will fetch the first data in the stack I (FO: FIRST OUTPUT) and then move it.
+			\item Then we will use pointer to read the second data (we can read and copy any data in the stack no matter where it is) and copy it to the stack I, which means we can read the second data (FIFO). Then delete the data in the stack I and copy the third one into the stack I and repeat the steps. By this means, we can read and use the data in order. (As mentioned in the Figure I to Figure II)
+			\item Each time we move one data from stack II to stack1, we minus the length of the stack II by one (If the original length of the stack II is $n$, when we move the second data from stack II to stack1, its length becomes $n-1$, when we move the third data from stack II to stack I, the length of the stack becomes $n-2$). By this means, Each FIFO operation takes amortised constant time. (As mentioned in the length indication of the figure I and figure II)
+		\end{enumerate}
+		\begin{figure}
+			\centering
+			\includegraphics[width=16cm]{fig_ex3.png}
+			\caption{Figure for exercise 3.}
+			\label{fig_ex3}
+		\end{figure}
 	\end{solution}
 
 
@@ -118,7 +261,7 @@
 	% 第四大题
 	\question
 	\begin{solution}
-		\
+		Please refer to the code bundle.
 	\end{solution}
 \end{questions}
 \end{document}
