@@ -10,8 +10,8 @@
 % -------------------------------------------
 %
 %
-
-\documentclass[answers]{exam}
+% ---------------- 导言区 --------------------------------------------------------
+\documentclass{exam}
 % \usepackage{ctex}   % 引入中文支持
 \usepackage{graphicx}   % 支持图像
 \usepackage{hyperref}   % 支持引用（书签引用）
@@ -25,14 +25,15 @@
 \usepackage{bm}         % 在数学公式中启用粗体
 % ---------------------
 \usepackage{booktabs}   % 启用书签
-% \usepackage[scale=0.8]{geometry}    % 设置页边距
+\usepackage{listings}
+%\usepackage[scale=0.8]{geometry}    % 设置页边距
 \usepackage{fontspec}   % 启用自定义字体
 
 % \unframedsolutions  % 设置Solution不带边框
 \setmainfont{Times New Roman} % 设置正文字体为 Times New Roman
 
 % ------ 页面设置 ------
-
+\setlength{\parindent}{2em}
 \setlength\linefillheight{.5in} % 行间距
 \pagestyle{headandfoot} % 引入页眉和页脚
 \firstpageheadrule  % 首页页眉横线
@@ -42,16 +43,37 @@
 \firstpagefooter{\large{D1}}{}{--\thepage--}    % 首页页脚
 \runningfooter{\large{D1}}{}{--\thepage--}  % 正文页页脚
 
-\renewenvironment{solution}{\textsc{\textbf{Solution:}} \par}{}
+% 定义新的Solution环境，使得环境内可以嵌入块
+\renewenvironment{solution}{\textsc{\textbf{Our Solution:}} \par}{}
+
+% 设置代码块的格式
+\lstset{                  %设置代码块
+         basicstyle=\ttfamily,% 基本风格
+         numbers=left,    % 行号
+         numbersep=10pt,  % 行号间隔
+         tabsize=4,       % 缩进
+         extendedchars=true, % 扩展符号？
+         breaklines=true, % 自动换行
+         language=C++,
+         frame=shadowbox,  % 框架左边竖线
+         xleftmargin=19pt,% 竖线左边间距
+         showspaces=false,% 空格字符加下划线
+         showstringspaces=false,% 字符串中的空格加下划线
+         showtabs=false,  % 字符串中的tab加下划线
+}
+% -----------------------------------------------------------------------------
+
 
 
 % ------ ！！！！填写作业标题！！！！
-\firstpageheader{ZJUI CS225 D1}{\huge{\textbf{Homework 1}}\\ \small{Jiang Wenhan, Li Rong, Zhong Tiantian, Zhou Ruidi}}{Last Modified:\\ \today}   % 首页页眉{左}{中}{右}
+\firstpageheader{\LARGE\fbox{D1}}{\huge{\textbf{CS225 Homework 1}}
+								\\ \footnotesize Group Member: Li Rong, Jiang Wenhan, Zhong Tiantian, Zhou Ruidi
+								}
+								{Last Modified:\\ \today}   % 首页页眉{左}{中}{右}
 \runningheader{CS225\\Homework 1}{}{Last Modified:\\ \today}  % 正文页眉
 % ------ ！！！！填写作业标题！！！！
 
 \begin{document}
-
 \begin{questions}
 
 	\question
@@ -97,7 +119,7 @@
 	% 第四大题
 	\question
 	\begin{solution}
-		Please refer to the code bundle submitted.
+		\
 	\end{solution}
 \end{questions}
 \end{document}
