@@ -1,6 +1,6 @@
 //
 //  alist.cpp
-//  
+//
 //
 //  Created by KD on 14.01.21.
 //  Modified by KD on 22.01.21.
@@ -11,22 +11,25 @@
 #include <cstdlib>
 #include "alist.h"
 #include "time.h"
-using std::cout;
 using std::cin;
+using std::cout;
 using std::rand;
 using std::srand;
 
-template<class T> T &AList<T>::operator[](int index)
+template <class T>
+T &AList<T>::operator[](int index)
 {
     return reprarray[index - 1];
 }
 
-template<class T> int AList<T>::getlength(void)
+template <class T>
+int AList<T>::getlength(void)
 {
     return numitems;
 }
 
-template<class T> void AList<T>::setitem(int index, T value)
+template <class T>
+void AList<T>::setitem(int index, T value)
 {
     if ((index > 0) && (index <= numitems))
     {
@@ -37,7 +40,8 @@ template<class T> void AList<T>::setitem(int index, T value)
         cout << "Index error: index out or range\n";
 }
 
-template<class T> T AList<T>::getitem(int index)
+template <class T>
+T AList<T>::getitem(int index)
 {
     if ((index > 0) && (index <= numitems))
     {
@@ -50,7 +54,8 @@ template<class T> T AList<T>::getitem(int index)
     }
 }
 
-template<class T> void AList<T>::append(T value)
+template <class T>
+void AList<T>::append(T value)
 {
     if (numitems == maxsize)
         allocate();
@@ -59,7 +64,8 @@ template<class T> void AList<T>::append(T value)
     return;
 }
 
-template<class T> void AList<T>::insert(int index, T value)
+template <class T>
+void AList<T>::insert(int index, T value)
 {
     if (numitems == maxsize)
         allocate();
@@ -67,7 +73,7 @@ template<class T> void AList<T>::insert(int index, T value)
     {
         for (int j = numitems - 1; j >= index; --j)
         {
-            reprarray[j+1] = reprarray[j];
+            reprarray[j + 1] = reprarray[j];
         }
         reprarray[index] = value;
         ++numitems;
@@ -80,7 +86,8 @@ template<class T> void AList<T>::insert(int index, T value)
     }
 }
 
-template<class T> void AList<T>::allocate(void)
+template <class T>
+void AList<T>::allocate(void)
 {
     int newsize = 2 * maxsize;
     T *newarray = new T[newsize];
@@ -94,7 +101,8 @@ template<class T> void AList<T>::allocate(void)
     return;
 }
 
-template<class T> void AList<T>::remove(int index)
+template <class T>
+void AList<T>::remove(int index)
 {
     if ((numitems == maxsize / 4) && (maxsize > minsize))
         deallocate();
@@ -102,7 +110,7 @@ template<class T> void AList<T>::remove(int index)
     {
         for (int j = index; j < numitems; ++j)
         {
-            reprarray[j-1] = reprarray[j];
+            reprarray[j - 1] = reprarray[j];
         }
         --numitems;
         return;
@@ -111,7 +119,8 @@ template<class T> void AList<T>::remove(int index)
         cout << "Index error: list index out of range\n";
 }
 
-template<class T> void AList<T>::deallocate(void)
+template <class T>
+void AList<T>::deallocate(void)
 {
     int newsize = maxsize / 2;
     T *newarray = new T[newsize];
@@ -125,7 +134,8 @@ template<class T> void AList<T>::deallocate(void)
     return;
 }
 
-template<class T> void AList<T>::concat(AList<T> &list)
+template <class T>
+void AList<T>::concat(AList<T> &list)
 {
     int length = list.getlength();
     for (int i = 1; i <= length; ++i)
@@ -135,7 +145,8 @@ template<class T> void AList<T>::concat(AList<T> &list)
     return;
 }
 
-template<class T> bool AList<T>::member(T value)
+template <class T>
+bool AList<T>::member(T value)
 {
     bool result = false;
     for (int i = 0; i < numitems; ++i)
@@ -149,7 +160,8 @@ template<class T> bool AList<T>::member(T value)
     return result;
 }
 
-template<class T> bool AList<T>::equal(AList<T> &list)
+template <class T>
+bool AList<T>::equal(AList<T> &list)
 {
     bool result = true;
     if (numitems == list.getlength())
@@ -170,7 +182,8 @@ template<class T> bool AList<T>::equal(AList<T> &list)
     return result;
 }
 
-template<class T> bool AList<T>::sublist(AList<T> &list)
+template <class T>
+bool AList<T>::sublist(AList<T> &list)
 {
     int length = list.getlength();
     bool result = true;
@@ -184,19 +197,24 @@ template<class T> bool AList<T>::sublist(AList<T> &list)
                 break;
             }
         }
+        else if (j == numitems - 1)
+        {
+            result = false;
+            break;
+        }
         else
-            if (j == numitems - 1)
-            {
-                result = false;
-                break;
-            }
-            else
-                --i;
+            --i;
     }
     return result;
 }
 
-template<class T> void AList<T>::delete_last(int k)
+template <class T>
+void AList<T>::delete_last(int k)
 {
+    if (k <= numitems and k >= 0)
+    {
+        numitems -= k;
+    }
+    return void;
     // this member function needs to be implemented
 }
