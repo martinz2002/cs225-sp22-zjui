@@ -41,6 +41,8 @@
 # VSCode
 *.json
 
+*.fdb_latexmk
+*.fls
 
 # LaTeX
 *.aux

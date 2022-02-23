@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <cstdlib>
-#include "squeue.cpp"
+#include "squeue.h"
 using std::cout;
 using std::cin;
 
