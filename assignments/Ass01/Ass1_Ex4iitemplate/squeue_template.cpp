@@ -163,22 +163,19 @@ bool squeue<T>::isempty(void)
 template <class T>
 T squeue<T>::front(void)
 {
-    if (!(*stack1).getheight() + (*stack1).getheight() == 0)
-    {
-        return (*stack1).top();
-    }
-    else
-    {
-        exit(EXIT_FAILURE);
-    }
-    return;
+    return stack1->top;
     // this member function needs to be implemented
 }
 
 template <class T>
 void squeue<T>::pushback(T value)
 {
-    stack1->push(value);
+    if (stack1->numitems == 0)
+    {
+        stack1->push(value);
+        return;
+    }
+    stack2->push(value);
     return;
     // this member function needs to be implemented
 }
@@ -186,7 +183,12 @@ void squeue<T>::pushback(T value)
 template <class T>
 T squeue<T>::popfront(void)
 {
-    stack2->pop();
-    return;
+    int temp = stack1->pop();
+    if (stack2->numitems != 0)
+    {
+        stack1->push(stack2[stack2->numitems]);
+        stack2->numitems--;
+    }
+    return temp;
     // this member function needs to be implemented
 }
