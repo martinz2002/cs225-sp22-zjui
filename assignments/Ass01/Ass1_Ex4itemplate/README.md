@@ -4,20 +4,17 @@ This test aims to prove the correctness of member function `AList<class T>::dele
 
 This set of test code contains the following parts:
 
-1. Different types of data
-2. Different length of list
-3. Different $k$-s for `delete_last` function
 
-The test depends on a series of input files in `data\list1.in.txt`, `data\list2.in.txt`, ... The test script written in python is supposed to rename `list?.in.txt` into `list.in` to let testing code run.
+1. Different length of list
+2. Different $k$ -s for `delete_last` function
+
+The test depends on a series of input files in `data\testpt1.in`, `data\testpt2.in`, ...
+
+The main executable `listmgt` will ask you for the location of any input file.
 
 ## Data Type
-We use a single-digit number to denote the type we want to test with.
 
-| Numebr | Datatype
-| --- | --- |
-| 0 | `int` |
-| 1 | `double` |
-| 2 | `char` |
+This test program only supports `int` type of `list`, but since the member function is implemented with a template, it should be functioning correctly with most of the data types.
 
 
 ## Input Structure
@@ -40,13 +37,18 @@ We use a single-digit number to denote the type we want to test with.
 ## Output `list.out.txt`
 ```
 <ValueOf-k>
-<OutputSequence>
-<TestStatusPassedFailed>
+<OutputSequence/FailureMsg>
 ```
 
 ## Output Example
 ```
-4
-Index error: list index out of range
-Passed
+4                                       // k = 4
+Index error: list index out of range    // Failure Message
 ```
+
+```
+3       // k = 3
+6 5 4   // List after deletion is composed with this three elements
+```
+
+**[NOTE]** If the list is empty after deletion, `listmgt` will print nothing on the second line.

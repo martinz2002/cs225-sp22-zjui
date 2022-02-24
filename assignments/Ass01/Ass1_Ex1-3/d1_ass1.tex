@@ -13,6 +13,7 @@
 % ---------------- 导言区 --------------------------------------------------------
 \documentclass{exam}
 % \usepackage{ctex}   % 引入中文支持
+\usepackage{indentfirst}	% 首行缩进
 \usepackage{graphicx}   % 支持图像
 \usepackage{hyperref}   % 支持引用（书签引用）
 \usepackage{amsmath}    % 支持数学
@@ -229,7 +230,7 @@
 			\item As mentioned in figure I, when we have two stacks, we can store the first data in the stack I and then we should store other data in stack II (FI: FIRST INPUT)
 			\item When we need data, we will fetch the first data in the stack I (FO: FIRST OUTPUT) and then move it.
 			\item Then we will use pointer to read the second data (we can read and copy any data in the stack no matter where it is) and copy it to the stack I, which means we can read the second data (FIFO). Then delete the data in the stack I and copy the third one into the stack I and repeat the steps. By this means, we can read and use the data in order. (As mentioned in the Figure I to Figure II)
-			\item Each time we move one data from stack II to stack1, we minus the length of the stack II by one (If the original length of the stack II is $n$, when we move the second data from stack II to stack1, its length becomes $n-1$, when we move the third data from stack II to stack I, the length of the stack becomes $n-2$). By this means, Each FIFO operation takes amortised constant time. (As mentioned in the length indication of the figure I and figure II)
+			\item Each time we move one data from stack II to stack I, we minus the length of the stack II by one (If the original length of the stack II is $n$, when we move the second data from stack II to stack I, its length becomes $n-1$, when we move the third data from stack II to stack I, the length of the stack becomes $n-2$). By this means, Each FIFO operation takes amortised constant time. (As mentioned in the length indication of the figure I and figure II)
 		\end{itemize}
 		\begin{figure}
 			\centering
