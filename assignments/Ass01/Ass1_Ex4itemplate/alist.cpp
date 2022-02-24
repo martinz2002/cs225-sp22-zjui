@@ -217,8 +217,9 @@ void AList<T>::delete_last(int k)
     }
     else
     {
+        cout << "Index error: list index out of range\n";
         exit(EXIT_FAILURE);
     }
-    return void;
+    return;
     // this member function needs to be implemented
 }
