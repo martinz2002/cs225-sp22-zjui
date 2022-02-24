@@ -219,6 +219,6 @@ void AList<T>::delete_last(int k)
     {
         exit(EXIT_FAILURE);
     }
-    return void;
+    return;
     // this member function needs to be implemented
 }

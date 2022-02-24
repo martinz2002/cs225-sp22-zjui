@@ -17,8 +17,7 @@ We use a single-digit number to denote the type we want to test with.
 | --- | --- |
 | 0 | `int` |
 | 1 | `double` |
-| 2 | `string` |
-| 3 | `char` |
+| 2 | `char` |
 
 
 ## Input Structure
