@@ -163,14 +163,14 @@ bool squeue<T>::isempty(void)
 template <class T>
 T squeue<T>::front(void)
 {
-    return stack1->top;
+    return stack1->top();
     // this member function needs to be implemented
 }
 
 template <class T>
 void squeue<T>::pushback(T value)
 {
-    if (stack1->numitems == 0)
+    if (stack1->isempty())
     {
         stack1->push(value);
         return;
@@ -183,11 +183,12 @@ void squeue<T>::pushback(T value)
 template <class T>
 T squeue<T>::popfront(void)
 {
-    int temp = stack1->pop();
-    if (stack2->numitems != 0)
+    T temp = stack1->pop();
+    if (stack1->isempty())
     {
-        stack1->push(stack2[stack2->numitems]);
-        stack2->numitems--;
+        while(!stack2->isempty()){
+            stack1->push(stack2->pop());
+        }
     }
     return temp;
     // this member function needs to be implemented
