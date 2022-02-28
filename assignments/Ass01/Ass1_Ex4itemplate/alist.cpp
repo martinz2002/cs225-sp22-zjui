@@ -213,7 +213,8 @@ void AList<T>::delete_last(int k)
 {
     if (k <= numitems and k >= 0)
     {
-        numitems -= k;
+        numitems -= k;  // Shorten the length; We didn't consider dynamic space arranging...
+        
     }
     else
     {
