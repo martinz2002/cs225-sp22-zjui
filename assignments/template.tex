@@ -8,7 +8,7 @@
 %         
 % -------------------------------------------
 
-\documentclass[10pt]{article}
+\documentclass[12pt]{article}
 \usepackage[scale=0.8]{geometry}
 \usepackage{fontspec}   % 启用自定义字体
 \usepackage{fancyhdr}
@@ -23,6 +23,7 @@
 \usepackage[linesnumbered,ruled,lined,boxed,commentsnumbered]{algorithm2e}% 支持伪代码
 \usepackage{listings}
 \usepackage{fontspec}
+\usepackage{booktabs}
 \setmainfont{Times New Roman}
 % \setmonofont{Consolas}
 \setsansfont{Arial}
@@ -42,8 +43,9 @@
 }
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\COURSECODE\\\HWTITLE}
-\fancyhead[R]{Exported on\\\today}
+\fancyhead[L]{\COURSECODE~\HWTITLE}
+\fancyhead[C]{}
+\fancyhead[R]{Last Modified on \today}
 \fancyfoot[L]{\AUTHOR}
 \fancyfoot[C]{}
 \fancyfoot[R]{--\thepage--}
@@ -58,10 +60,10 @@
 
 \title{\textbf{\COURSECODE \\ \HWTITLE}}
 \author{\AUTHOR}
-\date{\normalsize Exported on \today}
+\date{\normalsize Last Modified on \today}
 
 \newenvironment{questions}{\begin{enumerate}[Ex. 1]}{\end{enumerate}}
 \newenvironment{parts}{\begin{enumerate}[(i)]}{\end{enumerate}}
-\newcommand\question{\item \textsc{\textbf{Answer.}}\newline}
+\newcommand\question{\item \textsc{\textbf{Our Answer.}}\newline}
 \renewcommand\part{\item}
-
+\newcommand\makeMyTitle{\maketitle \input{../memberInfo.tex}}
