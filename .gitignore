@@ -40,3 +40,12 @@
 
 # VSCode
 *.json
+
+*.fdb_latexmk
+*.fls
+
+# LaTeX
+*.aux
+*.synctex.gz
+*.log
+*.toc
