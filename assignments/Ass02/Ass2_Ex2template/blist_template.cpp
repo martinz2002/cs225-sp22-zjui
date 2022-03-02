@@ -1,6 +1,6 @@
 //
 //  blist.cpp
-//  
+//
 //
 //  Created by KD on 14.01.21.
 //  Modified by KD on 09.05.21.
@@ -10,13 +10,14 @@
 #include <iostream>
 #include <cstdlib>
 #include "blist.h"
-using std::cout;
 using std::cin;
+using std::cout;
 
 /* the class template AList does not require any major change.
  However, we only allow list elements in a range between min and max */
 
-template<class T> AList<T>::AList(int size)
+template <class T>
+AList<T>::AList(int size)
 {
     maxsize = size;
     if (size < 20)
@@ -29,41 +30,48 @@ template<class T> AList<T>::AList(int size)
     reprarray = new T[maxsize];
 }
 
-template<class T> T &AList<T>::operator[](int index)
+template <class T>
+T &AList<T>::operator[](int index)
 {
     return reprarray[index - 1];
 }
 
-template<class T> void AList<T>::setmin(T minimum)
+template <class T>
+void AList<T>::setmin(T minimum)
 {
     if (minimum <= max)
         min = minimum;
     return;
 }
 
-template<class T> void AList<T>::setmax(T maximum)
+template <class T>
+void AList<T>::setmax(T maximum)
 {
     if (maximum >= min)
         max = maximum;
     return;
 }
 
-template<class T> T AList<T>::getmin(void)
+template <class T>
+T AList<T>::getmin(void)
 {
     return min;
 }
 
-template<class T> T AList<T>::getmax(void)
+template <class T>
+T AList<T>::getmax(void)
 {
     return max;
 }
 
-template<class T> int AList<T>::getlength(void)
+template <class T>
+int AList<T>::getlength(void)
 {
     return numitems;
 }
 
-template<class T> void AList<T>::setitem(int index, T value)
+template <class T>
+void AList<T>::setitem(int index, T value)
 {
     if ((index > 0) && (index <= numitems))
     {
@@ -74,7 +82,8 @@ template<class T> void AList<T>::setitem(int index, T value)
         cout << "Index error: index out or range\n";
 }
 
-template<class T> T AList<T>::getitem(int index)
+template <class T>
+T AList<T>::getitem(int index)
 {
     if ((index > 0) && (index <= numitems))
     {
@@ -87,7 +96,8 @@ template<class T> T AList<T>::getitem(int index)
     }
 }
 
-template<class T> void AList<T>::append(T value)
+template <class T>
+void AList<T>::append(T value)
 {
     if (value < min || value >= max)
     {
@@ -101,7 +111,8 @@ template<class T> void AList<T>::append(T value)
     return;
 }
 
-template<class T> void AList<T>::insert(int index, T value)
+template <class T>
+void AList<T>::insert(int index, T value)
 {
     if (value < min || value >= max)
     {
@@ -114,7 +125,7 @@ template<class T> void AList<T>::insert(int index, T value)
     {
         for (int j = numitems - 1; j >= index; --j)
         {
-            reprarray[j+1] = reprarray[j];
+            reprarray[j + 1] = reprarray[j];
         }
         reprarray[index] = value;
         ++numitems;
@@ -127,7 +138,8 @@ template<class T> void AList<T>::insert(int index, T value)
     }
 }
 
-template<class T> void AList<T>::allocate(void)
+template <class T>
+void AList<T>::allocate(void)
 {
     int newsize = 2 * maxsize;
     T *newarray = new T[newsize];
@@ -141,7 +153,8 @@ template<class T> void AList<T>::allocate(void)
     return;
 }
 
-template<class T> void AList<T>::remove(int index)
+template <class T>
+void AList<T>::remove(int index)
 {
     if ((numitems == maxsize / 4) && (maxsize > minsize))
         deallocate();
@@ -149,7 +162,7 @@ template<class T> void AList<T>::remove(int index)
     {
         for (int j = index; j < numitems; ++j)
         {
-            reprarray[j-1] = reprarray[j];
+            reprarray[j - 1] = reprarray[j];
         }
         --numitems;
         return;
@@ -158,7 +171,8 @@ template<class T> void AList<T>::remove(int index)
         cout << "Index error: list index out of range\n";
 }
 
-template<class T> void AList<T>::deallocate(void)
+template <class T>
+void AList<T>::deallocate(void)
 {
     int newsize = maxsize / 2;
     T *newarray = new T[newsize];
@@ -172,7 +186,8 @@ template<class T> void AList<T>::deallocate(void)
     return;
 }
 
-template<class T> void AList<T>::concat(AList<T> &list)
+template <class T>
+void AList<T>::concat(AList<T> &list)
 {
     if (list.getmax() > max)
         max = list.getmax();
@@ -186,7 +201,8 @@ template<class T> void AList<T>::concat(AList<T> &list)
     return;
 }
 
-template<class T> bool AList<T>::member(T value)
+template <class T>
+bool AList<T>::member(T value)
 {
     if (value < min || value >= max)
     {
@@ -205,7 +221,8 @@ template<class T> bool AList<T>::member(T value)
     return result;
 }
 
-template<class T> bool AList<T>::equal(AList<T> &list)
+template <class T>
+bool AList<T>::equal(AList<T> &list)
 {
     bool result = true;
     if (numitems == list.getlength())
@@ -226,7 +243,8 @@ template<class T> bool AList<T>::equal(AList<T> &list)
     return result;
 }
 
-template<class T> bool AList<T>::sublist(AList<T> &list)
+template <class T>
+bool AList<T>::sublist(AList<T> &list)
 {
     int length = list.getlength();
     bool result = true;
@@ -240,23 +258,23 @@ template<class T> bool AList<T>::sublist(AList<T> &list)
                 break;
             }
         }
+        else if (j == numitems - 1)
+        {
+            result = false;
+            break;
+        }
         else
-            if (j == numitems - 1)
-            {
-                result = false;
-                break;
-            }
-            else
-                --i;
+            --i;
     }
     return result;
 }
 
-template<class T> void AList<T>::prettyprint(void)
+template <class T>
+void AList<T>::prettyprint(void)
 {
     for (int i = 0; i < numitems; i++)
     {
-        cout << i+1 << ":  " << reprarray[i];
+        cout << i + 1 << ":  " << reprarray[i];
         if (i != numitems - 1)
             cout << "; ";
         cout << "\n";
@@ -265,7 +283,34 @@ template<class T> void AList<T>::prettyprint(void)
 
 /* for the derived class template only bucket sort needs to be implemented */
 
-template<class T> AList<T> *BList<T>::bucketsort(void)
+template <class T>
+AList<T> *BList<T>::bucketsort(void)
 {
-    // this member function needs to be implemented
+    if (numitem <= 1)
+    {
+        return;
+    }
+    int my_max = getmax();
+    double each_bucket = my_max / numitem;
+    AList<T> bucket[numitems] = new AList<T>(numitems);
+    for (int each_item = numitem - 1; each_item >= 0; each_item--)
+    {
+        bucket[numitems].setmax(each_bucket * (each_item + 1));
+        bucket[numitems].setmin(each_bucket * each_item);
+    }
+    for (int each_item = numitem; each_item >= 0; each_item--)
+    {
+        int temp = reprarray[each_item] / each_bucket;
+        bucket[numitems].insert(reprarray[each_item]);
+    }
+    for (int each_item = numitem; each_item >= 0; each_item--)
+    {
+        int temp = reprarray[each_item] / each_bucket;
+        bucket[numitems].insert(reprarray[each_item]);
+    }
+    for (int each_item = 1; each_item < numitems; each_item--)
+    {
+        bucket[0].concat(bucket[each_item]);
+    }
+    return bucket[0];
 }
