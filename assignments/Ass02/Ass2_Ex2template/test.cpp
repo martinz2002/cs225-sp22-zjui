@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <cstdlib>
-#include "blist.cpp"
+#include "blist.h"
 #include "time.h"
 using std::cout;
 using std::cin;
