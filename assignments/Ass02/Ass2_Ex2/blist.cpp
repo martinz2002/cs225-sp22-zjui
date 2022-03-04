@@ -284,33 +284,60 @@ void AList<T>::prettyprint(void)
 /* for the derived class template only bucket sort needs to be implemented */
 
 template <class T>
-AList<T> *BList<T>::bucketsort(void)
+AList<T> *BList<T>::bucketsort(void) // increasing order
 {
-    if (numitem <= 1)
+    // NOTE: 默认派生为私有派生；任何派生形式都不能访问 base class 的 private member
+    // numitem = getlength();
+    if (this->getlength() <= 1)
     {
-        return;
+        exit(EXIT_FAILURE);
     }
-    int my_max = getmax();
-    double each_bucket = my_max / numitem;
-    AList<T> bucket[numitems] = new AList<T>(numitems);
+    // Fetch some useful data
+    const int my_max = this->getmax();
+    const int my_min = this->getmin();
+    const int numitem = this->getlength();
+    double each_bucket = (my_max - my_min) / numitem;   // Get the range of each bucket
+    AList<T> *bucket = new AList<T>[numitem];
+    // Set the max and min value of each bucket, indicating the range of each
     for (int each_item = numitem - 1; each_item >= 0; each_item--)
     {
-        bucket[numitems].setmax(each_bucket * (each_item + 1));
-        bucket[numitems].setmin(each_bucket * each_item);
+        bucket[each_item].setmax(my_min + each_bucket * (each_item + 1));
+        bucket[each_item].setmin(my_min + each_bucket * each_item);
     }
-    for (int each_item = numitem; each_item >= 0; each_item--)
+    for (int each_item = numitem - 1; each_item >= 0; each_item--)
     {
-        int temp = reprarray[each_item] / each_bucket;
-        bucket[numitems].insert(reprarray[each_item]);
+        int temp = (this->getitem(each_item + 1) - my_min) / each_bucket;
+        // binary search to find where to insert
+        // increasing order
+        int left = 0, right = bucket[temp].getlength() - 1;
+        while (left <= right && right >= 0 && left <= bucket[temp].getlength() - 1)
+        {
+            int m = (left + right) / 2;
+            if (bucket[temp].getitem(m + 1) == this->getitem(each_item + 1))
+            {
+                left = m;
+                right = m;
+                break;
+            }
+            else if (bucket[temp].getitem(m + 1) > this->getitem(each_item + 1))
+            {
+                right = m - 1;
+            }
+            else // if (bucket[temp].getitem(m) < this->getitem(each_item))
+            {
+                left = m + 1;
+            }
+        }
+
+        bucket[temp].insert(left, this->getitem(each_item + 1));
     }
-    for (int each_item = numitem; each_item >= 0; each_item--)
+    // concat all the buckets
+    for (int each_item = 1; each_item < numitem; each_item++)
     {
-        int temp = reprarray[each_item] / each_bucket;
-        bucket[numitems].insert(reprarray[each_item]);
+        if (bucket[each_item].getlength() != 0)
+        {
+            bucket[0].concat(bucket[each_item]);
+        }
     }
-    for (int each_item = 1; each_item < numitems; each_item--)
-    {
-        bucket[0].concat(bucket[each_item]);
-    }
-    return bucket[0];
+    return bucket;
 }
