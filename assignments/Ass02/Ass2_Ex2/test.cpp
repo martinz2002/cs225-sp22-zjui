@@ -30,5 +30,10 @@ int main()
     (*mylist).prettyprint();
     AList<int> *mysortedlist;
     mysortedlist = (*mylist).bucketsort();
+    for(int i = 1; i <= (*mylist).getlength() - 1; i++)
+    {
+        if ((*mysortedlist).getitem(i) > (*mysortedlist).getitem(i+1))
+            printf("Failed at i = %d\n", i);
+    }
     (*mysortedlist).prettyprint();
 }

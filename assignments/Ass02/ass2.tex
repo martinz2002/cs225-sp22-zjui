@@ -162,6 +162,7 @@
             \SetKwData{OrigStack}{OriginalStack}
             \SetKwData{ExStack}{ExtraStack}
             \SetKwData{ExVar}{ExtraVar}
+            \SetKwData{numStkPopped}{numElementsPopped}
             \SetKwFunction{Pop}{pop\_top}
             \SetKwFunction{Push}{push}
             \SetKwFunction{Numitem}{numitem}
@@ -169,7 +170,13 @@
             \tcc{We are to copy the front $n-1$ elements into \ExStack, reversely.}
             \tcc{Before \MOVE{$n$} is called, \OrigStack has $n$ elements.}
 
-            \If(finishing stack copy from \OrigStack to \ExStack){$n=0$}{exit call}
+            \If{$n=1$}{
+                \ExStack.\Push{\OrigStack.\Pop}
+
+                Exit call
+            }
+
+
 
             \While{\OrigStack is not empty}{
                 \ExStack.\Push{\OrigStack.\Pop}
@@ -179,7 +186,11 @@
 
             $\ExVar \gets \ExStack.\Pop$
 
-            \While{$\ExStack.\Numitem > n$}{\OrigStack.\Push{\ExStack.\Pop}}
+            $\numStkPopped \gets 0$
+
+            \While{$\numStkPopped < n$}{\OrigStack.\Push{\ExStack.\Pop}}
+
+            \ExStack.\Push{\ExVar}
 
             Call \MOVE{$n-1$}
         \end{procedure}
