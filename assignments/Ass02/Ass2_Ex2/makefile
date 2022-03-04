@@ -1,3 +1,5 @@
+all: blist.o test
+
 test: test.cpp blist.o blist.h
 	g++ test.cpp blist.o -o test
 blist.o: blist.cpp blist.h
