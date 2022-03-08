@@ -283,6 +283,10 @@ T Listext<T>::select(int k)
     {
         return reprarray[0];
     }
+    else if (this->getlength() == 0)
+    {
+        return;
+    }
     for (int i = 0; i < numitems; i++)
     {
         if (reprarray[i] < pivot)
