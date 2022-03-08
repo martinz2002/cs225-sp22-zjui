@@ -301,11 +301,11 @@ T Listext<T>::select(int k)
     }
     else
     {
-        if (k <= U_array_counter)
+        if (k < U_array_counter + 1)
         {
-            return U_array->select(U_array_counter - k);
+            return U_array->select(k);
         }
-        if (k > U_array_counter)
+        if (k > U_array_counter + 1)
         {
             return V_array->select(k - U_array_counter);
         }
