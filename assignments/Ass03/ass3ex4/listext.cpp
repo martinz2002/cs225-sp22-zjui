@@ -276,7 +276,7 @@ T Listext<T>::select(int k)
     cout << "     "
          << "select k = " << k << std::endl;
     int pivot = reprarray[numitems / 2];
-    int U_array_counter = 0;
+    int U_array_counter = 1;
     Listext<T> *U_array = new Listext<T>();
     Listext<T> *V_array = new Listext<T>();
     if (this->getlength() == 1)
@@ -294,22 +294,22 @@ T Listext<T>::select(int k)
             U_array_counter++;
             U_array->append(reprarray[i]);
         }
-        else if (reprarray[i] > pivot)
+        else if (reprarray[i] >= pivot)
         {
             V_array->append(reprarray[i]);
         }
     }
-    if (k == U_array_counter + 1)
+    if (k == U_array_counter)
     {
         return pivot;
     }
     else
     {
-        if (k < U_array_counter + 1)
+        if (k < U_array_counter)
         {
             return U_array->select(k);
         }
-        if (k > U_array_counter + 1)
+        if (k > U_array_counter)
         {
             return V_array->select(k - U_array_counter);
         }
