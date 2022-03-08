@@ -273,6 +273,7 @@ void Listext<T>::rotate(int m)
 template <class T>
 T Listext<T>::select(int k)
 {
+    cout << "     " << "select k = " << k << std::endl;
     int pivot = reprarray[numitems / 2];
     int U_array_counter = 0;
     Listext<T> *U_array = new Listext<T>();

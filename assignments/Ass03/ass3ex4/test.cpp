@@ -24,14 +24,14 @@ int main()
         srand(time(0));
         int j;
         cout << std::endl << "Original Data:" << std::endl;
-        for (int i = 0; i < 500; i++)
+        for (int i = 0; i < 50; i++)
         {
             j = (rand() % 2000) - 1000;
             (*mylist).append(j);
             cout << "ID=" << i << ": " << j << std::endl;
         }
         int result;
-        for (int k = 1; k < 251; k++)
+        for (int k = 1; k < 45; k++)
         {
             result = (*mylist).select(k);
             cout << k << "'th element: " << result << "\n";
