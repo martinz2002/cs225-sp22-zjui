@@ -294,7 +294,7 @@ T Listext<T>::select(int k)
     {
         return U_array->select(k);
     }
-    if (k < U_array_counter)
+    if (k > U_array_counter)
     {
         return V_array->select(k - U_array_counter);
     }
