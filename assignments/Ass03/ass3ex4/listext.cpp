@@ -315,6 +315,6 @@ T Listext<T>::select(int k)
         {
             return V_array->select(k - U_array_counter);
         }
+        return pivot;
     }
-    return 0;
 }
