@@ -32,11 +32,11 @@
 *.app
 
 # Any Compressed Archieves
-*.zip
-*.rar
-*.7z
-*.tar
-*.tar.*
+# *.zip
+# *.rar
+# *.7z
+# *.tar
+# *.tar.*
 
 # VSCode
 *.json

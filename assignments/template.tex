@@ -5,10 +5,10 @@
 %         Date Created: Feb 21, 2022
 %         Date Modified: Feb 22, 2022
 %         Version: 2.0
-%         
+%
 % -------------------------------------------
 
-\documentclass[12pt]{article}
+\documentclass[10pt]{article}
 \usepackage[scale=0.8]{geometry}
 \usepackage{fontspec}   % 启用自定义字体
 \usepackage{fancyhdr}
@@ -20,13 +20,14 @@
 \usepackage{enumerate}
 \usepackage{bm}
 \usepackage{mathptm}
-\usepackage[linesnumbered,ruled,lined,boxed,commentsnumbered]{algorithm2e}% 支持伪代码
+\usepackage[nofillcomment, linesnumbered,ruled,lined,boxed]{algorithm2e}% 支持伪代码
 \usepackage{listings}
 \usepackage{fontspec}
 \usepackage{booktabs}
+\everymath{\displaystyle}
 \setmainfont{Times New Roman}
 % \setmonofont{Consolas}
-\setsansfont{Arial}
+% \setsansfont{Arial}
 \lstset{                  %设置代码块
     basicstyle=\ttfamily,% 基本风格
     numbers=left,    % 行号
@@ -43,9 +44,9 @@
 }
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\COURSECODE~\HWTITLE}
+\fancyhead[L]{\textsc\COURSECODE \\ \textbf\HWTITLE}
 \fancyhead[C]{}
-\fancyhead[R]{Last Modified on \today}
+\fancyhead[R]{Last Modified on \\ \today}
 \fancyfoot[L]{\AUTHOR}
 \fancyfoot[C]{}
 \fancyfoot[R]{--\thepage--}
@@ -58,12 +59,18 @@
 \newcommand{\E}{\text{e}}
 \newcommand{\Diff}{\text{d}}
 
-\title{\textbf{\COURSECODE \\ \HWTITLE}}
+\title{\textsc\COURSECODE \\ \textbf{\HWTITLE}}
 \author{\AUTHOR}
-\date{\normalsize Last Modified on \today}
+\date{\textit{\normalsize Last Modified on \today}}
 
 \newenvironment{questions}{\begin{enumerate}[Ex. 1]}{\end{enumerate}}
 \newenvironment{parts}{\begin{enumerate}[(i)]}{\end{enumerate}}
-\newcommand\question{\item \textsc{\textbf{Our Answer.}}\newline}
+\newcommand\question{\newpage \item \textsc{\textbf{Our Answer.}}\newline}
 \renewcommand\part{\item}
-\newcommand\makeMyTitle{\maketitle \input{../memberInfo.tex}}
+\newcommand\makeMyTitle{\maketitle
+                        \input{../memberInfo.tex} 
+                        \vspace{5cm}
+                        \centering\textsc{\Large{Please turn over for our answers.}}\normalsize}
+
+\renewcommand{\baselinestretch}{1.2}
+% \setlength{\parskip}{0ex}

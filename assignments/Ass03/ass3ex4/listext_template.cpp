@@ -1,35 +1,40 @@
 //
-//  alist.cpp
-//
+//  listext.cpp
+//  
 //
 //  Created by KD on 14.01.21.
-//  Modified by KD on 22.01.21.
+//  Modified by KD on 02.03.22.
 //
 
 #include <stdio.h>
 #include <iostream>
 #include <cstdlib>
-#include "alist.h"
-#include "time.h"
-using std::cin;
+#include "listext.h"
 using std::cout;
-using std::rand;
-using std::srand;
+using std::cin;
 
-template <class T>
-T &AList<T>::operator[](int index)
+template<class T> Listext<T>::Listext(int size)
+{
+    maxsize = size;
+    if (size < 20)
+        minsize = size;
+    else
+        minsize = 20;
+    numitems = 0;
+    reprarray = new T[maxsize];
+}
+
+template<class T> T &Listext<T>::operator[](int index)
 {
     return reprarray[index - 1];
 }
 
-template <class T>
-int AList<T>::getlength(void)
+template<class T> int Listext<T>::getlength(void)
 {
     return numitems;
 }
 
-template <class T>
-void AList<T>::setitem(int index, T value)
+template<class T> void Listext<T>::setitem(int index, T value)
 {
     if ((index > 0) && (index <= numitems))
     {
@@ -40,8 +45,7 @@ void AList<T>::setitem(int index, T value)
         cout << "Index error: index out or range\n";
 }
 
-template <class T>
-T AList<T>::getitem(int index)
+template<class T> T Listext<T>::getitem(int index)
 {
     if ((index > 0) && (index <= numitems))
     {
@@ -54,8 +58,7 @@ T AList<T>::getitem(int index)
     }
 }
 
-template <class T>
-void AList<T>::append(T value)
+template<class T> void Listext<T>::append(T value)
 {
     if (numitems == maxsize)
         allocate();
@@ -64,8 +67,7 @@ void AList<T>::append(T value)
     return;
 }
 
-template <class T>
-void AList<T>::insert(int index, T value)
+template<class T> void Listext<T>::insert(int index, T value)
 {
     if (numitems == maxsize)
         allocate();
@@ -73,7 +75,7 @@ void AList<T>::insert(int index, T value)
     {
         for (int j = numitems - 1; j >= index; --j)
         {
-            reprarray[j + 1] = reprarray[j];
+            reprarray[j+1] = reprarray[j];
         }
         reprarray[index] = value;
         ++numitems;
@@ -86,8 +88,7 @@ void AList<T>::insert(int index, T value)
     }
 }
 
-template <class T>
-void AList<T>::allocate(void)
+template<class T> void Listext<T>::allocate(void)
 {
     int newsize = 2 * maxsize;
     T *newarray = new T[newsize];
@@ -101,8 +102,7 @@ void AList<T>::allocate(void)
     return;
 }
 
-template <class T>
-void AList<T>::remove(int index)
+template<class T> void Listext<T>::remove(int index)
 {
     if ((numitems == maxsize / 4) && (maxsize > minsize))
         deallocate();
@@ -110,7 +110,7 @@ void AList<T>::remove(int index)
     {
         for (int j = index; j < numitems; ++j)
         {
-            reprarray[j - 1] = reprarray[j];
+            reprarray[j-1] = reprarray[j];
         }
         --numitems;
         return;
@@ -119,8 +119,7 @@ void AList<T>::remove(int index)
         cout << "Index error: list index out of range\n";
 }
 
-template <class T>
-void AList<T>::deallocate(void)
+template<class T> void Listext<T>::deallocate(void)
 {
     int newsize = maxsize / 2;
     T *newarray = new T[newsize];
@@ -134,8 +133,7 @@ void AList<T>::deallocate(void)
     return;
 }
 
-template <class T>
-void AList<T>::concat(AList<T> &list)
+template<class T> void Listext<T>::concat(Listext<T> &list)
 {
     int length = list.getlength();
     for (int i = 1; i <= length; ++i)
@@ -145,8 +143,7 @@ void AList<T>::concat(AList<T> &list)
     return;
 }
 
-template <class T>
-bool AList<T>::member(T value)
+template<class T> bool Listext<T>::member(T value)
 {
     bool result = false;
     for (int i = 0; i < numitems; ++i)
@@ -160,8 +157,7 @@ bool AList<T>::member(T value)
     return result;
 }
 
-template <class T>
-bool AList<T>::equal(AList<T> &list)
+template<class T> bool Listext<T>::equal(Listext<T> &list)
 {
     bool result = true;
     if (numitems == list.getlength())
@@ -182,8 +178,7 @@ bool AList<T>::equal(AList<T> &list)
     return result;
 }
 
-template <class T>
-bool AList<T>::sublist(AList<T> &list)
+template<class T> bool Listext<T>::sublist(Listext<T> &list)
 {
     int length = list.getlength();
     bool result = true;
@@ -197,30 +192,37 @@ bool AList<T>::sublist(AList<T> &list)
                 break;
             }
         }
-        else if (j == numitems - 1)
-        {
-            result = false;
-            break;
-        }
         else
-            --i;
+            if (j == numitems - 1)
+            {
+                result = false;
+                break;
+            }
+            else
+                --i;
     }
     return result;
 }
 
-template <class T>
-void AList<T>::delete_last(int k)
+template<class T> void Listext<T>::prettyprint(void)
 {
-    if (k <= numitems and k >= 0)
+    for (int i = 0; i < numitems; i++)
     {
-        numitems -= k;  // Shorten the length; We didn't consider dynamic space arranging...
-        
+        cout << i+1 << ":  " << reprarray[i];
+        if (i != numitems - 1)
+            cout << "; ";
+        cout << "\n";
     }
-    else
-    {
-        cout << "Index error: list index out of range\n";
-        exit(EXIT_FAILURE);
-    }
-    return;
+}
+
+/* for added member function for rotation and selection need to be implemented */
+
+template<class T> void Listext<T>::rotate(int m)
+{
+    // this member function needs to be implemented
+}
+
+template<class T> T Listext<T>::select(int k)
+{
     // this member function needs to be implemented
 }
