@@ -286,16 +286,16 @@ T Listext<T>::select(int k)
     {
         return pivot;
     }
-
-    Listext<T> *U_array = new Listext<T>();
-    Listext<T> *V_array = new Listext<T>();
-
     if (k <= U_array_counter)
     {
+        Listext<T> *U_array = new Listext<T>();
+        U_array->numitems = U_array_counter;
         return U_array->select(k);
     }
     if (k > U_array_counter)
     {
+        Listext<T> *V_array = new Listext<T>();
+        V_array->numitems = numitems - U_array_counter;
         return V_array->select(k - U_array_counter);
     }
     return 0;
