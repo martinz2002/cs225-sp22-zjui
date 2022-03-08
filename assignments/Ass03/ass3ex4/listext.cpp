@@ -284,7 +284,7 @@ T Listext<T>::select(int k)
             U_array_counter++;
             U_array->append(reprarray[i]);
         }
-        else if(reprarray[i] > pivot)
+        else if (reprarray[i] > pivot)
         {
             V_array->append(reprarray[i]);
         }
@@ -293,13 +293,16 @@ T Listext<T>::select(int k)
     {
         return pivot;
     }
-    if (k <= U_array_counter)
+    else
     {
-        return U_array->select(k);
-    }
-    if (k > U_array_counter)
-    {
-        return V_array->select(k - U_array_counter);
+        if (k <= U_array_counter)
+        {
+            return U_array->select(k);
+        }
+        if (k > U_array_counter)
+        {
+            return V_array->select(k - U_array_counter);
+        }
     }
     return 0;
 }
