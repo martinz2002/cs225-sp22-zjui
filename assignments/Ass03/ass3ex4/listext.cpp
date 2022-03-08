@@ -272,5 +272,30 @@ void Listext<T>::rotate(int m)
 template <class T>
 T Listext<T>::select(int k)
 {
-    // this member function needs to be implemented
+    int pivot = reprarray[numitems / 2];
+    int U_array_counter = 0;
+    for (int i = 0; i < numitems ; i++)
+    {
+        if (reprarray[i] < pivot)
+        {
+            U_array_counter++;
+        }
+    }
+    if (k == U_array_counter + 1)
+    {
+        return pivot;
+    }
+
+    Listext<T> *U_array = new Listext<T>();
+    Listext<T> *V_array = new Listext<T>();
+
+    if (k <= U_array_counter)
+    {
+        return U_array->select(k);
+    }
+    if (k < U_array_counter)
+    {
+        return V_array->select(k-U_array_counter);  
+    }
+    return 0;
 }
