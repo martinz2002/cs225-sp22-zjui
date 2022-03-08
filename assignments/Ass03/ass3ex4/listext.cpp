@@ -147,7 +147,7 @@ template <class T>
 void Listext<T>::concat(Listext<T> &list)
 {
     int length = list.getlength();
-    for (int i = 1; i 02 <= length; ++i)
+    for (int i = 1; i <= length; ++i)
     {
         append(list[i]);
     }
@@ -248,24 +248,25 @@ void Listext<T>::rotate(int m)
 {
     // this member function needs to be implemented
     int k = 1, i = m, j = this->getlength() - m;
-    if (halt == true)
-        return;
-
-    if (i > j)
+    bool halt = false;
+    while (!halt)
     {
-        this->exchange(halt, k, k + i, j);
-        i -= j;
-        k += j;
-    }
-    else if (i < j)
-    {
-        this->exchange(halt, k, k + j, i);
-        j -= i;
-    }
-    else if (i == j)
-    {
-        exchange(halt, k, k + i, i);
-        halt = true;
+        if (i > j)
+        {
+            this->exchange(k, k + i, j);
+            i -= j;
+            k += j;
+        }
+        else if (i < j)
+        {
+            this->exchange(k, k + j, i);
+            j -= i;
+        }
+        else if (i == j)
+        {
+            exchange(k, k + i, i);
+            halt = true;
+        }
     }
 }
 
@@ -274,7 +275,7 @@ T Listext<T>::select(int k)
 {
     int pivot = reprarray[numitems / 2];
     int U_array_counter = 0;
-    for (int i = 0; i < numitems ; i++)
+    for (int i = 0; i < numitems; i++)
     {
         if (reprarray[i] < pivot)
         {
@@ -295,7 +296,7 @@ T Listext<T>::select(int k)
     }
     if (k < U_array_counter)
     {
-        return V_array->select(k-U_array_counter);  
+        return V_array->select(k - U_array_counter);
     }
     return 0;
 }

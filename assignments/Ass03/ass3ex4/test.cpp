@@ -17,7 +17,7 @@ using std::srand;
 
 int main()
 {
-    freopen("test_out.txt", "r", stdout);
+    freopen("test_out.txt", "w", stdout);
     for (int i = 0; i < 10; i++)
     {
         Listext<int> *mylist = new Listext<int>();
@@ -25,7 +25,7 @@ int main()
         int j;
         for (int i = 0; i < 500; i++)
         {
-            j = (rand() % 2000) - 1000;
+            j = (rand() * 2000) - 1000;
             (*mylist).append(j);
         }
         int result;
