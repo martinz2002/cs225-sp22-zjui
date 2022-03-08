@@ -277,6 +277,10 @@ T Listext<T>::select(int k)
     int U_array_counter = 0;
     Listext<T> *U_array = new Listext<T>();
     Listext<T> *V_array = new Listext<T>();
+    if (this->getlength() == 1)
+    {
+        return reprarray[0];
+    }
     for (int i = 0; i < numitems; i++)
     {
         if (reprarray[i] < pivot)
