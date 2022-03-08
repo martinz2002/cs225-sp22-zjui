@@ -275,46 +275,35 @@ T Listext<T>::select(int k)
 {
     // cout << "     "
     //      << "select k = " << k << std::endl;
-    int pivot = reprarray[numitems / 2];
+    T pivot = this->getitem((numitems + 1) / 2);
     int U_array_counter = 0;
     int V_array_counter = 0;
     Listext<T> *U_array = new Listext<T>(); // numbers smaller than pivot
     Listext<T> *V_array = new Listext<T>(); // numbers larger than pivot
-    if (this->getlength() == 1)
+    for (int i = 1; i <= this->getlength(); i++)
     {
-        return reprarray[0];
-    }
-    else if (this->getlength() == 0) // Empty list, illegal
-    {
-        return -11451;
-    }
-    for (int i = 0; i < numitems; i++)
-    {
-        if (reprarray[i] < pivot) // add any number smaller than
+        if (this->getitem(i) < pivot) // add any number smaller than
         {
             U_array_counter++;
-            U_array->append(reprarray[i]);
+            U_array->append(this->getitem(i));
         }
-        else if (reprarray[i] > pivot)
+        else if (this->getitem(i) > pivot)
         {
-            V_array->append(reprarray[i]);
+            V_array->append(this->getitem(i));
             V_array_counter++;
         }
     }
-    if (k > U_array_counter && k < this->getlength() - V_array_counter)
+    if (k > U_array_counter && k <= this->getlength() - V_array_counter)
     {
         return pivot;
+    }
+    else if (k <= U_array_counter)
+    {
+        return U_array->select(k);
     }
     else
     {
-        if (k < U_array_counter + 1)
-        {
-            return U_array->select(k);
-        }
-        if (k > U_array_counter + 1)
-        {
-            return V_array->select(k - U_array_counter);
-        }
-        return pivot;
+        return V_array->select(k - (this->getlength() - V_array_counter));
     }
+    return -11451;
 }
