@@ -27,6 +27,7 @@ public:
     void prettyprint(void);
     void rotate(int m);
     T select(int k);
+    void exchange(int i, int j, int m);
 private:
     int numitems;
     T *reprarray;

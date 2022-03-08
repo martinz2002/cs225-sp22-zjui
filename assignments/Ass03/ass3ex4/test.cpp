@@ -17,6 +17,7 @@ using std::srand;
 
 int main()
 {
+    freopen("test_out.txt", "r", stdout);
     for (int i = 0; i < 10; i++)
     {
         Listext<int> *mylist = new Listext<int>();
@@ -28,7 +29,7 @@ int main()
             (*mylist).append(j);
         }
         int result;
-        for (int k = 1; k < 251; k++);
+        for (int k = 1; k < 251; k++)
         {
             result = (*mylist).select(k);
             cout << k << "'th element: " << result << "\n";
@@ -36,7 +37,7 @@ int main()
         for (int i = 1; i < 7; i++)
         {
             (*mylist).rotate(3 * i);
-            cout << "Rotation by " << 3*i << " positions:\n"
+            cout << "Rotation by " << 3*i << " positions:\n";
             (*mylist).prettyprint();
         }
     }
