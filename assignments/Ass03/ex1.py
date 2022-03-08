@@ -4,10 +4,6 @@ import numpy as np
 compare_dic = {}
 
 
-def swap(list_name, index1, index2):
-    list_name[index1], list_name[index2] = list_name[index2], list_name[index1]
-    return list_name
-
 
 def find(list_name):
     if len(list_name) == 1:
