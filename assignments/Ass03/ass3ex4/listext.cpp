@@ -275,11 +275,18 @@ T Listext<T>::select(int k)
 {
     int pivot = reprarray[numitems / 2];
     int U_array_counter = 0;
+    Listext<T> *U_array = new Listext<T>();
+    Listext<T> *V_array = new Listext<T>();
     for (int i = 0; i < numitems; i++)
     {
         if (reprarray[i] < pivot)
         {
             U_array_counter++;
+            U_array->append(reprarray[i]);
+        }
+        else if(reprarray[i] > pivot)
+        {
+            V_array->append(reprarray[i])
         }
     }
     if (k == U_array_counter + 1)
@@ -288,14 +295,10 @@ T Listext<T>::select(int k)
     }
     if (k <= U_array_counter)
     {
-        Listext<T> *U_array = new Listext<T>();
-        U_array->numitems = U_array_counter;
         return U_array->select(k);
     }
     if (k > U_array_counter)
     {
-        Listext<T> *V_array = new Listext<T>();
-        V_array->numitems = numitems - U_array_counter;
         return V_array->select(k - U_array_counter);
     }
     return 0;
