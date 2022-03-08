@@ -17,7 +17,7 @@ using std::srand;
 
 int main()
 {
-    freopen("test_out.txt", "w", stdout);
+    freopen("test.out", "w", stdout);
     for (int i = 0; i < 10; i++)
     {
         Listext<int> *mylist = new Listext<int>();
