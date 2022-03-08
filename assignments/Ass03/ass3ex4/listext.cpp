@@ -285,7 +285,7 @@ T Listext<T>::select(int k)
     }
     else if (this->getlength() == 0)
     {
-        return;
+        return -11451;
     }
     for (int i = 0; i < numitems; i++)
     {
