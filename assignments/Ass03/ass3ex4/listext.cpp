@@ -1,6 +1,6 @@
 //
 //  listext.cpp
-//  
+//
 //
 //  Created by KD on 14.01.21.
 //  Modified by KD on 02.03.22.
@@ -10,10 +10,11 @@
 #include <iostream>
 #include <cstdlib>
 #include "listext.h"
-using std::cout;
 using std::cin;
+using std::cout;
 
-template<class T> Listext<T>::Listext(int size)
+template <class T>
+Listext<T>::Listext(int size)
 {
     maxsize = size;
     if (size < 20)
@@ -24,17 +25,20 @@ template<class T> Listext<T>::Listext(int size)
     reprarray = new T[maxsize];
 }
 
-template<class T> T &Listext<T>::operator[](int index)
+template <class T>
+T &Listext<T>::operator[](int index)
 {
     return reprarray[index - 1];
 }
 
-template<class T> int Listext<T>::getlength(void)
+template <class T>
+int Listext<T>::getlength(void)
 {
     return numitems;
 }
 
-template<class T> void Listext<T>::setitem(int index, T value)
+template <class T>
+void Listext<T>::setitem(int index, T value)
 {
     if ((index > 0) && (index <= numitems))
     {
@@ -45,7 +49,8 @@ template<class T> void Listext<T>::setitem(int index, T value)
         cout << "Index error: index out or range\n";
 }
 
-template<class T> T Listext<T>::getitem(int index)
+template <class T>
+T Listext<T>::getitem(int index)
 {
     if ((index > 0) && (index <= numitems))
     {
@@ -58,7 +63,8 @@ template<class T> T Listext<T>::getitem(int index)
     }
 }
 
-template<class T> void Listext<T>::append(T value)
+template <class T>
+void Listext<T>::append(T value)
 {
     if (numitems == maxsize)
         allocate();
@@ -67,7 +73,8 @@ template<class T> void Listext<T>::append(T value)
     return;
 }
 
-template<class T> void Listext<T>::insert(int index, T value)
+template <class T>
+void Listext<T>::insert(int index, T value)
 {
     if (numitems == maxsize)
         allocate();
@@ -75,7 +82,7 @@ template<class T> void Listext<T>::insert(int index, T value)
     {
         for (int j = numitems - 1; j >= index; --j)
         {
-            reprarray[j+1] = reprarray[j];
+            reprarray[j + 1] = reprarray[j];
         }
         reprarray[index] = value;
         ++numitems;
@@ -88,7 +95,8 @@ template<class T> void Listext<T>::insert(int index, T value)
     }
 }
 
-template<class T> void Listext<T>::allocate(void)
+template <class T>
+void Listext<T>::allocate(void)
 {
     int newsize = 2 * maxsize;
     T *newarray = new T[newsize];
@@ -102,7 +110,8 @@ template<class T> void Listext<T>::allocate(void)
     return;
 }
 
-template<class T> void Listext<T>::remove(int index)
+template <class T>
+void Listext<T>::remove(int index)
 {
     if ((numitems == maxsize / 4) && (maxsize > minsize))
         deallocate();
@@ -110,7 +119,7 @@ template<class T> void Listext<T>::remove(int index)
     {
         for (int j = index; j < numitems; ++j)
         {
-            reprarray[j-1] = reprarray[j];
+            reprarray[j - 1] = reprarray[j];
         }
         --numitems;
         return;
@@ -119,7 +128,8 @@ template<class T> void Listext<T>::remove(int index)
         cout << "Index error: list index out of range\n";
 }
 
-template<class T> void Listext<T>::deallocate(void)
+template <class T>
+void Listext<T>::deallocate(void)
 {
     int newsize = maxsize / 2;
     T *newarray = new T[newsize];
@@ -133,7 +143,8 @@ template<class T> void Listext<T>::deallocate(void)
     return;
 }
 
-template<class T> void Listext<T>::concat(Listext<T> &list)
+template <class T>
+void Listext<T>::concat(Listext<T> &list)
 {
     int length = list.getlength();
     for (int i = 1; i <= length; ++i)
@@ -143,7 +154,8 @@ template<class T> void Listext<T>::concat(Listext<T> &list)
     return;
 }
 
-template<class T> bool Listext<T>::member(T value)
+template <class T>
+bool Listext<T>::member(T value)
 {
     bool result = false;
     for (int i = 0; i < numitems; ++i)
@@ -157,7 +169,8 @@ template<class T> bool Listext<T>::member(T value)
     return result;
 }
 
-template<class T> bool Listext<T>::equal(Listext<T> &list)
+template <class T>
+bool Listext<T>::equal(Listext<T> &list)
 {
     bool result = true;
     if (numitems == list.getlength())
@@ -178,7 +191,8 @@ template<class T> bool Listext<T>::equal(Listext<T> &list)
     return result;
 }
 
-template<class T> bool Listext<T>::sublist(Listext<T> &list)
+template <class T>
+bool Listext<T>::sublist(Listext<T> &list)
 {
     int length = list.getlength();
     bool result = true;
@@ -192,23 +206,23 @@ template<class T> bool Listext<T>::sublist(Listext<T> &list)
                 break;
             }
         }
+        else if (j == numitems - 1)
+        {
+            result = false;
+            break;
+        }
         else
-            if (j == numitems - 1)
-            {
-                result = false;
-                break;
-            }
-            else
-                --i;
+            --i;
     }
     return result;
 }
 
-template<class T> void Listext<T>::prettyprint(void)
+template <class T>
+void Listext<T>::prettyprint(void)
 {
     for (int i = 0; i < numitems; i++)
     {
-        cout << i+1 << ":  " << reprarray[i];
+        cout << i + 1 << ":  " << reprarray[i];
         if (i != numitems - 1)
             cout << "; ";
         cout << "\n";
@@ -217,12 +231,39 @@ template<class T> void Listext<T>::prettyprint(void)
 
 /* for added member function for rotation and selection need to be implemented */
 
-template<class T> void Listext<T>::rotate(int m)
+template <class T>
+void Listext<T>::rotate(int m)
 {
     // this member function needs to be implemented
 }
 
-template<class T> T Listext<T>::select(int k)
+template <class T>
+T Listext<T>::select(int k)
 {
-    // this member function needs to be implemented
+    int pivot = reprarray[numitems / 2];
+    int U_array_counter = 0;
+    for (int i = 0; i < numitems ; i++)
+    {
+        if (reprarray[i] < pivot)
+        {
+            U_array_counter++;
+        }
+    }
+    if (k == U_array_counter + 1)
+    {
+        return pivot;
+    }
+
+    Listext<T> *U_array = new Listext<T>();
+    Listext<T> *V_array = new Listext<T>();
+
+    if (k <= U_array_counter)
+    {
+        return U_array->select(k);
+    }
+    if (k < U_array_counter)
+    {
+        return V_array->select(k-U_array_counter);  
+    }
+    return 0;
 }
