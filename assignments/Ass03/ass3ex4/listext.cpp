@@ -276,20 +276,20 @@ T Listext<T>::select(int k)
     cout << "     "
          << "select k = " << k << std::endl;
     int pivot = reprarray[numitems / 2];
-    int U_array_counter = 1;
-    Listext<T> *U_array = new Listext<T>();
-    Listext<T> *V_array = new Listext<T>();
+    int U_array_counter = 0;
+    Listext<T> *U_array = new Listext<T>(); // numbers smaller than pivot
+    Listext<T> *V_array = new Listext<T>(); // numbers larger than pivot
     if (this->getlength() == 1)
     {
         return reprarray[0];
     }
-    else if (this->getlength() == 0)
+    else if (this->getlength() == 0)    // Empty list, illegal
     {
         return -11451;
     }
     for (int i = 0; i < numitems; i++)
     {
-        if (reprarray[i] < pivot)
+        if (reprarray[i] < pivot)   // add any number smaller than 
         {
             U_array_counter++;
             U_array->append(reprarray[i]);
