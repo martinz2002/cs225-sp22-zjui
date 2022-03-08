@@ -286,7 +286,7 @@ T Listext<T>::select(int k)
         }
         else if(reprarray[i] > pivot)
         {
-            V_array->append(reprarray[i])
+            V_array->append(reprarray[i]);
         }
     }
     if (k == U_array_counter + 1)
