@@ -23,12 +23,12 @@ int main()
         Listext<int> *mylist = new Listext<int>();
         srand(time(0));
         int j;
-        cout << "Original Data:\n";
+        cout << std::endl << "Original Data:" << std::endl;
         for (int i = 0; i < 500; i++)
         {
             j = (rand() % 2000) - 1000;
-            cout << "ID=" << i << ": " << j << "\n";
             (*mylist).append(j);
+            cout << "ID=" << i << ": " << j << std::endl;
         }
         int result;
         for (int k = 1; k < 251; k++)
