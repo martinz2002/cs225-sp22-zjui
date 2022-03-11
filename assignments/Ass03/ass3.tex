@@ -107,14 +107,14 @@
 
         $\isMajor \gets \False$
 
-        \tcc{First create libraries, or "buckets", for each unique element in $T$.}4
+        \tcc{First create libraries, or "buckets", for each unique element in $T$.}
 
         \ForEach{$t \in T$}{
             \If{$t \notin \Lib$}{\CreateLib{$t_i$}}
         }
 
-        \ForEach{$l_i\in L$}{
-            \Lib{$l_i$} $\gets$ \Lib{$l_i$} $+ 1$
+        \ForEach{$l\in L$}{
+            \Lib{$l$} $\gets$ \Lib{$l$} $+ 1$
         }
 
         \ForEach{\Lib{$i$}}{
