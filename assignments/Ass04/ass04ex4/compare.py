@@ -9,6 +9,14 @@ def main():
     myAnsContent = myAns.readlines()
     stdAnsContent = stdAns.readlines()
 
+    # Remove all the appending line wrappers
+    if len(myAnsContent) != 0:
+        while myAnsContent[len(myAnsContent) - 1] == "\n":
+            myAnsContent.pop(len(myAnsContent) - 1)
+    if len(stdAnsContent) != 0:
+        while stdAnsContent[len(stdAnsContent) - 1] == "\n":
+            stdAnsContent.pop(len(stdAnsContent) - 1)
+
     if myAnsContent == stdAnsContent:
         result.write("******Passed******")
     else:

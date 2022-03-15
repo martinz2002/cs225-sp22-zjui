@@ -258,19 +258,7 @@ void MaxHeap<T>::heap_sort(AList<T> &array)
 {
     // put your code below
     this->build_heap(array); // build the heap
-    // int numElm = this->getlength();
     AList<T> sortedList; // Store the sorted list
-    // for (int i = numElm; i >= 2; i--)
-    // {
-    //     sortedList.append(this->getitem(1)); // Put the maximum into the sorted list
-    //     this->swap(1, i);                    // Put the root to the end; now the last node is the maximum
-    //     this->remove(i);                     // Remove the last element
-
-    //     this->sift_down(1, this->getlength()); // Heapify again
-    //     cout << "New heap:\n";
-    //     this->print_elements();
-    // }
-
     while (this->getlength() != 0)
     {
         int i = this->getlength();             // i denotes the index of current end of the heap
@@ -308,6 +296,12 @@ T MaxHeap<T>::max()
 {
     // put your code below
     // The maximum is now at the root node
+    if (this->getlength() == 0)
+    {
+        cout << "EMPTY HEAP\n";
+        exit(EXIT_FAILURE);
+    }
+
     return this->getitem(1);
 }
 

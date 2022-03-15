@@ -1,6 +1,5 @@
 import os
 import random
-from unicodedata import numeric
 
 minNum = -10000
 maxNum = 10000
@@ -10,19 +9,34 @@ numTestPt = 10
 
 
 def main():
-    os.system("rmdir data")
-    for idTestPt in range(numTestPt):
+    
+    os.system("del data")
+    os.system("mkdir data")
+
+    # make a special test point where input list is empty
+    fileIn = open("data/heap.in" + str(9), "w")  # input file
+    fileOut = open("data/heap.ans" + str(9), "w")
+    fileIn.write(str(0))
+    fileOut.write("EMPTY HEAP\n")
+    fileIn.close()
+    fileOut.close()
+
+
+    for idTestPt in range(numTestPt - 1):
         dataList = []
         fileIn = open("data/heap.in" + str(idTestPt), "w")  # input file
         fileOut = open("data/heap.ans" + str(idTestPt), "w")
         numElm = random.randint(minLen, maxLen)  # number of input elements
         fileIn.writelines([str(numElm), "\n"])
-        for i in range(numElm):
+        if numElm == 0:
+            fileOut.write("EMPTY HEAP")
+        else:
+            for i in range(numElm):
             # generate elements and put it in the list
-            element = random.randint(minNum, maxNum)
-            dataList.append(element)
-            fileIn.write(str(element))
-            fileIn.write("\n")
+                element = random.randint(minNum, maxNum)
+                dataList.append(element)
+                fileIn.write(str(element))
+                fileIn.write("\n")
 
         # sort the generated data as the standard answer using sort(), descending
         dataList.sort(reverse=True)
