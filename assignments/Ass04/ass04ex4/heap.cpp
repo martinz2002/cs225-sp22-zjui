@@ -1,6 +1,7 @@
-#include <stdio.h>
-#include <iostream>
-#include <cstdlib>
+// #include <stdio.h>
+// #include <iostream>
+// #include <cstdlib>
+#include <bits/stdc++.h>
 #include "heap.h"
 using std::cin;
 using std::cout;
@@ -93,10 +94,10 @@ void AList<T>::allocate(void)
 template <class T>
 void AList<T>::remove(int index)
 {
-    index--;
+    // cout << "remove index=" << index + 1 << " with value " << this->getitem(index) << "\n";
     if ((numitems == maxsize / 4) && (maxsize > minsize))
         deallocate();
-    if (index < numitems)
+    if (index <= numitems)
     {
         for (int j = index; j < numitems; ++j)
         {
@@ -203,7 +204,9 @@ template <class T>
 void MaxHeap<T>::build_heap(AList<T> &array)
 {
     // put your code below
-    cout << "In build_heap\n";
+    // cout << "In build_heap\n";
+    while(this->getlength() != 0)   // make sure the heap is initially empty
+        this->remove(1);
     int numELm = array.getlength();
     for (int i = 1; i <= numELm; i++) // Assign each element in array[] into the "rough" heap
     {
@@ -213,6 +216,8 @@ void MaxHeap<T>::build_heap(AList<T> &array)
     {
         this->sift_down(i, numELm);
     }
+    // cout << "After building:\n";
+    // this->print_elements();
 }
 
 // sift down the element with index i within the first num_elements elements.
@@ -220,7 +225,7 @@ template <class T>
 void MaxHeap<T>::sift_down(int i, int num_elements) // i.e. HEAPIFY in the textbook
 {
     // put your code below
-    cout << "sift_down i = " << i << ", num_elements = " << num_elements << "\n";
+    // cout << "sift_down i = " << i << ", num_elements = " << num_elements << "\n";
     int eleIndex = i;
     int eleLeft = 2 * i;
     int eleRight = 2 * i + 1;
@@ -253,16 +258,31 @@ void MaxHeap<T>::heap_sort(AList<T> &array)
 {
     // put your code below
     this->build_heap(array); // build the heap
-    int numElm = this->getlength();
+    // int numElm = this->getlength();
     AList<T> sortedList; // Store the sorted list
-    for (int i = numElm; i >= 2; i--)
+    // for (int i = numElm; i >= 2; i--)
+    // {
+    //     sortedList.append(this->getitem(1)); // Put the maximum into the sorted list
+    //     this->swap(1, i);                    // Put the root to the end; now the last node is the maximum
+    //     this->remove(i);                     // Remove the last element
+
+    //     this->sift_down(1, this->getlength()); // Heapify again
+    //     cout << "New heap:\n";
+    //     this->print_elements();
+    // }
+
+    while (this->getlength() != 0)
     {
-        this->swap(1, i);                    // Put the root to the end; now the last node is the maximum
-        sortedList.append(this->getitem(i)); // Put the maximum to the return array
-        this->remove(i);                     // Remove the last element
+        int i = this->getlength();             // i denotes the index of current end of the heap
+        sortedList.append(this->getitem(1));   // Put the maximum into the sorted list
+        this->swap(1, i);                      // Put the root to the end; now the last node is the maximum
+        this->remove(i);                       // Remove the last element
+        this->sift_down(1, this->getlength()); // Heapify again
+        // cout << "New heap:\n";
+        // this->print_elements();
     }
 
-    for (int i = 1; i <= numElm; i++) // Store the new list back into the heap list
+    for (int i = 1; i <= sortedList.getlength(); i++) // Store the new list back into the heap list
     {
         this->append(sortedList.getitem(i));
     }
@@ -276,7 +296,7 @@ void MaxHeap<T>::swap(int i, int j)
     // put your code below
     // The classic swapping method
     // t<-a, a<-b, b<-t
-    cout << "In swap: i, j = " << i << " <-> " << j << "\n";
+    // cout << "In swap: i, j = " << i << " <-> " << j << "\n";
     T temp = this->getitem(i);
     this->setitem(i, this->getitem(j));
     this->setitem(j, temp);
@@ -295,7 +315,7 @@ T MaxHeap<T>::max()
 template <class T>
 void MaxHeap<T>::print_elements()
 {
-    cout << "Print elements:\n";
+    //  cout << "Print elements:\n";
     int n = this->getlength();
     for (int i = 1; i <= n; i++)
     {
@@ -305,7 +325,33 @@ void MaxHeap<T>::print_elements()
 
 int main()
 {
+    freopen("heap.in", "r", stdin);
     freopen("heap.out", "w", stdout);
+
+    int numElm;
+    cin >> numElm;
+
+    AList<int> input_array;
+
+    for (int i = 0; i < numElm; i++)
+    {
+        int elm;
+        cin >> elm;
+        input_array.append(elm);
+    }
+
+    MaxHeap<int> max_heap;
+    max_heap.build_heap(input_array);
+    cout << max_heap.max() << "\n";
+    
+    max_heap.heap_sort(input_array);
+    max_heap.print_elements();
+
+    return 0;
+}
+
+/*  ORIGINAL VERSION OF TEST CODE:
+
     cout << "\npart1 test\n";
     // please feel free to add more test cases
     int input_list[10] = {5, 3, 9, 46, 15, 22, 91, 8, 29, 77};
@@ -331,5 +377,4 @@ int main()
     max_heap_2.heap_sort(input_array_2);
     max_heap_2.print_elements();
 
-    return 0;
-}
+*/
