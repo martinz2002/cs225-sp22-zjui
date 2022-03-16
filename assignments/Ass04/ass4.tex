@@ -1,0 +1,44 @@
+\input{../template.tex}
+
+
+\def\HWTITLE{Homework 3}
+\def\COURSECODE{CS 225: Data Structures}
+\def\AUTHOR{Group D1}
+
+
+\begin{document}
+\makeMyTitle
+\thispagestyle{firstPage}
+
+\begin{questions}
+    \question
+    \begin{parts}
+        \part
+        Firstly we set the doubly linked list whose node's values follows the correct sequence. For operation \texttt{delete\_min} or \texttt{delete\_max}, we simply delete the first or last node of the linked lists. Then we set the value of  previous node pointer of the second element to\texttt{NULL} or  the value of  next node pointer of the last but second element to \texttt{NULL}. For insert operation, for example in a max heap, we traverse from the value of the first node until we reach a node whose value is smaller than the insert one. Then we set its previous node's next pointer to the inserted node and set the current node's previous node pointer to the inserted node. Finally we set the next node pointer of the inserted node to the current node and the previous node pointer of the inserted node to the last traversed node. For \texttt{decrease($h$,$k$)} operation, we traverse the doubly linked list and check its key value until we find the $h$'s node and decrease its value by $k$. Then we traverse the following nodes (for the sequence from big to small) to find the correct position for the node $h$, then we insert it to the correct position and delete the primal node.
+
+        \part
+        For insert and decrease operation, the time complexity for unsorted list is $O(1)$ .For sorted list, the time complexity is $O(n)$ . For delete operation, time complexity for both unsorted lists and sorted lists are $O(1)$ .
+
+
+    \end{parts}
+
+    \question
+    \begin{parts}
+        \part
+        Each time we could compare the new element with the element in the lowest level. If the new element is smaller than the element in the heap, we could put this new element at the bottom of the heap. If the new element is bigger than the element in the heap, we should exchange the elements: put the new element in the original position of the element in the heap and move the original element in the heap to the bottom. Then we should compare the new element with the parent leaf in that position. Repeat this step until it mets a element in the heap which is bigger than the element or the new element is the biggest, we should put it at the top of the heap. For each new element we could repeat this process until we have finished inserting all the elements.
+
+        \part
+        (2) answer here
+    \end{parts}
+
+    \question
+    \begin{parts}
+        \part
+        The \texttt{siftUp} operation requires $\log (n)$ comparisons, each layer requires one. At each layer, compare the leaf node with parent node and swap the leaf node and parent node if needed. Therefore the time complexity is $O(\log_{n})$ . For insert operation, we add the inserted node to the end of the heap. Then we apply \texttt{siftUp} operation to it until the property of heap is gained.
+
+        \part
+        Firstly we find the larger leaf node for each layer and it takes $\log{n}$ times of comparison. Then we set up a list consists of these values and the amount is $\log{n}$ , then we apply binary search to find the proper position. It takes $O(\log{\log{n}})$ steps to accomplish. Thus, the steps needed is $\log{n}+O(\log{ \log {n}})$ .
+    \end{parts}
+\end{questions}
+
+\end{document}
