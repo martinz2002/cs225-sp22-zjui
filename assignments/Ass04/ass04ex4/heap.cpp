@@ -299,7 +299,7 @@ T MaxHeap<T>::max()
     if (this->getlength() == 0)
     {
         cout << "EMPTY HEAP\n";
-        exit(EXIT_FAILURE);
+        exit(EXIT_SUCCESS);
     }
 
     return this->getitem(1);
