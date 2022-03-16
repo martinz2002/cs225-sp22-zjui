@@ -299,7 +299,7 @@ T MaxHeap<T>::max()
     if (this->getlength() == 0)
     {
         cout << "EMPTY HEAP\n";
-        exit(EXIT_FAILURE);
+        exit(EXIT_SUCCESS);
     }
 
     return this->getitem(1);
@@ -322,15 +322,10 @@ int main()
     freopen("heap.in", "r", stdin);
     freopen("heap.out", "w", stdout);
 
-    int numElm;
-    cin >> numElm;
-
     AList<int> input_array;
-
-    for (int i = 0; i < numElm; i++)
+    int elm;    
+    while(scanf("%d", &elm) != EOF)
     {
-        int elm;
-        cin >> elm;
         input_array.append(elm);
     }
 

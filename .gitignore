@@ -49,3 +49,15 @@
 *.synctex.gz
 *.log
 *.toc
+
+*.in
+*.in*
+*.out
+*.out*
+*.ans
+*.ans*
+*.result
+*.result*
+result_overview.txt
+/__pycache__/
+*.pyc
