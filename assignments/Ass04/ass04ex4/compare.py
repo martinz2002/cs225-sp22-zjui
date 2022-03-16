@@ -1,21 +1,22 @@
 from sys import stdout
 
 
-def main():
+def cmp():
     myAns = open("heap.out", "r")
     stdAns = open("heap.ans", "r")
     result = open("heap.result", "w")
 
     myAnsContent = myAns.readlines()
     stdAnsContent = stdAns.readlines()
+    
 
     # Remove all the appending line wrappers
     if len(myAnsContent) != 0:
-        while myAnsContent[len(myAnsContent) - 1] == "\n":
-            myAnsContent.pop(len(myAnsContent) - 1)
+        while myAnsContent[-1] == "\n":
+            myAnsContent.pop(-1)
     if len(stdAnsContent) != 0:
-        while stdAnsContent[len(stdAnsContent) - 1] == "\n":
-            stdAnsContent.pop(len(stdAnsContent) - 1)
+        while stdAnsContent[-1] == "\n":
+            stdAnsContent.pop(-1)
 
     if myAnsContent == stdAnsContent:
         result.write("******Passed******")
@@ -29,11 +30,11 @@ def main():
             result.write("Output length correct.\n")
 
         for i in range(min(len(myAnsContent), len(stdAnsContent))):
-            if str(myAnsContent[i]) != str(stdAnsContent[i]):
+            if myAnsContent[i] != stdAnsContent[i]:
                 result.write("line " + str(i) + ": \n     " + str(myAnsContent[i]) + "     <->\n     " + str(stdAnsContent[i]) + "\n")
     myAns.close()
     stdAns.close()
     result.close()
 
 if __name__ == "__main__":
-    main()
+    cmp()

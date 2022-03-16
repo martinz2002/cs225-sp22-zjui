@@ -1,5 +1,8 @@
+from audioop import reverse
 import os
 import random
+import numpy as np
+import shutil as st
 
 minNum = -10000
 maxNum = 10000
@@ -8,46 +11,35 @@ maxLen = 1000
 numTestPt = 10
 
 
-def main():
-    
-    os.system("del data")
-    os.system("mkdir data")
+def data_gen():
+
+    if os.path.exists("data"):
+        st.rmtree("data")
+    os.mkdir("data")
 
     # make a special test point where input list is empty
     fileIn = open("data/heap.in" + str(9), "w")  # input file
     fileOut = open("data/heap.ans" + str(9), "w")
-    fileIn.write(str(0))
+    fileIn.write("\n")
     fileOut.write("EMPTY HEAP\n")
     fileIn.close()
     fileOut.close()
 
-
     for idTestPt in range(numTestPt - 1):
-        dataList = []
-        fileIn = open("data/heap.in" + str(idTestPt), "w")  # input file
-        fileOut = open("data/heap.ans" + str(idTestPt), "w")
-        numElm = random.randint(minLen, maxLen)  # number of input elements
-        fileIn.writelines([str(numElm), "\n"])
-        if numElm == 0:
-            fileOut.write("EMPTY HEAP")
-        else:
-            for i in range(numElm):
-            # generate elements and put it in the list
-                element = random.randint(minNum, maxNum)
-                dataList.append(element)
-                fileIn.write(str(element))
-                fileIn.write("\n")
+        data = np.random.randint(
+            minNum, maxNum, random.randint(minLen, maxLen))
+        np.savetxt("data/heap.in" + str(idTestPt), data, fmt="%d")
 
-        # sort the generated data as the standard answer using sort(), descending
-        dataList.sort(reverse=True)
-        fileOut.write(str(dataList[0]) + "\n")  # the first element is the maximum
-        # ↑↑↑ This is to test the correctness of function max() in the heap program ↑↑↑
-        for i in range(numElm):
-            fileOut.write(str(dataList[i]) + "\n")
+        data.sort()
+        data = data.tolist()
+        data.append(data[-1])
+        data = data[::-1]
 
-        fileIn.close()
-        fileOut.close()
+        data = np.array(data)
+
+        np.savetxt("data/heap.ans" + str(idTestPt), data, fmt="%d")
+
 
 
 if __name__ == "__main__":
-    main()
+    data_gen()

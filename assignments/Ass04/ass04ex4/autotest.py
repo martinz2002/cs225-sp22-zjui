@@ -1,12 +1,23 @@
 # This file only works on Windows, the commands are capable for Windows Command Shell (cmd.exe)
 
+import imp
 import os
+from data_gen import data_gen
+from compare import cmp
+
 dataFileName = "heap"
 progName = "heap_test"
 numTestPt = 10
+normalExit = 0
 
 # compileCommandStr = "g++ " + dataFileName + ".cpp -g -o " + progName
 compileCommandStr = "mingw32-make"
+
+
+def RuntimeError(errorCode):    # Runtime Error at Testpoint #i
+    resultFile = open(dataFileName + ".result", "w")
+    resultFile.write("Runtime Error with code " + str(errorCode))
+
 
 def main():
     print("Copyright 2022 Zhong Tiantian (tiantianz.20@intl.zju.edu.cn)")
@@ -16,10 +27,23 @@ def main():
     print("Compiling...")
     os.system(compileCommandStr)
     print("Done Compiling. Start testing...")
-    os.system("del result user_output")
-    os.system("del user_output")
-    os.system("mkdir result")
-    os.system("mkdir user_output")
+    try:
+        os.remove("user_output")
+    except:
+        print("No user_output folder found. Continuing...")
+    
+    try:
+        os.remove("result")
+    except:
+        print("No result folder found. Continuing...")
+
+    os.makedirs("result", exist_ok=True)
+    os.makedirs("user_output", exist_ok=True)
+    
+    if not os.path.exists("data"):
+        print("No input data found. Generating new data set.")
+        data_gen()
+
     for i in range(numTestPt):
         copyCommandStr = "copy data\\" + dataFileName + \
             ".in" + str(i) + " " + dataFileName + ".in"
@@ -28,30 +52,22 @@ def main():
         execCommandStr = progName
         copyUserOutputStr = "move " + dataFileName + \
             ".out user_output\\" + dataFileName + ".out" + str(i)
-        cmpCommandStr = "python compare.py"
         renameCmpResultCommandStr = "move " + dataFileName + \
             ".result result\\" + dataFileName + ".result" + str(i)
         cleanInCommandStr = "del " + dataFileName + ".in"
-        # cleanOutCommandStr = "del " + dataFileName + ".out"
         cleanAnsCommandStr = "del " + dataFileName + ".ans"
-        # before running copy input file to the program dir, and remove the id of the copy in extension name
 
-        print("Copying input file #" + str(i) + "...")
         os.system(copyCommandStr)
-        print("Done. Dealing with answer file #" + str(i) + "...")
         os.system(stdAnsCommandStr)
-        print("Done. Executing the program...")
-        os.system(execCommandStr)
-        print("Done. Comparing your answer with the standard answer...")
-        os.system(cmpCommandStr)
+        exitCode = os.system(execCommandStr)
+        if (exitCode != normalExit):
+            RuntimeError(exitCode)
+        else:
+            cmp()
         os.system(renameCmpResultCommandStr)
-        print("Done. The result is written in result\\" +
-              dataFileName + ".result" + str(i))
         os.system(copyUserOutputStr)
         os.system(cleanInCommandStr)
-        # os.system(cleanOutCommandStr)
         os.system(cleanAnsCommandStr)
-        print("End of testpoint #" + str(i))
 
     os.system("del *.exe")
     os.system("del *.o")
