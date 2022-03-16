@@ -59,3 +59,4 @@
 *.result
 *.result*
 result_overview.txt
+*/__pycache__/
