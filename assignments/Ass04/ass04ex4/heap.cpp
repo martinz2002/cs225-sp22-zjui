@@ -205,7 +205,7 @@ void MaxHeap<T>::build_heap(AList<T> &array)
 {
     // put your code below
     // cout << "In build_heap\n";
-    while(this->getlength() != 0)   // make sure the heap is initially empty
+    while (this->getlength() != 0) // make sure the heap is initially empty
         this->remove(1);
     int numELm = array.getlength();
     for (int i = 1; i <= numELm; i++) // Assign each element in array[] into the "rough" heap
@@ -258,7 +258,7 @@ void MaxHeap<T>::heap_sort(AList<T> &array)
 {
     // put your code below
     this->build_heap(array); // build the heap
-    AList<T> sortedList; // Store the sorted list
+    AList<T> sortedList;     // Store the sorted list
     while (this->getlength() != 0)
     {
         int i = this->getlength();             // i denotes the index of current end of the heap
@@ -319,24 +319,23 @@ void MaxHeap<T>::print_elements()
 
 int main()
 {
+    // We use file I/O to allow automatic testing.
     freopen("heap.in", "r", stdin);
     freopen("heap.out", "w", stdout);
 
     AList<int> input_array;
-    int elm;    
-    while(scanf("%d", &elm) != EOF)
+    int elm;
+    while (scanf("%d", &elm) != EOF)    // input the data
     {
         input_array.append(elm);
     }
 
     MaxHeap<int> max_heap;
     max_heap.build_heap(input_array);
-    cout << max_heap.max() << "\n";
-    
-    max_heap.heap_sort(input_array);
+    cout << max_heap.max() << "\n";  // test build_heap() and max()
+    max_heap.heap_sort(input_array); // test heap_sort()
     max_heap.print_elements();
-
-    return 0;
+    return EXIT_FAILURE;
 }
 
 /*  ORIGINAL VERSION OF TEST CODE:
