@@ -1,6 +1,7 @@
 # This file only works on Windows, the commands are capable for Windows Command Shell (cmd.exe)
 
-import imp
+import goto
+import sys
 import os
 from data_gen import data_gen
 from compare import cmp
@@ -14,28 +15,52 @@ normalExit = 0
 compileCommandStr = "mingw32-make"
 
 
-def RuntimeError(errorCode):    # Runtime Error at Testpoint #i
+def RuntimeError(exitCode):    # Runtime Error at Testpoint #i
     resultFile = open(dataFileName + ".result", "w")
-    resultFile.write("Runtime Error with code " + str(errorCode))
+    resultFile.write("Runtime Error " + str(exitCode))
 
+def WriteOverview(isCE):
+    # Generate an overview of the testpoints result
+    print("Generating result overview.")
+    os.system("del result_overview.txt")
+    overviewFile = open("result_overview.txt", "w")
+    overviewFile.write("Program Name = " + progName + "\n")
+    overviewFile.write("Number of Test Points = " + str(numTestPt) + "\n")
+    overviewFile.write("Testpoints Details:\n")
+    if isCE:
+        overviewFile.write("Compile Error.")
+        exit()
+    for i in range(numTestPt):
+        resFile = open("result/" + dataFileName + ".result" + str(i), "r")
+        resFileFirstLine = resFile.readline().split("\n")[0]
+        if resFileFirstLine == "******Passed******":
+            overviewFile.write("#" + str(i) + ": AC\n")
+        elif resFileFirstLine == "------Testpoint failed. Detailed information:------":
+            overviewFile.write("#" + str(i) + ": WA\n")
+        elif resFileFirstLine[0:12] == "Runtime Error":
+            overviewFile.write("RE")
+        resFile.close()
+    overviewFile.close()
+    print("Result overview is written in ""result_overview.txt"".")
 
 def main():
-    print("Copyright 2022 Zhong Tiantian (tiantianz.20@intl.zju.edu.cn)")
     print("This is an autotest script for " + progName + ".\n")
     print("To have it function normally, you will have this file along with compare.py, data_gen.py.\n")
-    print("NOTE: This script only works for Windows, as it relies on Windows Command Shell commands.\n")
     print("Compiling...")
-    os.system(compileCommandStr)
+    isCE = False
+    if os.system(compileCommandStr) != 0:
+        isCE = True
+
     print("Done Compiling. Start testing...")
     try:
         os.remove("user_output")
     except:
-        print("No user_output folder found. Continuing...")
+        print("No previous user_output folder found. Continuing...")
     
     try:
         os.remove("result")
     except:
-        print("No result folder found. Continuing...")
+        print("No previous result folder found. Continuing...")
 
     os.makedirs("result", exist_ok=True)
     os.makedirs("user_output", exist_ok=True)
@@ -69,26 +94,17 @@ def main():
         os.system(cleanInCommandStr)
         os.system(cleanAnsCommandStr)
 
+    WriteOverview(isCE)
+
     os.system("del *.exe")
     os.system("del *.o")
 
-    # Generate an overview of the testpoints result
-    print("Generating result overview.")
-    os.system("del result_overview.txt")
-    overviewFile = open("result_overview.txt", "w")
-    overviewFile.write("Program Name = " + progName + "\n")
-    overviewFile.write("Number of Test Points = " + str(numTestPt) + "\n")
-    overviewFile.write("Testpoints Details:\n")
-    for i in range(numTestPt):
-        resFile = open("result/" + dataFileName + ".result" + str(i), "r")
-        if resFile.readline() == "******Passed******":
-            overviewFile.write("#" + str(i) + ": Passed\n")
-        else:
-            overviewFile.write("#" + str(i) + ": FAILED\n")
-        resFile.close()
-    overviewFile.close()
-    print("Result overview is written in result_overview.txt")
+
 
 
 if __name__ == "__main__":
-    main()
+    print("Copyright (C) 2022 Zhong Tiantian, Zhejiang University")
+    if sys.platform != "win32":
+        print("This script is not supported on " + sys.platform() + ".")
+    else:
+        main()
