@@ -39,3 +39,19 @@ By design, two of the three files -- `autotest.py` and `compare.py` can be reuse
 
 Data generating is done by `data_gen.py`. There's no much to say -- each assignment have different data generation script.
 
+Start the script by running `python data_gen.py`. The script will check whether the configuration file `data/config` exists. If not, it will requires you to enter:
+
+- Base name of input/output file.
+- Name of the executable to test.
+- Number of test points.
+
+Those infomation is stored in `data/config`, and if the file is missing `autotest.py` will automatically call `data_gen.py` on running; other wise `autotest.py` will assume all testpoints data are stored in `data/` and run the test.
+
+### Testing
+The script `autotest.py` is used for automatic test. Run it by `python autotest.py`. As mentioned above, if `data/config` file is missing the script will call `data_gen.py`.
+
+The testing script will automatically move one testpoint input from `data/` and remove the number of testpoint (starting from 0) from its extension name. For example, when running the 5-th test with base name of the input file `hello`, the script will first move `data/hello.in5` and the standard answer `data/hello.ans5` to the running folder and rename them to `hello.in` and `hello.ans` respectively, and then run the executable. After the executable produces `hello.out`, the output file is compared with `hello.ans` by `compare.py` and the result will be written in `result/hello.result5`.
+
+After all testpoints are finished you may refer to `result/overview.result` for overview.
+
+The comparation script `compare.py` compares the output with the answer line by line after removing the extra `\n`-s at the end of the file.
