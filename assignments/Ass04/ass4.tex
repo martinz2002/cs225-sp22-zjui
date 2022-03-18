@@ -1,7 +1,7 @@
 \input{../template.tex}
 
 
-\def\HWTITLE{Homework 3}
+\def\HWTITLE{Homework 4}
 \def\COURSECODE{CS 225: Data Structures}
 \def\AUTHOR{Group D1}
 
@@ -30,45 +30,58 @@
         \part
         \textbf{NOTE: We suspect that the given complexity is incorrect.}
 
-        \paragraph{Original} There are $n$ elements in \texttt{maxHeap} and $k$ new elements to insert.
+        We drew a figure for the inserting process. Please refer to the figure at the end of this document.
 
-        
+        The labelled example is shown at the end of this exercise.
 
-        \paragraph{Step 1:} Take the example shown in Figure \ref{fig-inserting}. We put the new elements at the bottom of \texttt{maxHeap}.
+        \paragraph{Initiation:} There are $n$ elements in \texttt{maxHeap} and $k$ new elements to insert.
 
-        \paragraph{Step 2:} We calculate the parent node which has two children (the yellow node). There are $[k/2]$ elements initially, and then there are $[k/4]$ elements because of those $[k/2]$ elements, and then $[k/8]$ elements... , $ \sum_{i=1} k/2^i=k $, For them, we can use the thought of the heap, we should spend $O(k)$ time to build heap.
 
-        \paragraph{Step 3:} We now calculate the father node with only one child node(the blue node). It's like a link with the property of the heap though it doesn't have other nodes to amortize the sift-down node. So there are at most $\log(n)$ nodes, with each node $\log(n+k)$ time to form a heap (So far, we cannot consider them as a heap as it is like a link without other branch nodes, as a result we can neither consider the time complexity as $O(\log(n))$. So the total time complexity is $\log(n)\log(n+k)\approx O(\log(n)\log(n+k))$.
+
+        \paragraph{Step 1:} First put the new elements at the bottom of \texttt{maxHeap}.
+
+        \paragraph{Step 2:} Consider nodes with two children. Their ancesters are colored yello except for $a$ (since $a$ is linked with $l$ who has only one child).
+
+        Now we want to \textit{heapify} with $d$, $e$, i.e. make the properties of a heap maintained in subtrees with root $d$ and $e$ Do it also for all ancesters of $d$ and $e$ from the bottom to the top, so the left subtree of root $a$ is maintained with the properties of a heap.
+
+        Because there are at most $\left\lfloor k/2 \right\rfloor$ two-children parent nodes for $k$ new elements, the above process takes \[ \left\lfloor \frac{k}{2} \right\rfloor + \left\lfloor \frac{k}{4} \right\rfloor + \cdots = \sum_{i=1}^{\left\lceil \log{(n+k)} \right\rceil} \frac{k}{2^i} \approx k \] steps, thus has time complexity of $O(k)$.
+
+
+        \paragraph{Step 3:} We now calculate the father node with only one child node(the blue nodes). Note that they do not have other nodes to amortize the \texttt{siftDown} time. THus there are at most $\log(n)$ nodes in the link (in the example, $a$, $c$ and $f$), with each node taking $\log(n+k)$ time to form a heap (so far, we cannot consider them as a heap as it is like a link without other branch nodes, as a result we can neither consider the time complexity as $O(\log(n))$. So the total time complexity is $\log(n)\log(n+k)\approx O(\log(n)\log(n+k))$.
 
         Therefore, the final time complexity is $O(k+\log(n)\log(n+k))$ rather than $O(k+\log(n))$.
 
-        % \paragraph{Inserting New Nodes.} We append the new nodes to the binary heap, maintaining its properties as a complete binary tree. This indicates that there are at most one nodes whose number of children is 1.
+        \paragraph{Inserting New Nodes.} We append the new nodes to the binary heap, maintaining its properties as a complete binary tree. This indicates that there are at most one nodes whose number of children is 1.
 
-        % \begin{tikzpicture}
-        %     \caption{Inserting $k$ elements to the bottom of a heap.}
-        %     \centering
-        %     \tikz [tree layout, sibling distance=8mm, mark/.style={fill=violet, text=white}, mark/.default=, markmin/.style={fill=red, text=white}, markmin/.default=]
-        %     \graph [nodes={circle, draw, inner sep=1.5pt}]{ [fresh nodes]
+        \begin{figure}[h]
+            \centering
 
-        %     a
+            \tikz [tree layout, sibling distance=8mm, binary/.style={fill=yellow, text=black}, binary/.default=, linked/.style={fill=blue, text=white}, linked/.default=, newnode/.style={fill=green, text=black}, newnode/.default=,]
+            \graph [nodes={circle, draw, inner sep=1.5pt}]{ [fresh nodes]
 
-        % \end{tikzpicture}
+            a[linked] -- {b[binary] -- {d[binary] -- {h[newnode], i[newnode]}, e[binary] -- {j[newnode], k[newnode]}}, c[linked] -- {f[linked] -- l[newnode], g}}
+
+            };
+            \caption{The example \texttt{maxHeap}. Green nodes are elements inserted. The blue ones are those linked with the node $f$, which has only one child. The yellow ones are linked with nodes $d$, $e$ which have two children.}
+
+        \end{figure}
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=4cm]{fig_inserting.jpg}
+            \caption{The hand-drawn example inserting process for Ex. 2.}
+    
+            \label{fig-inserting}
+        \end{figure}
 
 
     \end{parts}
 
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=4cm]{fig_inserting.jpg}
-        \caption{The example inserting process for Ex. 2.}
 
-        \label{fig-inserting}
-    \end{figure}
 
     \question
     \begin{parts}
         \part
-        The \texttt{siftUp} operation requires $\log(n)$ comparisons, each layer requires one. At each layer, compare the leaf node with parent node and swap the leaf node and parent node if needed. Therefore the time complexity is $O(\log_{n})$ . For insert operation, we add the inserted node to the end of the heap. Then we apply \texttt{siftUp} operation to it until the property of heap is gained.
+        The \texttt{siftUp} operation requires $\log(n)$ comparisons, each layer requires one. At each layer, compare the leaf node with parent node and swap the leaf node and parent node if needed. Therefore the time complexity is $O(\log{n})$ . For insert operation, we add the inserted node to the end of the heap. Then we apply \texttt{siftUp} operation to it until the property of heap is gained.
 
         \part
         Firstly we find the larger leaf node for each layer and it takes $\log{n}$ times of comparison. Then we set up a list consists of these values and the amount is $\log{n}$ , then we apply binary search to find the proper position. It takes $O(\log{\log{n}})$ steps to accomplish. Thus, the steps needed is $\log{n}+O(\log{ \log {n}})$ .
