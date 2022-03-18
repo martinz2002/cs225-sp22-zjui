@@ -28,13 +28,47 @@
         Each time we could compare the new element with the element in the lowest level. If the new element is smaller than the element in the heap, we could put this new element at the bottom of the heap. If the new element is bigger than the element in the heap, we should exchange the elements: put the new element in the original position of the element in the heap and move the original element in the heap to the bottom. Then we should compare the new element with the parent leaf in that position. Repeat this step until it mets a element in the heap which is bigger than the element or the new element is the biggest, we should put it at the top of the heap. For each new element we could repeat this process until we have finished inserting all the elements.
 
         \part
-        (2) answer here
+        \textbf{NOTE: We suspect that the given complexity is incorrect.}
+
+        \paragraph{Original} There are $n$ elements in \texttt{maxHeap} and $k$ new elements to insert.
+
+
+
+        \paragraph{Step 1:} Take the example shown in Figure \ref{fig-inserting}. We put the new elements at the bottom of \texttt{maxHeap}.
+
+        \paragraph{Step 2:} We calculate the parent node which has two children (the yellow node). There are $[k/2]$ elements initially, and then there are $[k/4]$ elements because of those $[k/2]$ elements, and then $[k/8]$ elements... , $ \sum_{i=1} k/2^i=k $, For them, we can use the thought of the heap, we should spend $O(k)$ time to build heap.
+
+        \paragraph{Step 3:} We now calculate the father node with only one child node(the blue node). It's like a link with the property of the heap though it doesn't have other nodes to amortize the sift-down node. So there are at most $\log(n)$ nodes, with each node $\log(n+k)$ time to form a heap (So far, we cannot consider them as a heap as it is like a link without other branch nodes, as a result we can neither consider the time complexity as $O(\log(n))$. So the total time complexity is $\log(n)\log(n+k)\approx O(\log(n)\log(n+k))$.
+
+        Therefore, the final time complexity is $O(k+\log(n)\log(n+k))$ rather than $O(k+\log(n))$.
+
+        % \paragraph{Inserting New Nodes.} We append the new nodes to the binary heap, maintaining its properties as a complete binary tree. This indicates that there are at most one nodes whose number of children is 1.
+
+        % \begin{tikzpicture}
+        %     \caption{Inserting $k$ elements to the bottom of a heap.}
+        %     \centering
+        %     \tikz [tree layout, sibling distance=8mm, mark/.style={fill=violet, text=white}, mark/.default=, markmin/.style={fill=red, text=white}, markmin/.default=]
+        %     \graph [nodes={circle, draw, inner sep=1.5pt}]{ [fresh nodes]
+
+        %     a
+
+        % \end{tikzpicture}
+
+
     \end{parts}
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=4cm]{fig_inserting.jpg}
+        \caption{The example inserting process for Ex. 2.}
+
+        \label{fig-inserting}
+    \end{figure}
 
     \question
     \begin{parts}
         \part
-        The \texttt{siftUp} operation requires $\log (n)$ comparisons, each layer requires one. At each layer, compare the leaf node with parent node and swap the leaf node and parent node if needed. Therefore the time complexity is $O(\log_{n})$ . For insert operation, we add the inserted node to the end of the heap. Then we apply \texttt{siftUp} operation to it until the property of heap is gained.
+        The \texttt{siftUp} operation requires $\log(n)$ comparisons, each layer requires one. At each layer, compare the leaf node with parent node and swap the leaf node and parent node if needed. Therefore the time complexity is $O(\log_{n})$ . For insert operation, we add the inserted node to the end of the heap. Then we apply \texttt{siftUp} operation to it until the property of heap is gained.
 
         \part
         Firstly we find the larger leaf node for each layer and it takes $\log{n}$ times of comparison. Then we set up a list consists of these values and the amount is $\log{n}$ , then we apply binary search to find the proper position. It takes $O(\log{\log{n}})$ steps to accomplish. Thus, the steps needed is $\log{n}+O(\log{ \log {n}})$ .
