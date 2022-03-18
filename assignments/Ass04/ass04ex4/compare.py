@@ -1,10 +1,13 @@
+# 此脚本可复用。
+# 此脚本既可单独运行，也可做为 autotest.py 的一个模块使用。
+from asyncore import read
 from sys import stdout
 
 
-def cmp():
-    myAns = open("heap.out", "r")
-    stdAns = open("heap.ans", "r")
-    result = open("heap.result", "w")
+def cmp(dataFileName):
+    myAns = open(dataFileName+".out", "r")
+    stdAns = open(dataFileName+".ans", "r")
+    result = open(dataFileName+".result", "w")
 
     myAnsContent = myAns.readlines()
     stdAnsContent = stdAns.readlines()
@@ -37,4 +40,7 @@ def cmp():
     result.close()
 
 if __name__ == "__main__":
-    cmp()
+    configFile = open("data/config", "r")
+    configFileContent = configFile.readlines()
+    dataFileName = configFileContent[1][:-1]
+    cmp(dataFileName)
