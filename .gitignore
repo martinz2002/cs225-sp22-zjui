@@ -61,3 +61,4 @@
 result_overview.txt
 /__pycache__/
 *.pyc
+config

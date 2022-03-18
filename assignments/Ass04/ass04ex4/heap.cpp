@@ -335,7 +335,7 @@ int main()
     cout << max_heap.max() << "\n";  // test build_heap() and max()
     max_heap.heap_sort(input_array); // test heap_sort()
     max_heap.print_elements();
-    return EXIT_FAILURE;
+    return 0;
 }
 
 /*  ORIGINAL VERSION OF TEST CODE:

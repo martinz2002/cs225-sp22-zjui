@@ -6,26 +6,36 @@ This is the readme file for code testing. You may see three python script files 
 - `compare.py` -- a script for comparing the answer file and the user output.
 - `data_gen.py` -- a script to generate random input.
 
-We made some modifications to `heap.cpp`, in the `main()` function, to have it capable for our automatic testing script.
+We made some modifications in `main` function of `heap.cpp` to enable file I/O thus have it capable for our automatic testing script. 
 
-By default, all three scripts will deal with a number of 10 testpoints.
+```cpp
+int main()
+{
+    // We use file I/O to allow automatic testing.
+    freopen("heap.in", "r", stdin);
+    freopen("heap.out", "w", stdout);
 
-After running `python3 autotest.py`, the result of each testpoint will be written in `data\<Name>.result<TestPoint#>`, e.g. `heap.result2`. There will be another overview file called `resultOverview.txt`in the code folder.
+    AList<int> input_array;
+    int elm;
+    while (scanf("%d", &elm) != EOF)    // input the data
+    {
+        input_array.append(elm);
+    }
 
-**NOTE:** If you are encountered with that the CMD interface requires your response on question like:
+    MaxHeap<int> max_heap;
+    max_heap.build_heap(input_array);
+    cout << max_heap.max() << "\n";  // test build_heap() and max()
+    max_heap.heap_sort(input_array); // test heap_sort()
+    max_heap.print_elements();
+    return 0;
+}
+```
 
-> `D:\cs225groupworks\assignments\Ass04\ass04ex4\user_output\*, Are you sure (Y/N)?`
+## Usage
 
-Then choose `Y` forever.
+By design, two of the three files -- `autotest.py` and `compare.py` can be reused for all assignments, once the judging process is based on comparison between standard answers and user outputs.
 
-## Input Format
+### Generating Data
 
-The input contains $n+1$ lines, the first one denoting the number of input numbers $n$, and in the  next $n$ lines, each of them contains one input number.
+Data generating is done by `data_gen.py`. There's no much to say -- each assignment have different data generation script.
 
-
-
-## Output Format
-
-The output contains $n+1$ lines, the first one of which is the result of `max()` function, and the following $n$ lines are the sorted list of input numbers. In theory, the first and second lines should be the same.
-
-If input is an empty list, the output should be a string `EMPTY HEAP`.
