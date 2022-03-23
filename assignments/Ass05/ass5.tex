@@ -10,5 +10,89 @@
 \makeMyTitle
 \thispagestyle{firstPage}
 
+\begin{questions}
+
+    \question{Zhong Tiantian}
+    The list \texttt{next[]} must satisfy the following properties by definitions:
+    \begin{enumerate}
+        \item $\texttt{next[0]} = 0$, since the first element has no prefixes.
+        \item $\texttt{next[$x$] = k}$ records the largest number $k_{max}$ that $ k_{max}\mbox{-prefix} = k_{max}\mbox{-postfix}$. For example, \texttt{next[$5$] $= 2$} indicates that the 5-th element in \texttt{pList[]} is equal to the 2-nd one.
+    \end{enumerate}
+
+    Obviously, this yields that $k$-prefix is equal to $k$-postfix.
+
+    Assuming that we have known \texttt{next[0], next[1], ..., next[$x-1$]}, and denote \texttt{next[$x-1$]} as $now$:
+    
+    \begin{enumerate}
+        \item If \texttt{pList[$x$] $=$ pList[$now$]}, which indicates the $now$-th element in \texttt{pList[]} is equal to the $x$-th, then extend the current sublist: \texttt{next[$x$]:=next[$x-1$]}.
+        
+        \item If \texttt{pList[$x$] $\neq$ pList[$now$]}, then go backward by reducing $now$ to \texttt{next[$now-1$]}.
+    \end{enumerate}
+
+    The algorithm is defined below.
+
+    \begin{algorithm}
+        \caption{Build \texttt{Next[]}}
+        \label{alg-build-next}
+        \SetKwArray{pList}{pList}
+        \SetKwData{Next}{next}
+        \SetKwData{Now}{now}
+        \SetKwFunction{Append}{append}
+        \SetKwFunction{Length}{getLength}
+        \SetKw{Call}{call}
+
+        \Next.\Append{$0$}
+
+        $x \gets 1$
+
+        $\Now \gets 0$
+
+        \While{$x < \Length{\pList}$}{
+            \If{$\pList{\Now} = \pList{x}$}{
+                $\Now \gets \Now + 1$
+
+                $x \gets x + 1$
+
+                \Call \Next.\Append{\Now}
+
+            }
+            \ElseIf{$\Now \neq 0$}{\Now $\gets$ \Next{$\Now - 1$}}
+            \Else{
+                \Call \Next.\Append{$0$}
+                
+                $x \gets x + 1$
+            }
+
+        }
+    \end{algorithm}
+
+    \paragraph{Time Complexity Analysis}
+    In most cases, the algorithm iterate one by one with $x\gets x + 1$, so it will perform \texttt{Length(pList)} times; in relatively rare cases, where $now$ goes backward, the extra time spent can be amortised to the general cases. Thus the amortised time complexity is $O(\mbox{\texttt{length(pList)}}) = O(m)$.
+
+    \question{Jiang Wenhan}    
+    \paragraph{Algorithm Description}Assume the length of pattern sequence is $m$.
+    \begin{itemize}
+        \item Calculate the next sequence of the pattern sequence, which takes time $O(m)$, $m<n$ and align $P[0]$ and $S[0]$.
+        \item Begin comparison between $P[0]$ and $S[0]$, if $P[0]\neq S[0]$.
+        \item Turn back to $S[1]$, and keep doing things above until we found $P[0]=S[k], k\leq n$ ,
+        
+        \textbf{Once we found such $k$,}
+        \begin{enumerate}
+            \item Align $P[0] $ with $S[k]$ and keep comparing them until we found $P[a]\neq S[k+a]$.
+            \item Right shift the pattern sequence for $m-next[a]$ where front maximal common sublist overlap with the original position of back maximal common sublist.
+            \item Repeat the comparison at this new position (begin with $P[next[a]]$ and $S[k+a]$).
+        \end{enumerate}
+
+        \textbf{Whenever we found that $a = m$,}
+        \begin{enumerate}
+            \item Record the position $k$ , where the pattern sequence has occur.
+            \item Right shift the pattern sequence by $m-next[m]$ and start new comparison at $P[next[m]]$ and $S[k+m]$.
+            \item Repeat doing this until we reach the end, where the $P[m-1]$ is aligned with $S[n-1]$.
+        \end{enumerate}
+    \end{itemize}
+
+    \paragraph{Time Complexity Analysis}To calculates its time complexity, we make an assumption of the worst case, where the pattern sequence and target sequence both consists of pairwise different elements. In such case, all elements in $next$ sequence are all $0$ . The times of shift is $\frac{n}{m}$, and the comparisons for each shift is $m$ , so the time complexity for comparison is $m\times\frac{n}{m} $, which is $n$. The total time complexity is $O(m)+n$ , since m is less equal than n, so the total time complexity is $O(n)$.
+
+\end{questions}
 
 \end{document}
