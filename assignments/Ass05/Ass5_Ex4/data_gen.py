@@ -11,25 +11,27 @@ failString = "The pattern list does not appear in the target list."
 
 
 def data_gen(dataFileName, numTestPt):
-    numGeneralTestPt = int(numTestPt / 3)
-    numOverlappedTestPt = int(numGeneralTestPt / 3)
+    numGeneralTestPt = int(numTestPt / 2)
+    numOverlappedTestPt = 0
     numFailTestPt = numTestPt - numGeneralTestPt - numOverlappedTestPt
 
     # make a special test point where input list is empty; this is the last case
     for idTestPt in range(numGeneralTestPt):
-        stringLen = random.randint(minLen, maxLen)
+        stringLen = random.randint(2, int((maxLen-minLen)/10)+1)
         charMatched = []
         overlappedTimes = random.randint(1, 10)
-        for i in range(int(stringLen / overlappedTimes)): # 6 is the magic number
-            charMatched.append(chr(random.randint(minNum, maxNum)))
-        
+        for i in range(stringLen):  # 6 is the magic number
+            charMatched.append(chr(random.randint(minNum, maxNum-40)))
         charInput = []
-
         for i in range(overlappedTimes):
-            for j in charMatched:
-                charInput.append(j)
-        
-        
+            for j in range(stringLen):
+                charchangenum = random.randint(1, int(len(charMatched)/2))
+                charInput.extend(charMatched[:-charchangenum])
+                for k in range(charchangenum):
+                    charInput.append(chr(random.randint(maxNum-39, maxNum)))
+        charInput.extend(charMatched)
+        startIndex=len(charInput)-len(charMatched)
+                
 
         inputFile = open("data/" + dataFileName + ".in" + str(idTestPt), "w")
         inputFile.writelines(charInput)
@@ -38,27 +40,6 @@ def data_gen(dataFileName, numTestPt):
         inputFile.close()
         ansFile = open("data/" + dataFileName + ".ans" + str(idTestPt), "w")
         ansFile.write(str(startIndex))
-        ansFile.close()
-
-    for fake_idTestPt in range(numFailTestPt):
-        idTestPt = fake_idTestPt + numGeneralTestPt + numOverlappedTestPt
-        stringLen = random.randint(minLen, maxLen)
-        charInput = []
-        for i in range(stringLen):
-            charInput.append(chr(random.randint(minNum, maxNum - 40)))
-
-        print(charInput)
-        mismatchInput = []
-        for i in range(random.randint(1, stringLen)):
-            mismatchInput.append(chr(random.randint(maxNum - 39, maxNum)))
-
-        inputFile = open("data/" + dataFileName + ".in" + str(idTestPt), "w")
-        inputFile.writelines(charInput)
-        inputFile.write("\n")
-        inputFile.writelines(mismatchInput)
-        inputFile.close()
-        ansFile = open("data/" + dataFileName + ".ans" + str(idTestPt), "w")
-        ansFile.write(failString)
         ansFile.close()
 
     for fake_idTestPt in range(numFailTestPt):
