@@ -276,7 +276,7 @@ int KMPlist<T>::kmp(KMPlist<T> *target)
     }
     if (position_of_list >= list_lenth)
     {
-        return position_of_target;
+        return position_of_target - 1;
     }
     else
     {
