@@ -263,14 +263,20 @@ int KMPlist<T>::kmp(KMPlist<T> *target)
     int position_of_target = 1;
     int target_lenth = target->getlength();
     int list_lenth = getlength();
+
     while (position_of_target + list_lenth - 1 <= target_lenth && position_of_list <= list_lenth)
         if (getitem(position_of_list) == target->getitem(position_of_list + position_of_target - 1))
             position_of_list++;
-        else 
+        // else if (position_of_list == 1)
+        // {
+        //     position_of_list = 1;
+        //     position_of_target += 1;
+        // }
+        else
         {
             position_of_target += position_of_list;
+            position_of_target -= nextlist[position_of_list - 1];
             position_of_list = nextlist[position_of_list - 1] + 1;
-            position_of_target -= position_of_list - 1;
         }
     return position_of_list >= list_lenth ? position_of_target - 1 : -1;
     /* This member function needs to be implemented. It implements the KMP algorithm with this list as pattern list and an arbitrary target list given as input */
