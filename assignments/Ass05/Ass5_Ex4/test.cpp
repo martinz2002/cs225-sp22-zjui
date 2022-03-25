@@ -14,7 +14,7 @@ using std::cin;
 
 int main()
 {
-    KMP<char> *plist = new KMPlist<char>();
+    KMPlist<char> *plist = new KMPlist<char>();
     (*plist).append('a');
     (*plist).append('b');
     (*plist).append('c');
@@ -27,7 +27,7 @@ int main()
     (*plist).append('b');
     (*plist).create_next();
     /* You should create more target lists */
-    KMP<char> *slist = new KMPlist<char>();
+    KMPlist<char> *slist = new KMPlist<char>();
     (*slist).append('b');
     (*slist).append('a');
     (*slist).append('b');
