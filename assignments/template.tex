@@ -30,7 +30,7 @@
 
 % \everymath{\displaystyle}
 \setmainfont{Times New Roman}
-\setmonofont{Consolas}
+% \setmonofont{Consolas}
 % \setsansfont{Arial}
 \lstset{                  %设置代码块
     basicstyle=\small\fontspec{Consolas},% 基本风格
@@ -68,7 +68,7 @@
 
 \newenvironment{questions}{\begin{enumerate}[Ex. 1]}{\end{enumerate}}
 \newenvironment{parts}{\begin{enumerate}[(i)]}{\end{enumerate}}
-\newcommand\question{\newpage \item \textsc{\textbf{Our Answer.}}\newline}
+\newcommand{\question}[1]{\newpage \item \textsc{\textbf{Our Answer.}} (This part is written by #1)\newline}
 \renewcommand\part{\item}
 \newcommand\makeMyTitle{\maketitle
                         \input{../memberInfo.tex} 
