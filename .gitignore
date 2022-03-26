@@ -59,7 +59,11 @@
 *.result
 *.result*
 result_overview.txt
-/__pycache__/
+*__pycache__/
 *.pyc
 config
-*.DSYM/*
+*.dSYM/
+
+test*
+!*.cpp
+!*.h
