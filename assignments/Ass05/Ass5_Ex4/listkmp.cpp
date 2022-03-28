@@ -241,18 +241,24 @@ void KMPlist<T>::create_next(void)
     nextlist = new int[lenth_of_list];
     nextlist[0] = 0;
     printf("My next list is:\n%d ", 0);
-    int now_next;
-    for (int loop_index = 1; loop_index < lenth_of_list; loop_index++)
+    int p_index = 1, next_index = 1;
+    while (p_index < lenth_of_list)
     {
-        now_next = nextlist[loop_index - 1];
-        while (reprarray[loop_index] != reprarray[now_next] && now_next > 0)
-            now_next = nextlist[now_next - 1];
-        if (reprarray[loop_index] == reprarray[now_next])
-            nextlist[loop_index] = now_next != 0 ? nextlist[now_next] : now_next + 1;
-        else
-            nextlist[loop_index] = now_next;
-        printf("%d ", nextlist[loop_index]);
+        while (reprarray[p_index] == reprarray[next_index-1])
+        {
+            nextlist[p_index]=nextlist[next_index-1];
+            p_index++;
+            next_index++;
+        }
+        nextlist[p_index]=next_index;
+        p_index++;
+        next_index=1;
     }
+    for(p_index=1;p_index<lenth_of_list;p_index++){
+        printf("%d ",nextlist[p_index]);
+    }
+
+
     printf("\n"); /* This member function needs to be implemented. It pre-computes the NEXT values used in the KMP algorithm */
 }
 
@@ -267,11 +273,6 @@ int KMPlist<T>::kmp(KMPlist<T> *target)
     while (position_of_target + list_lenth - 1 <= target_lenth && position_of_list <= list_lenth)
         if (getitem(position_of_list) == target->getitem(position_of_list + position_of_target - 1))
             position_of_list++;
-        // else if (position_of_list == 1)
-        // {
-        //     position_of_list = 1;
-        //     position_of_target += 1;
-        // }
         else
         {
             position_of_target += position_of_list;
