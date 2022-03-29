@@ -1,4 +1,4 @@
 hashmgt: hashmgt.cpp hashset.o hashset.h
-	g++ hashmgt.cpp hashset.o -o hashmgt
+	clang++ -g hashmgt.cpp hashset.o -o hashmgt
 hashset.o: hashset.cpp hashset.h
-	g++ -c hashset.cpp -o hashset.o
+	clang++ -c hashset.cpp -g -o hashset.o

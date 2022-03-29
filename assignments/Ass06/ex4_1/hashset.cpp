@@ -60,7 +60,7 @@ void hashset<T>::add(T item)
     hash<T> hashfunction;
     T *insert_item = &item, *temp_item;
     int index1, index2;
-    index1 = hashfuction(item);
+    index1 = hashfunction(item);
     while (reprarray[index1] != 0)
     {
         index2 = hashfunction(*reprarray[index1]);
