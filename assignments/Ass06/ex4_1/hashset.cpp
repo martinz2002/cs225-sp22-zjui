@@ -57,20 +57,23 @@ T &hashset<T>::operator[](int index)
 template <class T>
 void hashset<T>::add(T item)
 {
+    if(numitems+1>maxsize){
+        rehash(maxsize*2);
+    }
     hash<T> hashfunction;
-    T *insert_item , temp_item;
-    insert_item=new T;
-    *insert_item=item;
-    int index1, index2;
+    T *insert_item, temp_item;
+    insert_item = new T;
+    *insert_item = item;
+    int index1, index2,insert_item_index;
     index1 = hashfunction(item) % maxsize;
     while (reprarray[index1] != 0)
     {
         index2 = hashfunction(*reprarray[index1]) % maxsize;
         if (index1 == index2)
         {
-            while (index1 == index2 && reprarray[index1] != 0)
+            insert_item_index=hashfunction(*insert_item) % maxsize;
+            while (reprarray[index1] != 0)
             {
-                index2 = hashfunction(*reprarray[index1]) % maxsize;
                 index1++;
                 index1 %= maxsize;
             }
@@ -84,8 +87,7 @@ void hashset<T>::add(T item)
         }
     }
     reprarray[index1] = new T;
-
-    *reprarray[index1]=*insert_item;
+    *reprarray[index1] = *insert_item;
     /* This function needs to be re-implemented by taking the Robin Hood method into account */
 }
 
