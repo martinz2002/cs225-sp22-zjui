@@ -76,10 +76,6 @@ void hashmap<K, T>::add(K key, T item)
 template <class K, class T>
 void hashmap<K, T>::remove(K key)
 {
-    if (numitems + 1 >= maxsize)
-    {
-        rehash(maxsize * 2);
-    }
     hash<K> hashfunction;
     int index1;
     index1 = hashfunction(key) % maxsize;
@@ -99,10 +95,6 @@ void hashmap<K, T>::remove(K key)
 template <class K, class T>
 T hashmap<K, T>::retrieve(K key)
 {
-    if (numitems + 1 >= maxsize)
-    {
-        rehash(maxsize * 2);
-    }
     hash<K> hashfunction;
     int index1;
     index1 = hashfunction(key) % maxsize;
