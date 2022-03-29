@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "hashmap.h"
+#include "hashmap.cpp"
 using std::cin;
 using std::cout;
 using std::hash;
@@ -19,7 +20,8 @@ int fibbo(int a)
         return 1;
     }
     value = fibbo(a - 1) + fibbo(a - 2);
-    myhashtable1.add(a, value);
+    if (!myhashtable1.member(a, value))
+        myhashtable1.add(a, value);
     return value;
 }
 
@@ -30,6 +32,6 @@ int main()
     while (1)
     {
         scanf("%d", &a);
-        printf("%d\n",fibbo(a));
+        printf("%d\n", fibbo(a));
     }
 }

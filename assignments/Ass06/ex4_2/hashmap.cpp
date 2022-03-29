@@ -63,18 +63,23 @@ void hashmap<K, T>::add(K key, T item)
     index1 = hashfunction(key) % maxsize;
     while (keyarray[index1] != 0)
     {
-        index1++;
-        index1 %= maxsize;
+        rehash(maxsize * 2);
+        index1 = hashfunction(key) % maxsize;
     }
     keyarray[index1] = new T;
     reprarray[index1] = item;
     *keyarray[index1] = key;
+    numitems++;
     /* This member function needs to be implemented. Adapt the corresponding function on hashsets. */
 }
 
 template <class K, class T>
 void hashmap<K, T>::remove(K key)
 {
+    if (numitems + 1 >= maxsize)
+    {
+        rehash(maxsize * 2);
+    }
     hash<K> hashfunction;
     int index1;
     index1 = hashfunction(key) % maxsize;
@@ -84,15 +89,20 @@ void hashmap<K, T>::remove(K key)
         index1 %= maxsize;
     }
     if (keyarray[index1])
-        keyarray[index1]=0;
+    {
+        keyarray[index1] = 0;
         rehash(maxsize);
-    /* This member function needs to be implemented. Adapt the corresponding function on hashsets. */
+    } /* This member function needs to be implemented. Adapt the corresponding function on hashsets. */
+    numitems--;
 }
 
 template <class K, class T>
 T hashmap<K, T>::retrieve(K key)
 {
-
+    if (numitems + 1 >= maxsize)
+    {
+        rehash(maxsize * 2);
+    }
     hash<K> hashfunction;
     int index1;
     index1 = hashfunction(key) % maxsize;
