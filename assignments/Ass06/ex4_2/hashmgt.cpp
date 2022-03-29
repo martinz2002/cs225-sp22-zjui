@@ -71,15 +71,7 @@ int main()
                     cin >> intkey1;
                     myhashtable1.add(intkey1,intitem);
                 }
-                else
-                {
-                    double doubleitem;
-                    int intkey2;
-                    cin >> doubleitem;
-                    cout << "Enter a value of Key:\n";
-                    cin >> intkey2;
-                    myhashtable2.add(intkey2,doubleitem);
-                }
+                
                 break;
             }
             case 2:
@@ -91,12 +83,7 @@ int main()
                     cin >> intitem;
                     myhashtable1.remove(intitem);
                 }
-                else
-                {
-                    double doubleitem;
-                    cin >> doubleitem;
-                    myhashtable2.remove(doubleitem);
-                }
+                
                 break;
             }
             case 3:
@@ -111,15 +98,7 @@ int main()
                     cin >> intitem;
                     boolresult = myhashtable1.member(intkey2,intitem);
                 }
-                else
-                {
-                    double doubleitem;
-                    int intkey1;
-                    cin >> doubleitem;
-                    cout << "Enter a value of Key:\n";
-                    cin >> intkey1;
-                    boolresult = myhashtable2.member(intkey1,doubleitem);
-                }
+                
                 if (boolresult == true)
                     cout << "The value is in the hashtable.\n";
                 else

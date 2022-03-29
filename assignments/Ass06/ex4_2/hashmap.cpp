@@ -164,7 +164,7 @@ void hashmap<K, T>::display(void) // only for test purposes
     {
         if (reprarray[i] == 0)
             cout << "The entry " << i + 1 << " is undefined.\n";
-        else if (reprarray[i] == pt_nil)
+        else if (reprarray[i] == pt_nil[i])
             cout << "The entry " << i + 1 << " is free.\n";
         else
             cout << "The entry " << i + 1 << " has the key " << *keyarray[i] << " and the value " << reprarray[i] << " .\n";
