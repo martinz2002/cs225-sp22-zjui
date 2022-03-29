@@ -93,9 +93,9 @@ int main()
                 {
                     int intitem;
                     int intkey2;
+                    cin >> intitem;
                     cout << "Enter a value of Key:\n";
                     cin >> intkey2;
-                    cin >> intitem;
                     boolresult = myhashtable1.member(intkey2,intitem);
                 }
                 
