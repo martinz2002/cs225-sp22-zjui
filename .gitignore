@@ -67,3 +67,4 @@ config
 test*
 !*.cpp
 !*.h
+.DS_Store
