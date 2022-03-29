@@ -164,7 +164,7 @@ void hashmap<K, T>::display(void) // only for test purposes
     cout << "The number of elements in the hashtable is: " << numitems << "\n";
     for (int i = 0; i < maxsize; ++i)
     {
-        if (reprarray[i] == 0)
+        if (keyarray[i] == 0)
             cout << "The entry " << i + 1 << " is undefined.\n";
         else if (reprarray[i] == pt_nil)
             cout << "The entry " << i + 1 << " is free.\n";
