@@ -32,11 +32,38 @@
 *.app
 
 # Any Compressed Archieves
-*.zip
-*.rar
-*.7z
-*.tar
-*.tar.*
+# *.zip
+# *.rar
+# *.7z
+# *.tar
+# *.tar.*
 
 # VSCode
 *.json
+
+*.fdb_latexmk
+*.fls
+
+# LaTeX
+*.aux
+*.synctex.gz
+*.log
+*.toc
+
+*.in
+*.in*
+*.out
+*.out*
+*.ans
+*.ans*
+*.result
+*.result*
+result_overview.txt
+*__pycache__/
+*.pyc
+config
+*.dSYM/
+
+test*
+!*.cpp
+!*.h

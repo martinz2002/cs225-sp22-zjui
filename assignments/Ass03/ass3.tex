@@ -1,0 +1,131 @@
+\input{../template.tex}
+
+
+\def\HWTITLE{Homework 3}
+\def\COURSECODE{CS 225: Data Structures}
+\def\AUTHOR{Group D1}
+
+
+\begin{document}
+\makeMyTitle
+\thispagestyle{firstPage}
+
+\begin{questions}
+    \question
+    \begin{parts}
+        \part
+        In order to gain the smallest number in the $n$ numbers, At first, suppose we know the exact number which is the smallest number, we should compare it with the other $(n-1)$ numbers which means we need $(n-1)$ comparisons to ensure it is the smallest number. For the specific method, we could select two numbers randomly and then compare them. Then we choose the smaller number and compare it with another number in the left $(n-2)$ numbers. Then repeat this step. We need $(n-1)$ steps (comparisons) to know the smallest number.
+
+        \part
+        Actually, when we know from the first question, we should use $(n-1)$ comparisons to know the smallest numbers, and then we could know the second smallest number after this step. In fact, in the first question, we have already compared the smallest number with the second smallest number, we can make use of this hidden condition to decrease the comparison times to find the second smallest number after having found the smallest number in the list. We can only find the second smallest number in the number list which has been compared with the smallest number in the first step.
+
+        From Figure \ref{fig-FakeTree} we know that: At first, we separate the numbers in pairs and compare them (no matter the number is odd or even), Then we can get the smaller number in each pair and we will get the smallest number at last which needs $(n-1)$ comparisons in total. Then we just find the number of elements which have been compared with the smallest number, we can know that there is only one number in each layer(The number which are yellow). For $n$ numbers, there are $\log n$ levels in total, so there are $\log n$ elements which have been compared with the smallest number. Through the first question, we know we need $(\log n - 1)$ comparisons to know the smallest number in the $\log n$ elements (the smallest number in these elements is the second smallest number in the whole list), So we need $(n-2+\log n)$ comparisons\footnote{We suspect that there's a typo in the assignment sheet, which said the number of comparisons should be $(n-1+\log n)$, one comparison larger than ours.} to know the smallest number and the second smallest number.
+
+        \begin{figure}[h]
+            \centering
+
+            \label{fig-FakeTree}
+            \tikz [grow' = up, tree layout, sibling distance=8mm, mark/.style={fill=violet, text=white}, mark/.default=, markmin/.style={fill=red, text=white}, markmin/.default=]
+            \graph [nodes={circle, draw, inner sep=1.5pt}]{ [fresh nodes]
+
+            1[markmin] <- {{2 [mark]} <- {2 <- {2, 5}, 3 <- {3, 8}}, 1 <- {4[mark] <- {4, 6}, 1 <- {3[mark], 1}}}
+
+            };
+            \caption{An example structure for the algorithm.}
+        \end{figure}
+
+        \part
+        % \begin{algorithm}[h]
+        %     \SetKwData{AList}{AList1}
+        %     \SetKwData{AListLength}{AListLength}
+        %     \SetKwFunction{Pairs}{PAIRS}
+
+        %     \tcp{The number of elements in \AList is \AListLength.}
+
+        %     $n \gets \frac{n}{2}$
+
+
+        % \end{algorithm}
+
+        Here is a Python implement of our algorithm. For detailed explanations, see the comments.
+
+        \lstinputlisting[language=python]{ex1.py}
+
+    \end{parts}
+
+    \question
+    The algorithm is to keep two memory positions for the current-largest
+    element and current-smallest element. For the first element, there is no
+    comparison. For the second element, there is only one comparison with
+    the first element.
+
+    Then, for the left \((n-2)\) elements including the third element. There
+    are only two comparisons for one element, comparison with the
+    current-largest element and current-smallest element. If it is larger
+    than the current-largest, it will take its place and then the algorithm
+    goes for next element. If it is smaller than the current-smallest, then
+    it will take its place and then the algorithm goes for next element.
+    Otherwise it is ignored.
+
+    Therefore, the count for total comparison is \(2(n-2)+1\) ,which is
+    \(2n-3\) .
+
+    \begin{parts}
+        \part
+        For the best situation, all the numbers are arranged in the sequence
+        from small to large. Then for every element, there is only one
+        comparison needed. The overall comparison is \(n-1\) . For the worst
+        situation, all the numbers are arranged in the sequence from large to
+        small. The overall comparison is \(2n-3\) .
+        \part
+        The number of comparison will not change whether \(n\) is a power of 2
+        or not.
+    \end{parts}
+
+    \question
+    The first step is to create a library that contains \(n\) tags that represent every element in the totally ordered set. Besides, each tag also contains a counter that records the times each time element has been found.
+
+    The next thing we need to do is to traverse the list, each time we find a elements, we add one to the corresponding counter. After the list traverse, we traverse the library to find which element is majority.
+
+    The structured algorithm is described in Algorithm \ref{algo-majority}
+
+    \begin{algorithm}
+        \caption{Majority Element}
+        \label{algo-majority}
+        \SetKwArray{Lib}{library}
+        \SetKwData{tags}{tag}
+        \SetKwData{isMajor}{isMajor}
+        \SetKwData{True}{True}
+        \SetKwData{False}{False}
+        \SetKwFunction{CreateLib}{CreateLibrary}
+        \SetKwInOut{Input}{Input}
+        \SetKwInOut{Output}{Output}
+
+        \Input{Two lists $T$, $L$}
+
+        \Output{\isMajor, denoting whether $L$ contains any major elements.}
+
+        $\isMajor \gets \False$
+
+        \tcc{First create libraries, or "buckets", for each unique element in $T$.}
+
+        \ForEach{$t \in T$}{
+            \If{$t \notin \Lib$}{\CreateLib{$t_i$}}
+        }
+
+        \ForEach{$l\in L$}{
+            \Lib{$l$} $\gets$ \Lib{$l$} $+ 1$
+        }
+
+        \ForEach{\Lib{$i$}}{
+            \If{\Lib{i} > $n/2$}{$\isMajor\gets \True$}
+        }
+        \Return{\isMajor}
+    \end{algorithm}
+
+
+
+\end{questions}
+
+
+\end{document}
