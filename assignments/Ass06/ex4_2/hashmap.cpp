@@ -104,7 +104,7 @@ T hashmap<K, T>::retrieve(K key)
     if (keyarray[index1])
         return reprarray[index1];
     else
-        return EXIT_FAILURE;
+        return -1;
     /* This member function needs to be implemented. Adapt the corresponding function on hashsets. */
 }
 
