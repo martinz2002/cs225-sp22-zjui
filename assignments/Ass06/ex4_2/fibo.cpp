@@ -20,8 +20,7 @@ int fibbo(int a)
         return 1;
     }
     value = fibbo(a - 1) + fibbo(a - 2);
-    if (!myhashtable1.member(a, value))
-        myhashtable1.add(a, value);
+    myhashtable1.add(a, value);
     return value;
 }
 
