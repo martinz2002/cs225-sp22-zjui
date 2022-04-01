@@ -1,0 +1,174 @@
+\input{../template.tex}
+
+
+\def\HWTITLE{Homework 6}
+\def\COURSECODE{CS 225: Data Structures}
+\def\AUTHOR{Group D1}
+
+
+\begin{document}
+\makeMyTitle
+
+Exercise 4 is written by Li Rong \& Jiang Wenhan.
+
+\thispagestyle{firstPage}
+
+\begin{questions}
+
+
+
+    \question{Zhou Ruidi}
+    Define $E(n)$ as the expectation of the number of non-empty lists after $n$ insertions. In this way, if we have inserted $(n-1)$ elements, then the expectation is $E(n-1)$.
+
+    \paragraph{Initial condition.}Inserting the first element, \[E(0)=1\times \frac{1}{m} = \frac{1}{m}\]
+    \paragraph{Induction.}Inserting the $n$-th element.
+
+    \begin{enumerate}
+        \item If the element should be inserted into a non-empty list, then the probability we insert it here is
+              \begin{equation}
+                  \label{eq1}
+                  P_\text{non-empty}(n)=\frac{E(n-1)}{m}
+              \end{equation}
+
+
+        \item If the element should be inserted into an empty list, then the probability we insert it here is
+              \begin{equation}
+                  \label{eq2}
+                  P_\text{empty}(n)=1-P_\text{non-empty}(n) = 1-\frac{E(n-1)}{m}
+              \end{equation}
+    \end{enumerate}
+
+    Hence the expectation after inserting $n$-th element is
+    \begin{equation}
+        \label{eq3}
+        E(n) = P_\text{non-empty}(n)\times \left[E(n-1)+1 \right] + P_\text{empty}(n)\times E(n-1)
+    \end{equation}
+
+    With Equation \ref{eq1}, \ref{eq2}, \ref{eq3} we solve for a general representation of $E(n)$:
+
+    \begin{equation}
+        E(n) = m\cdot \left(1-\frac{1}{m}\right)^n
+    \end{equation}
+
+
+    \question{Jiang Wenhan}
+    \begin{parts}
+        \part
+        To calculate the total payment for one customer, we only need to traverse all triples and add up all prices whenever the customer ID fits the one we need. So the time complexity is $O(n)$. ($n$ refers to the number of triples)
+
+        \part
+        Assume the size of represented array is $n$, and the size of stored value is $m$. For hashing with chaining,  we assume the hashing is perfect where no empty entry exist. We need to scan all entries to get all return values. So the running time is $O(m)$. For hashing with linear probing, there exist empty entries. But we can not make assertion for each entry whether it is empty or not. So we have to scan all entries, which takes $O(n)$.
+    \end{parts}
+
+    \question{Zhong Tiantian}
+    \begin{parts}
+        \part
+        Focusing on condition $h_j(e) \leq M-1$. Assuming we have an element $e$. Every time if the calculated hash value is larger than $M$, then increase the size of the table by \[ M'\gets M + m\cdot 2^j\].
+
+        Obviously, for current $j$ we must have \[ M\leq h_{j-1}(e) < h_{j}(e)\leq M' \] in order to satisfy the properties of the hash function.
+
+        With the assumptions above and suppose we are using the $j$-function $h_j$:
+
+        \paragraph{Hash value 1.}
+        It's possible to calculate the current hash value with $j$-th hash function $h_j(e)$. Check if the ``bucket'' for $h_j(e)$ has been full (i.e. the length of ``bucket'' exceeds limit $l$); if not, put $e$ to the corresponding position of $h_j(e)$. This is the first hash value.
+
+        \paragraph{Hash value 2.}
+        If bucket with key $h_j(e)$ has been full, calculate the next hash function $h_{j'}(e)$ with $j' = j+1$. From the assumption we made at the beginning, $h_{j'}(e)>M$ must hold. Thus the bucket for $h_{j'}(e)>M$ must be empty, which means we can safely put the element into this position. After that an increase to the table size by \[ M\gets M + m\cdot 2^j\] can maintain our assumption.
+
+        And this also proves that two hash value for an element $e$ suffices.
+
+        \part
+        Define
+        \begin{itemize}
+            \item a dynamically-sized hash table with $M$ elements, where the size of the table is controlled by $M$.
+            \item the hash function as \texttt{Hash($j$, $e$)} which is an implementation of $h_j(e)$.
+            \item lists \texttt{HashList[$i$]} as the list of element whose hash value equals to $i$.
+                  % \item function \texttt{isEmpty()} to check if a list is empty. 
+                  % \item function \texttt{isFull()} to check if a list is full
+        \end{itemize}
+
+        The algorithm \texttt{rehashing} looks like Algorithm \ref{algo-rehashing1}.
+
+        \part
+        Rewrite Algorithm \ref{algo-rehashing1} to obtain Algorithm \ref{algo-rehashing2}, where we add a checking process to ensure the corresponding list of an element is only splitted if the original list is full, to avoid unnecessary splitting.
+
+    \end{parts}
+\end{questions}
+
+\begin{algorithm}[h]
+    \label{algo-rehashing1}
+    \caption{Rehashing v1}
+    \SetKwInOut{Input}{Input}
+    \SetKwInOut{Output}{Output}
+    \SetKwFunction{Hash}{Hash}
+    % \SetKwFunction{Rehash}{rehash}
+    % \SetKwFunction{Append}{append}
+    % \SetKwFunction{isEmpty}{isEmpty}
+    % \SetKwFunction{isFull}{isFull}
+    \SetKwArray{HashList}{HashList}
+
+    \Input{a set of elements $\mathcal{T} =\left\lbrace e_1, e_2, \cdots, e_n \right\rbrace$, number of buckets $m$}
+    \Output{a hash table.}
+
+    $M \gets m$
+
+    \ForAll{$e \in \mathcal{T}$}{
+        \If{\HashList{\Hash{$j$,$e$}} is full}{
+            $j\gets j + 1$
+
+            $M\gets M + m\cdot 2^{j-1}$
+
+            Put $e$ into bucket \HashList{\Hash{$j$, $e$}}
+
+        }
+        \Else{Put $e$ into bucket \HashList{\Hash{$j$, $e$}}}
+    }
+    \Return{\HashList}
+\end{algorithm}
+
+\begin{algorithm}[h]
+    \label{algo-rehashing2}
+    \caption{Rehashing v2}
+    \SetKwInOut{Input}{Input}
+    \SetKwInOut{Output}{Output}
+    \SetKwFunction{Hash}{Hash}
+    \SetKwData{True}{True}
+    \SetKwData{False}{False}
+    % \SetKwFunction{Rehash}{rehash}
+    % \SetKwFunction{Append}{append}
+    % \SetKwFunction{isEmpty}{isEmpty}
+    % \SetKwFunction{isFull}{isFull}
+    \SetKwArray{HashList}{HashList}
+    \SetKwArray{ListUsed}{ListUsed}
+
+    \Input{a set of elements $\mathcal{T} =\left\lbrace e_1, e_2, \cdots, e_n \right\rbrace$, number of buckets $m$}
+    \Output{a hash table.}
+
+    $M \gets m, j\gets 0$
+
+
+    \ForAll{$e \in \mathcal{T}$}{
+        \tcc{Find the last bucket that has been used for current element}
+
+        \While{\ListUsed{\HashList{\Hash{$j$,$e$}}}$=$\False and $j > 0$}{
+            $j\gets j - 1$
+        }
+        \tcc{If the last-used bucket is full then split it}
+        \If{\HashList{\Hash{$j$,$e$}} is full}{
+            $j\gets j + 1$
+
+            $M\gets M + m\cdot 2^{j-1}$
+
+            Put $e$ into bucket \HashList{\Hash{$j$, $e$}}
+
+            \ListUsed{\HashList{\Hash{$j$, $e$}}} $\gets$ \True
+
+        }
+        \Else{
+            Put $e$ into bucket \HashList{\Hash{$j$, $e$}}
+        }
+    }
+    \Return{\HashList}
+\end{algorithm}
+
+\end{document}
