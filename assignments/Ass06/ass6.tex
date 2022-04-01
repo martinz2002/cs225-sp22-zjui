@@ -18,37 +18,28 @@ Exercise 4 is written by Li Rong \& Jiang Wenhan.
 
 
     \question{Zhou Ruidi}
-    Define $E(n)$ as the expectation of the number of non-empty lists after $n$ insertions. In this way, if we have inserted $(n-1)$ elements, then the expectation is $E(n-1)$.
+    Let's define $P(X)$, which satisfies that when inserting $x$ elements into the hash table, the probability of each bucket to be empty is $1-P(X=x)$
 
-    \paragraph{Initial condition.}Inserting the first element, \[E(0)=1\times \frac{1}{m} = \frac{1}{m}\]
-    \paragraph{Induction.}Inserting the $n$-th element.
+    \paragraph{Initial condition.} When inserting the first element, the probability of each bucket to be non-empty is
+    \[P(X=1)=\frac{1}{m}\]
+
+    \paragraph{Induction steps.} When inserting $n$-th element $e_n$, there are two possible case:
 
     \begin{enumerate}
-        \item If the element should be inserted into a non-empty list, then the probability we insert it here is
-              \begin{equation}
-                  \label{eq1}
-                  P_\text{non-empty}(n)=\frac{E(n-1)}{m}
-              \end{equation}
-
-
-        \item If the element should be inserted into an empty list, then the probability we insert it here is
-              \begin{equation}
-                  \label{eq2}
-                  P_\text{empty}(n)=1-P_\text{non-empty}(n) = 1-\frac{E(n-1)}{m}
-              \end{equation}
+        \item $e_n$ belongs to a non-empty bucket. The probability that such case happens is $P(X=n-1)$. The probability of choosing a non-empty bucket from all the buckets is also \[P(X=n-1)\]
+        
+        Therefore, the total probability contribution of this case is \[P_\text{non-empty}(X=n)=P(X=n-1)\times P(X=n-1) = P^2(X=n-1)\]
+        
+        \item $e_n$ belongs to an empty bucket. The probability that such case happens is $1-P(X=n-1)$. The probability of choosing a bucket from all non-empty bucket and one (randomly chosen) empty bucket in this case is $P(X=n-1) + 1/m$. Therefore, the total probability contribution of this case is \[P_\text{empty}(X=n)=\left[ 1-P(X=n-1) \right]\times \left[P(X=n-1) + \frac{1}{m}\right]\]
     \end{enumerate}
 
-    Hence the expectation after inserting $n$-th element is
-    \begin{equation}
-        \label{eq3}
-        E(n) = P_\text{non-empty}(n)\times \left[E(n-1)+1 \right] + P_\text{empty}(n)\times E(n-1)
-    \end{equation}
+    Therefore, the probability that each bucket to be non-empty after inserting $n$ elements is \[ P(X=n) = P^2(X=n-1) + (1-P(X=n-1))\times \left[ \frac{1}{m}\cdot P(X=n-1)\right]\]
 
-    With Equation \ref{eq1}, \ref{eq2}, \ref{eq3} we solve for a general representation of $E(n)$:
-
-    \begin{equation}
-        E(n) = m\cdot \left(1-\frac{1}{m}\right)^n
-    \end{equation}
+    Solve this induction equation and we obtain \[P(X=n)=1-\left(1-\frac{1}{m}\right) ^n\]
+    
+    Therefore, the probability of each bucket to be empty is \[1-P(X=n)=\left( 1-\frac{1}{m} \right) ^n\]
+    
+    and thus the expectation is \[E(\text{empty}, X=n)=m\cdot(1-P(X=n))=m\cdot \left( 1-\frac{1}{m} \right) ^n\]
 
 
     \question{Jiang Wenhan}
@@ -63,7 +54,7 @@ Exercise 4 is written by Li Rong \& Jiang Wenhan.
     \question{Zhong Tiantian}
     \begin{parts}
         \part
-        Focusing on condition $h_j(e) \leq M-1$. Assuming we have an element $e$. Every time if the calculated hash value is larger than $M$, then increase the size of the table by \[ M'\gets M + m\cdot 2^j\].
+        Focusing on condition $h_j(e) \leq M-1$. Assuming we have an element $e$. Every time if the calculated hash value is larger than $M$, then increase the size of the table by \[ M'\gets M + m\cdot 2^j\]
 
         Obviously, for current $j$ we must have \[ M\leq h_{j-1}(e) < h_{j}(e)\leq M' \] in order to satisfy the properties of the hash function.
 
