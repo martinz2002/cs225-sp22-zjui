@@ -237,18 +237,29 @@ void KMPlist<T>::prettyprint(void)
 template <class T>
 void KMPlist<T>::create_next(void)
 {
-    int lenth_of_list = this->getlength();
-    this->nextlist = new int[lenth_of_list];
-    this->nextlist[0] = 0;
-    int now_next;
-    for (int loop_index = 1; loop_index <= lenth_of_list; loop_index++)
+    int lenth_of_list = getlength();
+    nextlist = new int[lenth_of_list];
+    nextlist[0] = 0;
+    printf("My next list is:\n%d ", 0);
+    int p_index = 1, next_index = 1;
+    while (p_index < lenth_of_list)
     {
-        now_next = this->nextlist[loop_index - 1];
-        while (this->reprarray[loop_index] != this->reprarray[now_next] && now_next > 0)
-            now_next = this->nextlist[now_next - 1];
-        this->nextlist[loop_index] = this->reprarray[loop_index] == this->reprarray[now_next] ? now_next + 1 : now_next;
+        while (reprarray[p_index] == reprarray[next_index-1])
+        {
+            nextlist[p_index]=nextlist[next_index-1];
+            p_index++;
+            next_index++;
+        }
+        nextlist[p_index]=next_index;
+        p_index++;
+        next_index=1;
     }
-    /* This member function needs to be implemented. It pre-computes the NEXT values used in the KMP algorithm */
+    for(p_index=1;p_index<lenth_of_list;p_index++){
+        printf("%d ",nextlist[p_index]);
+    }
+
+
+    printf("\n"); /* This member function needs to be implemented. It pre-computes the NEXT values used in the KMP algorithm */
 }
 
 template <class T>
@@ -257,15 +268,16 @@ int KMPlist<T>::kmp(KMPlist<T> *target)
     int position_of_list = 1;
     int position_of_target = 1;
     int target_lenth = target->getlength();
-    int list_lenth = this->getlength();
+    int list_lenth = getlength();
+
     while (position_of_target + list_lenth - 1 <= target_lenth && position_of_list <= list_lenth)
-        if (this->getitem(position_of_list) == target->getitem(position_of_list + position_of_target - 1))
+        if (getitem(position_of_list) == target->getitem(position_of_list + position_of_target - 1))
             position_of_list++;
         else
         {
             position_of_target += position_of_list;
-            position_of_list = this->nextlist[position_of_list - 1] + 1;
-            position_of_target -= position_of_list - 1;
+            position_of_target -= nextlist[position_of_list - 1];
+            position_of_list = nextlist[position_of_list - 1] + 1;
         }
     return position_of_list >= list_lenth ? position_of_target - 1 : -1;
     /* This member function needs to be implemented. It implements the KMP algorithm with this list as pattern list and an arbitrary target list given as input */

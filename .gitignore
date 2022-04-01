@@ -59,6 +59,12 @@
 *.result
 *.result*
 result_overview.txt
-/__pycache__/
+*__pycache__/
 *.pyc
 config
+*.dSYM/
+
+test*
+!*.cpp
+!*.h
+.DS_Store
