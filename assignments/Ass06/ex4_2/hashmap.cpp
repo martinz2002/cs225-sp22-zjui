@@ -54,7 +54,7 @@ T &hashmap<K, T>::operator[](int index)
 template <class K, class T>
 void hashmap<K, T>::add(K key, T item)
 {
-    if (numitems + 1 >= maxsize)
+    if (numitems + 1 > maxsize)
     {
         rehash(maxsize * 2);
     }
@@ -63,8 +63,13 @@ void hashmap<K, T>::add(K key, T item)
     index1 = hashfunction(key) % maxsize;
     while (keyarray[index1] != 0)
     {
-        rehash(maxsize * 2);
-        index1 = hashfunction(key) % maxsize;
+        index1++;
+        if (index1 % maxsize != index1)
+        {
+            rehash(maxsize * 2);
+            add(key, item);
+            return;
+        }
     }
     keyarray[index1] = new T;
     reprarray[index1] = item;
@@ -82,7 +87,10 @@ void hashmap<K, T>::remove(K key)
     while (keyarray[index1] != 0 && *keyarray[index1] != key)
     {
         index1++;
-        index1 %= maxsize;
+        if (index1 % maxsize != index1)
+        {
+            return;
+        }
     }
     if (keyarray[index1])
     {
@@ -101,7 +109,10 @@ T hashmap<K, T>::retrieve(K key)
     while (keyarray[index1] != 0 && *keyarray[index1] != key)
     {
         index1++;
-        index1 %= maxsize;
+        if (index1 % maxsize != index1)
+        {
+            return -1;
+        }
     }
     if (keyarray[index1])
         return reprarray[index1];

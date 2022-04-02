@@ -57,37 +57,44 @@ T &hashset<T>::operator[](int index)
 template <class T>
 void hashset<T>::add(T item)
 {
-    if(numitems+1>maxsize){
-        rehash(maxsize*2);
-    }
-    hash<T> hashfunction;
-    T *insert_item, temp_item;
-    insert_item = new T;
-    *insert_item = item;
-    int index1, index2,insert_item_index;
-    index1 = hashfunction(item) % maxsize;
-    while (reprarray[index1] != 0)
+    if (numitems + 1 > maxsize)
     {
-        index2 = hashfunction(*reprarray[index1]) % maxsize;
-        if (index1 == index2)
+        rehash(maxsize * 2);
+    }
+    // rehash for larger size
+    hash<T> hashfunction;
+    T insert_item = item, temp_item;
+    int now_index, hash_of_item_in_array, insert_item_hash;
+    // now_index: the index we are examinining now; insert_item_hash: the hash value of item to be inserted
+    insert_item_hash = hashfunction(item) % maxsize;
+    now_index = insert_item_hash;
+    while (reprarray[now_index] != 0) // the primal condition of the pointers to hash list are all 0,
+    // so we continue examinining when the pointer is not zero (it literally points to certain value)
+    {
+        hash_of_item_in_array = hashfunction(*reprarray[now_index]) % maxsize;
+        if (now_index - hash_of_item_in_array > now_index - insert_item_hash)
+        // compare the distance between examinined value and inserted value
         {
-            insert_item_index=hashfunction(*insert_item) % maxsize;
-            while (reprarray[index1] != 0)
-            {
-                index1++;
-                index1 %= maxsize;
-            }
+            temp_item = insert_item;
+            insert_item = *reprarray[now_index];
+            *reprarray[now_index] = temp_item;
+            // swap inserted item with value in list
+            insert_item_hash = hash_of_item_in_array;
         }
-        else
+        now_index++;
+        // turns to next index
+        if (now_index % maxsize != now_index)
         {
-            temp_item = *insert_item;
-            *insert_item = *reprarray[index1];
-            *reprarray[index1] = temp_item;
-            index1 = index2;
+            rehash(maxsize * 2);
+            add(insert_item);
+            return;
+            // rehash if it reaches the end of reprarray
         }
     }
-    reprarray[index1] = new T;
-    *reprarray[index1] = *insert_item;
+    reprarray[now_index] = new T;
+    *reprarray[now_index] = insert_item;
+    numitems++;
+    //the occasion if the current position is empty
     /* This function needs to be re-implemented by taking the Robin Hood method into account */
 }
 
