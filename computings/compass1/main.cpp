@@ -1,6 +1,6 @@
-#include "fiboheap.cpp";
-#include "id_hash.cpp";
-#include "subroutines.cpp";
+#include "subroutines.cpp"
 
-using namespace::std;
-
+int main()
+{
+    return 0;
+}

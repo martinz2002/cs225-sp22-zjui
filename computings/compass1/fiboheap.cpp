@@ -1,4 +1,4 @@
-#include "headers/fiboheap.h";
+#include "headers/fiboheap.h"
 
 template <class dataregionT, class keyT>
 heapnodes<dataregionT, keyT>::heapnodes()
@@ -38,29 +38,35 @@ fiboheap<dataregionT, keyT>::fiboheap()
 template <class dataregionT, class keyT>
 dataregionT fiboheap<dataregionT, keyT>::getmin()
 {
+    return NULL;
 }
 
 template <class dataregionT, class keyT>
 dataregionT fiboheap<dataregionT, keyT>::popmin()
 {
+    return NULL;
 }
 
 template <class dataregionT, class keyT>
 bool fiboheap<dataregionT, keyT>::merge(fiboheap *heap_pointer)
 {
+    return NULL;
 }
 
 template <class dataregionT, class keyT>
 bool fiboheap<dataregionT, keyT>::delete_node(heapnodes<dataregionT, keyT> *nodepointer)
 {
+    return NULL;
 }
 
 template <class dataregionT, class keyT>
 bool fiboheap<dataregionT, keyT>::change_value(heapnodes<dataregionT, keyT> *nodepointer, keyT key)
 {
+    return NULL;
 }
 
 template <class dataregionT, class keyT>
 heapnodes<dataregionT, keyT> *fiboheap<dataregionT, keyT>::insert_nodes(dataregionT data, keyT key)
 {
+    return NULL;
 }

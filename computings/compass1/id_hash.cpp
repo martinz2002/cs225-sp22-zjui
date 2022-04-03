@@ -1,4 +1,4 @@
-#include "headers/id_hash.h";
+#include "headers/id_hash.h"
 
 //
 //  hashmap.cpp
@@ -8,13 +8,9 @@
 //  Modified on 22.03.22.
 //
 
-#include <stdio.h>
-#include <iostream>
-#include <cstdlib>
-
+using std::hash;
 using std::cin;
 using std::cout;
-using std::hash;
 
 /* This defines a constructor */
 template <class K, class T>

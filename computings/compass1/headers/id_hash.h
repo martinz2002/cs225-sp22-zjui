@@ -5,7 +5,7 @@
 //  Created by KD on 6.03.21.
 //  Modified on 22.03.22
 //
-
+#include <bits/stdc++.h>
 #ifndef hashmap_h
 #define hashmap_h
 
