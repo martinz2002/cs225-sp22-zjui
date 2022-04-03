@@ -12,11 +12,6 @@ public:
 public:
     void add_brother(heapnodes<dataregionT,keyT> *ptr);
     void add_children(heapnodes<dataregionT,keyT> *ptr);
-    void to_root();
-    void self_delete();
-    void change_value(keyT new_key);
-
-private:
     int64_t degree;
     heapnodes<dataregionT,keyT> *parent;
     heapnodes<dataregionT,keyT> *children;
@@ -47,4 +42,5 @@ private:
     heapnodes<dataregionT, keyT> *minnode;
     int64_t maxdegree;
     heapnodes<dataregionT, keyT> *nodes;
+    int64_t nodes_num;
 };
