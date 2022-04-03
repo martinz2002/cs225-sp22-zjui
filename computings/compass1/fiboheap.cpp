@@ -8,11 +8,16 @@ heapnodes<dataregionT, keyT>::heapnodes()
 template <class dataregionT, class keyT>
 void heapnodes<dataregionT, keyT>::add_brother(heapnodes<dataregionT, keyT> *ptr)
 {
+    ptr->left=&this;
+    ptr->right=right;
+    right->left=ptr;
+    right=ptr;
 }
 
 template <class dataregionT, class keyT>
 void heapnodes<dataregionT, keyT>::add_children(heapnodes<dataregionT, keyT> *ptr)
 {
+    
 }
 
 template <class dataregionT, class keyT>

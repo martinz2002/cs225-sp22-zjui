@@ -40,9 +40,9 @@ public:
     bool delete_node(heapnodes<dataregionT,keyT> *nodepointer);
     bool change_value(heapnodes<dataregionT,keyT> *nodepointer, keyT new_key);
     heapnodes<dataregionT,keyT>* insert_nodes(dataregionT data, keyT key);
-    bool to_root(heapnodes<dataregionT,keyT> *nodepointer);
 
 private:
+    bool to_root(heapnodes<dataregionT,keyT> *nodepointer);
     void maintain_heap();
     heapnodes<dataregionT, keyT> *minnode;
     int64_t maxdegree;
