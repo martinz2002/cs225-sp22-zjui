@@ -13,7 +13,7 @@ void add_profile(profile *lastnode, char *address, char *phone, char *WeChat, ch
     new_profile->phone = phone;
     new_profile->WeChat = WeChat;
     new_profile->previous_node = lastnode;
-    lastnode->next_node = newprofile;
+    lastnode->next_node = new_profile;
     new_profile->risk = risk;
 }
 

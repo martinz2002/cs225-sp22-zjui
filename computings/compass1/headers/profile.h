@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
-template <>
-class profile
+struct profile
 {
 public:
     profile();
@@ -22,4 +21,5 @@ public:
 public:
     profile *next_node;
     profile *previous_node;
-}
+};
+
