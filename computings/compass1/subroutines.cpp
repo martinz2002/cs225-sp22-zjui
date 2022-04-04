@@ -10,58 +10,40 @@ static int64_t num_ino = 0;
 static int64_t max_num_reg = 20;
 static int64_t max_num_ino = 20;
 
-static int64_t daily_total = 0; //the capacity of treatment from all registration points, initialized by 0
+static int64_t daily_total = 0; // the capacity of treatment from all registration points, initialized by 0
 
-static int64_t total_reg_person = 0; //number of people that have registered
-static int64_t queue_waiting = 0; //number of people who haven't been inoculated but did not send the priority letter
-static int64_t assign_waiting = 0; //number of people who haven't been inoculated but have already sent the priority letter
-static int64_t total_treatment = 0; //the number of processed people
-static double_t aver_waiting = 0; //the average time of waiting
+static int64_t total_reg_person = 0; // number of people that have registered
+static int64_t queue_waiting = 0;    // number of people who haven't been inoculated but did not send the priority letter
+static int64_t assign_waiting = 0;   // number of people who haven't been inoculated but have already sent the priority letter
+static int64_t total_treatment = 0;  // the number of processed people
+static double_t aver_waiting = 0;    // the average time of waiting
 
-static int64_t *daily; //the array that contains the inoculation capacity of each inoculation point
+static int64_t *daily; // the array that contains the inoculation capacity of each inoculation point
 
 static registration_profile **reg_pro = new registration_profile *[20];
 static inoculate_profile **ino_pro = new inoculate_profile *[20];
-//initialization for registration_profile and inoculate_profile
+// initialization for registration_profile and inoculate_profile
 
-static vector<personal_profile *> queueing_personal_file; //the quene of the waiting people
-static personal_profile *first_queueing_personal_file; //the beginning of the quene
-static personal_profile *last_queueing_personal_file; //the end of the quene
+static personal_profile *my_personal_file = NULL;
 
+static vector<personal_profile *> queueing_personal_file; // the quene of the waiting people
 
 static vector<personal_profile *> delay_personal_file;
 
-static personal_profile *first_hrisk_personal_file; //the beginning of the high risk quene
-static personal_profile *last_hrisk_personal_file; //the end of the high risk quene
+static vector<personal_profile *> inoculated_personal_file; // the quene of the inoculated people
 
+static vector<personal_profile *> withdraw_personal_file; // the quene of the inoculated people
 
-static vector<personal_profile *> inoculated_personal_file; //the quene of the inoculated people
-static personal_profile *first_inoculated_personal_file; //the beginning of the quene
-static personal_profile *last_inoculated_personal_file; //the end of the quene
+static vector<personal_profile *> assigned_personal_file; // the quene of the people who have written priority letter
 
+static int64_t *dist; // the temporary distance sequence
 
+static hashmap<int64_t, int64_t> priority2ID = hashmap<int64_t, int64_t>(20); // hashmap from priority to ID
 
-static personal_profile *first_delay_personal_file; //the beginning of thr delay list
-static personal_profile *last_delay_personal_file; //the end of the delay list
+static hashmap<int64_t, personal_profile *> ID2ptr = hashmap<int64_t, personal_profile *>(20); // hashmap from ID to personal profile
 
-static personal_profile *first_withdraw_personal_file; //the beginning of the withdrawal list
-static personal_profile *last_withdraw_personal_file; //the end of withdrawal list
-
-static vector<personal_profile *> assigned_personal_file; //the quene of the people who have written priority letter
-static personal_profile *first_assigned_personal_file; //the beginning of ~
-static personal_profile *last_assigned_personal_file; //the end of ~
-
-static int64_t *dist; //the temporary distance sequence 
-
-
-
-static hashmap<int64_t, int64_t> priority2ID = hashmap<int64_t, int64_t>(20); //hashmap from priority to ID
-
-
-static hashmap<int64_t, personal_profile *> ID2ptr = hashmap<int64_t, personal_profile *>(20); //hashmap from ID to personal profile
-
-static FibHeap *Queueing_heap = new FibHeap; //quene heap
-static FibHeap *hrisk_heap = new FibHeap; //high risk heap
+static FibHeap *Queueing_heap = new FibHeap; // quene heap
+static FibHeap *hrisk_heap = new FibHeap;    // high risk heap
 
 bool compare_by_dist(int64_t num1, int64_t num2)
 // a subroutine for comparation between distance for num1 and num2, return 1 if distance for num1 is the smaller one
@@ -172,42 +154,19 @@ static void add_profile(string name, string address, string phone, string WeChat
     }
     total_reg_person++;
     queue_waiting++;
+    my_personal_file = newprofile(my_personal_file, name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, date, RegID);
+    my_personal_file->priority_num = pri_num;
+    registration_sequence_calculation(my_personal_file, reg_pro[RegID]);
+    priority2ID.add(pri_num, ID);
+    ID2ptr.add(ID, my_personal_file);
+    queueing_personal_file.push_back(my_personal_file);
     if (risk <= 2)
     {
-
-        if (first_queueing_personal_file == NULL)
-        {
-            first_queueing_personal_file = newprofile(first_queueing_personal_file, name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, date, RegID);
-            last_queueing_personal_file = first_queueing_personal_file;
-        }
-        else
-        {
-            last_queueing_personal_file = newprofile(first_queueing_personal_file, name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, date, RegID);
-        }
-        last_queueing_personal_file->priority_num = pri_num;
-        registration_sequence_calculation(last_queueing_personal_file, reg_pro[RegID]);
         fib_heap_insert_key(Queueing_heap, pri_num);
-        priority2ID.add(pri_num, ID);
-        ID2ptr.add(ID, last_queueing_personal_file);
-        queueing_personal_file.push_back(last_queueing_personal_file);
     }
     else
     {
-        if (first_hrisk_personal_file == NULL)
-        {
-            first_hrisk_personal_file = newprofile(first_hrisk_personal_file, name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, date, RegID);
-            last_hrisk_personal_file = first_hrisk_personal_file;
-        }
-        else
-        {
-            last_hrisk_personal_file = newprofile(first_hrisk_personal_file, name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, date, RegID);
-        }
-        last_hrisk_personal_file->priority_num = pri_num;
-        registration_sequence_calculation(last_hrisk_personal_file, reg_pro[RegID]);
         fib_heap_insert_key(hrisk_heap, pri_num);
-        priority2ID.add(pri_num, ID);
-        ID2ptr.add(ID, last_hrisk_personal_file);
-        queueing_personal_file.push_back(last_hrisk_personal_file);
     }
 }
 
@@ -305,17 +264,6 @@ static void DDL_letter(int64_t ID, int64_t DDL)
     {
         int64_t prio_num = ptr->priority_num;
         fib_heap_delete(Queueing_heap, prio_num);
-        if (ptr->previous_node != NULL && ptr->next_node != NULL)
-        {
-            ptr->inoculate_date = DDL;
-            ptr->previous_node->next_node = ptr->next_node;
-            ptr->next_node->previous_node = ptr->previous_node;
-            ptr->previous_node = last_assigned_personal_file;
-        }
-        ptr->next_node = NULL;
-        if (first_assigned_personal_file == NULL)
-            first_assigned_personal_file = ptr;
-        last_assigned_personal_file = ptr;
     }
     assigned_personal_file.push_back(ptr);
     for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)
@@ -378,18 +326,8 @@ static void change_risks(int64_t ID, int64_t Risks)
     ptr->next_node->previous_node = ptr->previous_node;
     if (Risks <= 2)
     {
-        if (first_hrisk_personal_file == last_hrisk_personal_file)
-        {
-            first_hrisk_personal_file = NULL;
-            last_hrisk_personal_file = NULL;
-        }
         fib_heap_delete(hrisk_heap, ptr->priority_num);
         fib_heap_insert_key(Queueing_heap, ptr->priority_num);
-        if (first_queueing_personal_file == NULL)
-            first_queueing_personal_file = ptr;
-        ptr->previous_node = last_queueing_personal_file;
-        last_queueing_personal_file = ptr;
-        ptr->next_node = NULL;
     }
     else
     {
@@ -400,11 +338,11 @@ static void change_risks(int64_t ID, int64_t Risks)
         }
         else
         {
-            for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)
+            for (vector<personal_profile *>::iterator i = delay_personal_file.begin(); i != delay_personal_file.end(); i++)
             {
                 if (*i == ptr)
                 {
-                    queueing_personal_file.erase(i);
+                    delay_personal_file.erase(i);
                     break;
                 }
             }
@@ -426,23 +364,35 @@ static void withdraw(int64_t ID)
         return;
     }
     ptr->once_withdraw = true;
-
+    for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)
+    {
+        if (*i == ptr)
+        {
+            queueing_personal_file.erase(i);
+            break;
+        }
+    }
     if (ptr->is_delay)
     {
-        for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)
+        for (vector<personal_profile *>::iterator i = delay_personal_file.begin(); i != delay_personal_file.end(); i++)
         {
             if (*i == ptr)
             {
-                queueing_personal_file.erase(i);
+                delay_personal_file.erase(i);
                 break;
             }
         }
         queue_waiting--;
     }
-    if (ptr->risk == 3)
+    else if (ptr->risk == 3)
     {
         fib_heap_delete(hrisk_heap, ptr->priority_num);
         queue_waiting--;
+    }
+    else
+    {
+        queue_waiting--;
+        fib_heap_delete(Queueing_heap, ptr->priority_num);
     }
 }
 
@@ -471,6 +421,5 @@ static void next_day()
         cout << "The following is the monthly report\n\n";
         monthly_report();
     }
-
     date++;
 }
