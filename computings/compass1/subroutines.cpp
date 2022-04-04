@@ -73,7 +73,10 @@ bool cmp_by_agegp(personal_profile *file1, personal_profile *file2)
 {
     return file1->agegroup < file2->agegroup;
 }
-
+bool cmp_by_ddl(personal_profile *file1, personal_profile *file2)
+{
+    return file1->inoculate_date < file2->inoculate_date;
+}
 void alloc_for_reg()
 {
     max_num_reg *= 2;
@@ -236,6 +239,7 @@ static void weekly_report(int op)
         cout << "Risk: " << inoculated_personal_file[_]->risk << "\n";
         cout << "Waiting time: " << inoculated_personal_file[_]->inoculate_date - inoculated_personal_file[_]->registrationdate << "\n";
     }
+    sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_ddl);
 }
 
 static void monthly_report()
@@ -247,7 +251,31 @@ static void monthly_report()
     cout << "Withdraw: " << total_reg_person - queue_waiting - assign_waiting - total_treatment << "\n";
 }
 
-static void DDL_letter(int64_t ID, int64_t DDL) {}
+static void DDL_letter(int64_t ID, int64_t DDL)
+{
+    personal_profile *ptr = ID2ptr.retrieve(ID);
+    if (ptr->is_inoculated)
+        return;
+    if (DDL < ptr->inoculate_date)
+    {
+        ptr->inoculate_date = DDL;
+        sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_ddl);
+        return;
+    }
+    int64_t prio_num=ID2priority.retrieve(ID);
+    ptr->inoculate_date = DDL;
+    ptr->previous_node->next_node = ptr->next_node;
+    ptr->next_node->previous_node = ptr->previous_node;
+    ptr->previous_node = last_assigned_personal_file;
+    ptr->next_node = NULL;
+    if (first_assigned_personal_file == NULL)
+        first_assigned_personal_file = ptr;
+    last_assigned_personal_file = ptr;
+    assigned_personal_file.push_back(ptr);
+    sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_ddl);
+    queue_waiting--;
+    assign_waiting++;
+}
 
 static void change_pro(int64_t ID, int64_t prof) {}
 

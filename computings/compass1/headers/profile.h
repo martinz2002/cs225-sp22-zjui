@@ -25,8 +25,8 @@ typedef struct personal_profile
     bool is_inoculated = false;
     bool once_withdraw = false;
 
-    personal_profile *next_node;
-    personal_profile *previous_node;
+    personal_profile *next_node=NULL;
+    personal_profile *previous_node=NULL;
 } personal_profile;
 
 typedef struct registration_profile
