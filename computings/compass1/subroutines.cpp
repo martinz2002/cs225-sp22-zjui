@@ -300,9 +300,26 @@ static void next_day()
 {
     if (date % 7 == 6)
     {
+        int op;
+        cout << "plz choose the type of ordering scheme:\n";
+        cout << "0. order of name\n ";
+        cout << "1. order of agegroup\n";
+        cout << "2. order of profession\n";
+        cin >> op;
+        if (op < 0 || op > 8)
+        {
+            cout << "plz enter a value between 0 and 2\n";
+        }
+        else
+        {
+            cout << "The following is the weekly report\n\n";
+            weekly_report(op);
+        }
     }
     if (date % 30 == 29)
     {
+        cout << "The following is the monthly report\n\n";
+        monthly_report();
     }
 
     date++;

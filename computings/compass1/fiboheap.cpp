@@ -1,7 +1,7 @@
 #include "headers/fiboheap.h"
 /**
- * C语言实现的斐波那契堆
- *
+ * fibonacci heap realized by C
+ *copied from
  * @author skywang
  * @date 2014/04/05
  */
@@ -15,7 +15,7 @@
 static FibNode *fib_heap_search(FibHeap *heap, Type key);
 
 /*
- * 将node从双链表移除
+ * remove nodes from doubly-linked lists
  */
 static void fib_node_remove(FibNode *node)
 {
@@ -23,12 +23,10 @@ static void fib_node_remove(FibNode *node)
     node->right->left = node->left;
 }
 
-/*
- * 将"单个节点node"加入"链表root"之前
+/*add a single "node" before the doubly-linked list "root"
  *   a …… root
  *   a …… node …… root
- *
- * 注意： 此处node是单个节点，而root是双向链表
+
 */
 static void fib_node_add(FibNode *node, FibNode *root)
 {
@@ -38,11 +36,7 @@ static void fib_node_add(FibNode *node, FibNode *root)
     root->left        = node;
 }
 
-/*
- * 将双向链表b链接到双向链表a的后面
- *
- * 注意： 此处a和b都是双向链表
-*/
+/*linked list B to the back of list A*/
 static void fib_node_cat(FibNode *a, FibNode *b)
 {
     FibNode *tmp;
@@ -56,7 +50,7 @@ static void fib_node_cat(FibNode *a, FibNode *b)
 
 
 /*
- * 创建斐波那契堆
+ * create fibonacci heap
  */
 FibHeap* fib_heap_make()
 {
@@ -78,7 +72,7 @@ FibHeap* fib_heap_make()
 }
 
 /*
- * 创建斐波那契堆的节点
+ * create nodes of fibonacci heap
  */
 static FibNode* fib_node_make(Type key)
 {
@@ -101,7 +95,7 @@ static FibNode* fib_node_make(Type key)
 }
 
 /*
- * 将节点node插入到斐波那契堆heap中
+ * insert nodes into fibonacci heap
  */
 static void fib_heap_insert_node(FibHeap *heap, FibNode *node)
 {
@@ -117,7 +111,7 @@ static void fib_heap_insert_node(FibHeap *heap, FibNode *node)
 }
 
 /*
- * 新建键值为key的节点，并将其插入到斐波那契堆中
+ * create a node with key value "key", and insert it into heap
  */
 void fib_heap_insert_key(FibHeap *heap, Type key)
 {
@@ -134,7 +128,7 @@ void fib_heap_insert_key(FibHeap *heap, Type key)
 }
 
 /*
- * 将h1, h2合并成一个堆，并返回合并后的堆
+ * combine h1 and h2 and return the combined heap
  */
 FibHeap* fib_heap_union(FibHeap *h1, FibHeap *h2)
 {
@@ -145,7 +139,7 @@ FibHeap* fib_heap_union(FibHeap *h1, FibHeap *h2)
     if (h2==NULL)
         return h1;
 
-    // 以h1为"母"，将h2附加到h1上；下面是保证h1的度数大，尽可能的少操作。
+    // set h1 as the father heap and attach h2 to h1, the operations below is to make sure the degree of h1 is maximized
     if(h2->maxDegree > h1->maxDegree)
     {
         tmp = h1;
@@ -153,21 +147,21 @@ FibHeap* fib_heap_union(FibHeap *h1, FibHeap *h2)
         h2 = tmp;
     }
 
-    if((h1->min) == NULL)                // h1无"最小节点"
+    if((h1->min) == NULL)                // h1 has no minimum node
     {
         h1->min = h2->min;
         h1->keyNum = h2->keyNum;
         free(h2->cons);
         free(h2);
     }
-    else if((h2->min) == NULL)           // h1有"最小节点" && h2无"最小节点"
+    else if((h2->min) == NULL)           // h1 has minimum node && h2 has no minimum node
     {
         free(h2->cons);
         free(h2);
-    }                                   // h1有"最小节点" && h2有"最小节点"
+    }                                   // h1 has minimum node && h2 has minimum node
     else
     {
-        // 将"h2中根链表"添加到"h1"中
+        // append the root linked list in h2 to h1
         fib_node_cat(h1->min, h2->min);
         if (h1->min->key > h2->min->key)
             h1->min = h2->min;
@@ -180,8 +174,8 @@ FibHeap* fib_heap_union(FibHeap *h1, FibHeap *h2)
 }
 
 /*
- * 将"堆的最小结点"从根链表中移除，
- * 这意味着"将最小节点所属的树"从堆中移除!
+ * remove the minimum node of heap from the root linked list，
+ * which means the tree that the minimum node belongs to is removed from the heap!
  */
 static FibNode *fib_heap_remove_min(FibHeap *heap)
 {
@@ -200,13 +194,13 @@ static FibNode *fib_heap_remove_min(FibHeap *heap)
 }
 
 /*
- * 将node链接到root根结点
+ * link node to the root nodes
  */
 static void fib_heap_link(FibHeap * heap, FibNode * node, FibNode *root)
 {
-    // 将node从双链表中移除
+    // remove node from the doubly linked list
     fib_node_remove(node);
-    // 将node设为root的孩子
+    // set node as the child of root
     if (root->child == NULL)
         root->child = node;
     else
@@ -218,56 +212,55 @@ static void fib_heap_link(FibHeap * heap, FibNode * node, FibNode *root)
 }
 
 /*
- * 创建fib_heap_consolidate所需空间
+ * create space for fib_heap_consolidate
  */
 static void fib_heap_cons_make(FibHeap * heap)
 {
     int old = heap->maxDegree;
 
-    // 计算log2(x)，"+1"意味着向上取整！
-    // ex. log2(13) = 3，向上取整为3+1=4。
+
     heap->maxDegree = LOG2(heap->keyNum) + 1;
 
-    // 如果原本空间不够，则再次分配内存
+    // reallocate the memory if the original space is not enough
     if (old >= heap->maxDegree)
         return ;
 
-    // 因为度为heap->maxDegree可能被合并，所以要maxDegree+1
+    // we need maxDegree+1 since the heap with degree of  heap->maxDegree may be combined
     heap->cons = (FibNode **)realloc(heap->cons,
             sizeof(FibHeap *) * (heap->maxDegree + 1));
 }
 
 /*
- * 合并斐波那契堆的根链表中左右相同度数的树
+ * combine the trees that have same degree on the left side and right side of the fibonacci heap's root linked list
  */
 static void fib_heap_consolidate(FibHeap *heap)
 {
     int i, d, D;
     FibNode *x, *y, *tmp;
 
-    fib_heap_cons_make(heap);//开辟哈希所用空间
+    fib_heap_cons_make(heap);//create the space for hash
     D = heap->maxDegree + 1;
 
     for (i = 0; i < D; i++)
         heap->cons[i] = NULL;
 
-    // 合并相同度的根节点，使每个度数的树唯一
+    // combine the root nodes with the same degree to ensure there is only one tree with certain degree
     while (heap->min != NULL)
     {
-        x = fib_heap_remove_min(heap);    // 取出堆中的最小树(最小节点所在的树)
-        d = x->degree;                    // 获取最小树的度数
-        // heap->cons[d] != NULL，意味着有两棵树(x和y)的"度数"相同。
+        x = fib_heap_remove_min(heap);    // take out the tree that possesses the minimum node
+        d = x->degree;                    // get the degree of the minimum tree's degree
+        // heap->cons[d] != NULL，shows that the degree of x and y are the same
         while (heap->cons[d] != NULL)
         {
-            y = heap->cons[d];            // y是"与x的度数相同的树"
-            if (x->key > y->key)        // 保证x的键值比y小
+            y = heap->cons[d];            // y is the tree that has the same degree with x
+            if (x->key > y->key)        // ensure the key value of x is smaller than y
             {
                 tmp = x;
                 x = y;
                 y = tmp;
 
             }
-            fib_heap_link(heap, y, x);    // 将y链接到x中
+            fib_heap_link(heap, y, x);    // link y to x
             heap->cons[d] = NULL;
             d++;
         }
@@ -275,7 +268,7 @@ static void fib_heap_consolidate(FibHeap *heap)
     }
     heap->min = NULL;
 
-    // 将heap->cons中的结点重新加到根表中
+    // add the nodes in heap->cons to the root list
     for (i=0; i<D; i++)
     {
         if (heap->cons[i] != NULL)
@@ -293,7 +286,7 @@ static void fib_heap_consolidate(FibHeap *heap)
 }
 
 /*
- * 移除最小节点，并返回移除节点后的斐波那契堆
+ * remove the minimum node and return the fibonacci heap whose nodes has been removed
  */
 FibNode* _fib_heap_extract_min(FibHeap *heap)
 {
@@ -302,7 +295,7 @@ FibNode* _fib_heap_extract_min(FibHeap *heap)
 
     FibNode *child = NULL;
     FibNode *min = heap->min;
-    // 将min每一个儿子(儿子和儿子的兄弟)都添加到"斐波那契堆的根链表"中
+    // add every son of "min" to the root linked list of the fibonacci heap
     while (min->child != NULL)
     {
         child = min->child;
@@ -316,9 +309,9 @@ FibNode* _fib_heap_extract_min(FibHeap *heap)
         child->parent = NULL;
     }
 
-    // 将min从根链表中移除
+    // remove min from the root linked list
     fib_node_remove(min);
-    // 若min是堆中唯一节点，则设置堆的最小节点为NULL；
+    // if min is the only node in the heap, 若min是堆中唯一节点，则设置堆的最小节点为NULL；
     // 否则，设置堆的最小节点为一个非空节点(min->right)，然后再进行调节。
     if (min->right == min)
         heap->min = NULL;

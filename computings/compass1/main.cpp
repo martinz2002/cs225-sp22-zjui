@@ -4,6 +4,7 @@ using namespace std;
 int main()
 {
     int type;
+    int registration_point_order = 0;
     do
     {
         cout << "1. Add registration point:\n";
@@ -24,6 +25,7 @@ int main()
             cin >> x;
             cout << "plz provide the y-coordinate of registration point:\n";
             cin >> y;
+            registration_point_order++;
             // reg_reg(x, y);
             break;
         }
@@ -48,7 +50,7 @@ int main()
     do
     {
         cout << "1. Register a new profile\n";
-        cout << "2. Print report\n";
+        cout << "2. Withdrawl\n";
         cout << "3. Change one's profile\n";
         cout << "4. Add one's priority letter\n";
         cout << "5. Start next day\n";
@@ -72,7 +74,13 @@ int main()
             cout << "birthdate";
             cin >> birthdate;
             cout << "regID\n";
+            cout << "it should be larger than 0 and smaller than" << registration_point_order << "\n";
             cin >> regID;
+            if (regID <= 0 || regID > registration_point_order)
+            {
+                cout << "plz enter a value in the range of registration point order\n";
+                break;
+            }
             cout << "address\n";
             cin >> address;
             cout << "phone\n";
@@ -85,21 +93,21 @@ int main()
             cin >> profession;
             if (profession <= 0 || profession > 8)
             {
-                cout << ("plz enter a value between 1 and 8");
+                cout << "plz enter a value between 1 and 8\n";
                 break;
             }
             cout << "agegroup\n";
             cin >> agegroup;
             if (agegroup <= 0 || agegroup > 7)
             {
-                cout << ("plz enter a value between 1 and 7");
+                cout << "plz enter a value between 1 and 7\n";
                 break;
             }
             cout << "risk\n";
             cin >> risk;
-            if (risk <0 || risk > 3)
+            if (risk < 0 || risk > 3)
             {
-                cout << ("plz enter a value between 0 and 3");
+                cout << "plz enter a value between 0 and 3\n";
                 break;
             }
             // add_profile(address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, regID);
@@ -107,7 +115,10 @@ int main()
         }
         case 2:
         {
-            // report();
+            int64_t ID;
+            cout << "plz enter the ID:\n";
+            cin >> ID;
+            withdraw(ID);
             break;
         }
         case 3:
