@@ -57,29 +57,37 @@ static FibHeap *Queueing_heap = new FibHeap; //quene heap
 static FibHeap *hrisk_heap = new FibHeap; //high risk heap
 
 bool compare_by_dist(int64_t num1, int64_t num2)
+// a subroutine for comparation between distance for num1 and num2, return 1 if distance for num1 is the smaller one
 {
     return dist[num1] < dist[num2];
 }
 
 bool cmp_by_name(personal_profile *file1, personal_profile *file2)
+// a subroutine for comparation by email address
 {
     return file1->email < file2->email;
 }
 
 bool cmp_by_pof(personal_profile *file1, personal_profile *file2)
+// a subroutine for comparation by profession
 {
     return file1->profession < file2->profession;
 }
 
 bool cmp_by_agegp(personal_profile *file1, personal_profile *file2)
+// a subroutine for comparation by agegroup
 {
     return file1->agegroup < file2->agegroup;
 }
+
 bool cmp_by_ddl(personal_profile *file1, personal_profile *file2)
+// a subroutine for comparation by inoculation date 
 {
     return file1->inoculate_date < file2->inoculate_date;
 }
+
 void alloc_for_reg()
+//reallocate for larger memory space to contain registration profile
 {
     max_num_reg *= 2;
     registration_profile **new_reg = new registration_profile *[max_num_reg];
@@ -91,6 +99,7 @@ void alloc_for_reg()
 }
 
 void alloc_for_ino()
+///reallocate for larger memory space to contain inoculation profile
 {
     max_num_ino *= 2;
     inoculate_profile **new_ino = new inoculate_profile *[max_num_ino];
@@ -102,6 +111,7 @@ void alloc_for_ino()
 }
 
 static void reg_reg(int64_t x, int64_t y)
+//register a new registration point to the registration profile list
 {
     reg_pro[num_reg] = new registration_profile;
     reg_pro[num_reg]->x_coordinate = x;
@@ -109,10 +119,11 @@ static void reg_reg(int64_t x, int64_t y)
     num_reg++;
     reg_pro[num_reg]->ID = num_reg;
     if (num_reg >= max_num_reg)
-        alloc_for_reg();
+        alloc_for_reg(); //reallocate if more memory space is required
 }
 
 static void reg_ino(int64_t x, int64_t y, int cap)
+//register a new inoculation point to the inoculation profile list
 {
     ino_pro[num_ino] = new inoculate_profile;
     ino_pro[num_ino]->x_coordinate = x;
@@ -122,10 +133,11 @@ static void reg_ino(int64_t x, int64_t y, int cap)
     ino_pro[num_ino]->daily_processnum = cap;
     daily_total += cap;
     if (num_ino >= max_num_ino)
-        alloc_for_ino();
+        alloc_for_ino();//reallocate if more memory space is required
 }
 
 static void calc_reg_dist()
+//calculate the distance between each registration point and inoculation points
 {
     dist = new int64_t[num_ino];
     daily = new int64_t[num_ino];
