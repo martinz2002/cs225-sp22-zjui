@@ -1,15 +1,12 @@
 #include <bits/stdc++.h>
-struct personal_profile
+using std::string;
+typedef struct personal_profile
 {
-public:
-    personal_profile();
-    ~personal_profile();
 
-public:
-    string address = new char[256];
-    string phone = new char[256];
-    string WeChat = new char[256];
-    string email = new char[256];
+    string address;
+    string phone;
+    string WeChat;
+    string email;
     int64_t ID;
     int64_t *vaccination_sequence;
     int profession; // I to VIII
@@ -19,39 +16,29 @@ public:
     int64_t registrationdate;
     int64_t regID;
 
-public:
     personal_profile *next_node;
     personal_profile *previous_node;
-};
+}personal_profile;
 
-struct registration_profile
+typedef struct registration_profile
 {
-public:
-    registration_profile();
-    ~registration_profile();
 
-public:
+
     int64_t ID;
     int64_t *vaccination_sequence;
     int x_coordinate;
     int y_coordinate;
-};
+}registration_profile;
 
-struct inoculate_profile
+typedef struct inoculate_profile
 {
-public:
-    inoculate_profile();
-    ~inoculate_profile();
-
-public:
     int64_t ID;
     int x_coordinate;
     int y_coordinate;
     int daily_processnum;
-
-};
+}inoculate_profile;
 
 static void newprofile(personal_profile *lastnode, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate, int64_t RegID);
 static void change_risk(personal_profile *profile, int risk);
 static void change_profession(personal_profile *profile, int new_profession);
-static void registration_sequence_calculation(personal_profile *p_profile,registration_profile* r_profile);
+static void registration_sequence_calculation(personal_profile *p_profile, registration_profile *r_profile);

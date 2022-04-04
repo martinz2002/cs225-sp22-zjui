@@ -20,6 +20,8 @@ static void newprofile(personal_profile *lastnode, string address, string phone,
         lastnode->next_node = new_profile;
 }
 
+
+
 static void change_profession(personal_profile *profile, int new_profession)
 {
     profile->profession = new_profession;
@@ -32,5 +34,5 @@ static void change_risk(personal_profile *profile, int risk)
 
 static void registration_sequence_calculation(personal_profile *p_profile, registration_profile *r_profile)
 {
-    p_profile->vaccination_sequence=r_profile->vaccination_sequence;
+    p_profile->vaccination_sequence = r_profile->vaccination_sequence;
 }
