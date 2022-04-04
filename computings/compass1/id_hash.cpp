@@ -69,7 +69,7 @@ void hashmap<K, T>::add(K key, T item)
             return;
         }
     }
-    keyarray[index1] = new T;
+    keyarray[index1] = new K;
     reprarray[index1] = item;
     *keyarray[index1] = key;
     numitems++;
@@ -148,7 +148,7 @@ void hashmap<K, T>::rehash(int newsize)
         {
             K item = *keyarray[i];
             T value = reprarray[i];
-            hash<T> hashfunction;
+            hash<K> hashfunction;
             int index = hashfunction(item) % newsize;
             // recompute the new hash value
             while (newkeyarray[index] != 0) // find the first free place, where the entry can be stored in the new hashtable
