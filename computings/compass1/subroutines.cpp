@@ -9,47 +9,59 @@ static int64_t num_reg = 0;
 static int64_t num_ino = 0;
 static int64_t max_num_reg = 20;
 static int64_t max_num_ino = 20;
-static int64_t daily_total = 0;
 
-static int64_t total_reg_person = 0;
-static int64_t queue_waiting = 0;
-static int64_t assign_waiting = 0;
-static int64_t total_treatment = 0;
-static double_t aver_waiting = 0;
+static int64_t daily_total = 0; //the capacity of treatment from all registration points, initialized by 0
 
-static int64_t *daily;
+static int64_t total_reg_person = 0; //number of people that have registered
+static int64_t queue_waiting = 0; //number of people who haven't been inoculated but did not send the priority letter
+static int64_t assign_waiting = 0; //number of people who haven't been inoculated but have already sent the priority letter
+static int64_t total_treatment = 0; //the number of processed people
+static double_t aver_waiting = 0; //the average time of waiting
+
+static int64_t *daily; //the array that contains the inoculation capacity of each inoculation point
 
 static registration_profile **reg_pro = new registration_profile *[20];
 static inoculate_profile **ino_pro = new inoculate_profile *[20];
+//initialization for registration_profile and inoculate_profile
 
-static vector<personal_profile *> queueing_personal_file;
-static personal_profile *first_queueing_personal_file;
-static personal_profile *last_queueing_personal_file;
+static vector<personal_profile *> queueing_personal_file; //the quene of the waiting people
+static personal_profile *first_queueing_personal_file; //the beginning of the quene
+static personal_profile *last_queueing_personal_file; //the end of the quene
+
 
 static vector<personal_profile *> delay_personal_file;
 
-static personal_profile *first_hrisk_personal_file;
-static personal_profile *last_hrisk_personal_file;
+static personal_profile *first_hrisk_personal_file; //the beginning of the high risk quene
+static personal_profile *last_hrisk_personal_file; //the end of the high risk quene
 
-static vector<personal_profile *> inoculated_personal_file;
-static personal_profile *first_inoculated_personal_file;
-static personal_profile *last_inoculated_personal_file;
 
-static personal_profile *first_withdraw_personal_file;
-static personal_profile *last_withdraw_personal_file;
+static vector<personal_profile *> inoculated_personal_file; //the quene of the inoculated people
+static personal_profile *first_inoculated_personal_file; //the beginning of the quene
+static personal_profile *last_inoculated_personal_file; //the end of the quene
 
-static vector<personal_profile *> assigned_personal_file;
-static personal_profile *first_assigned_personal_file;
-static personal_profile *last_assigned_personal_file;
 
-static int64_t *dist;
 
-static hashmap<int64_t, int64_t> priority2ID = hashmap<int64_t, int64_t>(20);
+static personal_profile *first_delay_personal_file; //the beginning of thr delay list
+static personal_profile *last_delay_personal_file; //the end of the delay list
 
-static hashmap<int64_t, personal_profile *> ID2ptr = hashmap<int64_t, personal_profile *>(20);
+static personal_profile *first_withdraw_personal_file; //the beginning of the withdrawal list
+static personal_profile *last_withdraw_personal_file; //the end of withdrawal list
 
-static FibHeap *Queueing_heap = new FibHeap;
-static FibHeap *hrisk_heap = new FibHeap;
+static vector<personal_profile *> assigned_personal_file; //the quene of the people who have written priority letter
+static personal_profile *first_assigned_personal_file; //the beginning of ~
+static personal_profile *last_assigned_personal_file; //the end of ~
+
+static int64_t *dist; //the temporary distance sequence 
+
+
+
+static hashmap<int64_t, int64_t> priority2ID = hashmap<int64_t, int64_t>(20); //hashmap from priority to ID
+
+
+static hashmap<int64_t, personal_profile *> ID2ptr = hashmap<int64_t, personal_profile *>(20); //hashmap from ID to personal profile
+
+static FibHeap *Queueing_heap = new FibHeap; //quene heap
+static FibHeap *hrisk_heap = new FibHeap; //high risk heap
 
 bool compare_by_dist(int64_t num1, int64_t num2)
 {
