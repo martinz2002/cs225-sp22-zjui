@@ -7,10 +7,10 @@ public:
     ~personal_profile();
 
 public:
-    string address = new char[256];
-    string phone = new char[256];
-    string WeChat = new char[256];
-    string email = new char[256];
+    string address;
+    string phone;
+    string WeChat;
+    string email;
     int64_t ID;
     int64_t *vaccination_sequence;
     int profession; // I to VIII
@@ -49,10 +49,9 @@ public:
     int x_coordinate;
     int y_coordinate;
     int daily_processnum;
-
 };
 
 static void newprofile(personal_profile *lastnode, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate, int64_t RegID);
 static void change_risk(personal_profile *profile, int risk);
 static void change_profession(personal_profile *profile, int new_profession);
-static void registration_sequence_calculation(personal_profile *p_profile,registration_profile* r_profile);
+static void registration_sequence_calculation(personal_profile *p_profile, registration_profile *r_profile);
