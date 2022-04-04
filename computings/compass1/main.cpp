@@ -3,7 +3,6 @@ using namespace std;
 
 int main()
 {
-    static int date = 0;
     int type;
     do
     {
@@ -66,14 +65,12 @@ int main()
         case 1:
         {
             string address, phone, WeChat, email;
-            int64_t ID, birthdate, registrationdate, regID;
+            int64_t ID, birthdate, regID;
             int risk, profession, agegroup;
             cout << "ID\n";
             cin >> ID;
             cout << "birthdate";
             cin >> birthdate;
-            cout << "registrationdate\n";
-            cin >> registrationdate;
             cout << "regID\n";
             cin >> regID;
             cout << "address\n";
@@ -105,7 +102,7 @@ int main()
                 cout << ("plz enter a value between 0 and 3");
                 break;
             }
-            // add_profile(address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, registrationdate, regID);
+            // add_profile(address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, regID);
             break;
         }
         case 2:

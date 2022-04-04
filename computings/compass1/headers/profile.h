@@ -43,7 +43,7 @@ typedef struct inoculate_profile
 }inoculate_profile;
 
 
-static void newprofile(personal_profile *lastnode, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate, int64_t RegID);
+static personal_profile* newprofile(personal_profile *lastnode, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate, int64_t RegID);
 static void change_risk(personal_profile *profile, int risk);
 static void change_profession(personal_profile *profile, int new_profession);
 static void registration_sequence_calculation(personal_profile *p_profile, registration_profile *r_profile);

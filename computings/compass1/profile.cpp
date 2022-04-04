@@ -1,6 +1,6 @@
 #include "headers/profile.h"
 using std::string;
-static void newprofile(personal_profile *lastnode, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate, int64_t RegID)
+static personal_profile* newprofile(personal_profile *lastnode, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate, int64_t RegID)
 {
     personal_profile *new_profile = new personal_profile;
     new_profile->ID = ID;
@@ -18,6 +18,7 @@ static void newprofile(personal_profile *lastnode, string address, string phone,
     new_profile->previous_node = lastnode;
     if (lastnode != NULL)
         lastnode->next_node = new_profile;
+    return new_profile;
 }
 
 
