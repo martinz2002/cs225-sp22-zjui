@@ -256,27 +256,43 @@ static void DDL_letter(int64_t ID, int64_t DDL)
     }
     if (ptr->is_inoculated)
         return;
-    if (DDL < ptr->inoculate_date)
+    if (ptr->is_assigned && DDL < ptr->inoculate_date)
     {
         ptr->inoculate_date = DDL;
         sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_ddl);
         return;
     }
-    if (ptr->inoculate_date != -1)
+    if (ptr->inoculate_date != -1 && !ptr->is_delay)
         return;
-    int64_t prio_num = ptr->priority_num;
-    fib_heap_delete(Queueing_heap, prio_num);
-    if (ptr->previous_node != NULL && ptr->next_node != NULL)
+
+    if (ptr->is_delay)
     {
-        ptr->inoculate_date = DDL;
-        ptr->previous_node->next_node = ptr->next_node;
-        ptr->next_node->previous_node = ptr->previous_node;
-        ptr->previous_node = last_assigned_personal_file;
+        for (vector<personal_profile *>::iterator i = delay_personal_file.begin(); i != delay_personal_file.end(); i++)
+        {
+            if (*i == ptr)
+            {
+                delay_personal_file.erase(i);
+                break;
+            }
+        }
+        ptr->is_delay = false;
     }
-    ptr->next_node = NULL;
-    if (first_assigned_personal_file == NULL)
-        first_assigned_personal_file = ptr;
-    last_assigned_personal_file = ptr;
+    else
+    {
+        int64_t prio_num = ptr->priority_num;
+        fib_heap_delete(Queueing_heap, prio_num);
+        if (ptr->previous_node != NULL && ptr->next_node != NULL)
+        {
+            ptr->inoculate_date = DDL;
+            ptr->previous_node->next_node = ptr->next_node;
+            ptr->next_node->previous_node = ptr->previous_node;
+            ptr->previous_node = last_assigned_personal_file;
+        }
+        ptr->next_node = NULL;
+        if (first_assigned_personal_file == NULL)
+            first_assigned_personal_file = ptr;
+        last_assigned_personal_file = ptr;
+    }
     assigned_personal_file.push_back(ptr);
     for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)
     {
@@ -289,6 +305,7 @@ static void DDL_letter(int64_t ID, int64_t DDL)
     sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_ddl);
     queue_waiting--;
     assign_waiting++;
+    ptr->is_assigned = true;
 }
 
 static void change_pro(int64_t ID, int64_t prof)
@@ -322,7 +339,7 @@ static void change_risks(int64_t ID, int64_t Risks)
     if (Risks == ptr->risk)
         return;
 
-    if (ptr->inoculate_date != -1)
+    if (ptr->inoculate_date != -1 && !ptr->is_delay)
     {
         ptr->risk = Risks;
         return;
@@ -352,13 +369,57 @@ static void change_risks(int64_t ID, int64_t Risks)
     }
     else
     {
-        fib_heap_delete(Queueing_heap, ptr->priority_num);
-        fib_heap_insert_key(hrisk_heap, ptr->priority_num);
+        if (!ptr->is_delay)
+        {
+            fib_heap_delete(Queueing_heap, ptr->priority_num);
+            fib_heap_insert_key(hrisk_heap, ptr->priority_num);
+        }
+        else
+        {
+            for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)
+            {
+                if (*i == ptr)
+                {
+                    queueing_personal_file.erase(i);
+                    break;
+                }
+            }
+            fib_heap_insert_key(hrisk_heap, ptr->priority_num);
+        }
     }
 }
 
 static void withdraw(int64_t ID)
 {
+    personal_profile *ptr = ID2ptr.retrieve(ID);
+    if (ptr == NULL)
+    {
+        cout << "Fake ID!\n";
+        return;
+    }
+    if (ptr->is_inoculated || ptr->once_withdraw)
+    {
+        return;
+    }
+    ptr->once_withdraw = true;
+
+    if (ptr->is_delay)
+    {
+        for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)
+        {
+            if (*i == ptr)
+            {
+                queueing_personal_file.erase(i);
+                break;
+            }
+        }
+        queue_waiting--;
+    }
+    if (ptr->risk == 3)
+    {
+        fib_heap_delete(hrisk_heap, ptr->priority_num);
+        queue_waiting--;
+    }
 }
 
 static void next_day()
