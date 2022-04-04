@@ -1,7 +1,10 @@
 #include <bits/stdc++.h>
+
 using std::string;
 typedef struct personal_profile
+
 {
+
 
     string address;
     string phone;
@@ -36,7 +39,9 @@ typedef struct inoculate_profile
     int x_coordinate;
     int y_coordinate;
     int daily_processnum;
+
 }inoculate_profile;
+
 
 static void newprofile(personal_profile *lastnode, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate, int64_t RegID);
 static void change_risk(personal_profile *profile, int risk);
