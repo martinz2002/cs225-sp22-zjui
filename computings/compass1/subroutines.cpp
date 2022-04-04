@@ -39,7 +39,15 @@ static void reg_reg(int64_t x, int64_t y)
         alloc_for_reg();
 }
 
-static void reg_ino(int64_t x, int64_t y, int cap) {}
+static void reg_ino(int64_t x, int64_t y, int cap)
+{
+    ino_pro[num_ino] = new inoculate_profile;
+    ino_pro[num_ino]->x_coordinate = x;
+    ino_pro[num_ino]->y_coordinate = y;
+    num_ino++;
+    if (num_ino >= max_num_ino)
+        alloc_for_ino();
+}
 
 static void add_profile(string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate, int64_t RegID) {}
 
