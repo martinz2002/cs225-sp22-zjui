@@ -1,7 +1,7 @@
 #include "headers/profile.h"
-void add_profile(profile *lastnode, char *address, char *phone, char *WeChat, char *email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate)
+static void newprofile(personal_profile *lastnode, char *address, char *phone, char *WeChat, char *email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate, int64_t RegID)
 {
-    profile *new_profile = new profile;
+    personal_profile *new_profile = new personal_profile;
     new_profile->ID = ID;
     new_profile->address = address;
     new_profile->agegroup = agegroup;
@@ -12,21 +12,24 @@ void add_profile(profile *lastnode, char *address, char *phone, char *WeChat, ch
     new_profile->next_node = NULL;
     new_profile->phone = phone;
     new_profile->WeChat = WeChat;
-    new_profile->previous_node = lastnode;
-    lastnode->next_node = new_profile;
     new_profile->risk = risk;
+    new_profile->regID = RegID;
+    new_profile->previous_node = lastnode;
+    if (lastnode != NULL)
+        lastnode->next_node = new_profile;
 }
 
-void change_profession(profile *profile, int new_profession)
+static void change_profession(personal_profile *profile, int new_profession)
 {
     profile->profession = new_profession;
 }
 
-void change_risk(profile *profile, int risk)
+static void change_risk(personal_profile *profile, int risk)
 {
     profile->risk = risk;
 }
 
-void registration_sequence_calculation(profile *profile)
+static void registration_sequence_calculation(personal_profile *p_profile, registration_profile *r_profile)
 {
+    p_profile->vaccination_sequence=r_profile->vaccination_sequence;
 }
