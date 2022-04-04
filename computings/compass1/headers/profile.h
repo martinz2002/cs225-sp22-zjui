@@ -15,7 +15,7 @@ typedef struct personal_profile
     int64_t ID; // 1-3
     int64_t *vaccination_sequence;
     int profession; // I to VIII
-    int risk;
+    int risk; //0-3
     int agegroup; // 1-7
     int64_t birthdate;
     int64_t registrationdate;

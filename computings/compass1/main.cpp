@@ -143,14 +143,30 @@ int main()
             {
                 cout << "plz enter the changed profession value:\n";
                 cin >> profession;
-                // change_pro(ID, profession);
+                if (profession <= 0 || profession > 8)
+                {
+                    cout << "plz enter a value between 1 and 8\n";
+                    break;
+                }
+                else
+                {
+                    // change_pro(ID, profession);
+                }
                 break;
             }
             case 2:
             {
                 cout << "plz enter the changed risk value:\n";
                 cin >> risk;
-                // change_risks(ID, risk);
+                if (risk < 0 || risk > 3)
+                {
+                    cout << "plz enter a value between 0 and 3\n";
+                    break;
+                }
+                else
+                {
+                    // change_risks(ID, risk);
+                }
                 break;
             }
             }
