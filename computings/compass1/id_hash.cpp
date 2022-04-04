@@ -109,13 +109,13 @@ T hashmap<K, T>::retrieve(K key)
         index1++;
         if (index1 % maxsize != index1)
         {
-            return -1;
+            return NULL;
         }
     }
     if (keyarray[index1])
         return reprarray[index1];
     else
-        return -1;
+        return NULL;
     /* This member function needs to be implemented. Adapt the corresponding function on hashsets. */
 }
 

@@ -45,8 +45,6 @@ static personal_profile *last_assigned_personal_file;
 
 static int64_t *dist;
 
-static hashmap<int64_t, int64_t> ID2priority = hashmap<int64_t, int64_t>(20);
-
 static hashmap<int64_t, int64_t> priority2ID = hashmap<int64_t, int64_t>(20);
 
 static hashmap<int64_t, personal_profile *> ID2ptr = hashmap<int64_t, personal_profile *>(20);
@@ -144,7 +142,7 @@ static void add_profile(string name, string address, string phone, string WeChat
 {
     int64_t pri_num;
     pri_num = profession << 40 + agegroup << 33 + date;
-    if (ID2priority.member(ID, pri_num))
+    if (ID2ptr.retrieve(ID)!=NULL)
     {
         cout << "Already Registered!\n";
         return;
@@ -166,7 +164,6 @@ static void add_profile(string name, string address, string phone, string WeChat
         last_queueing_personal_file->priority_num = pri_num;
         registration_sequence_calculation(last_queueing_personal_file, reg_pro[RegID]);
         fib_heap_insert_key(Queueing_heap, pri_num);
-        ID2priority.add(ID, pri_num);
         priority2ID.add(pri_num, ID);
         ID2ptr.add(ID, last_queueing_personal_file);
         queueing_personal_file.push_back(last_queueing_personal_file);
@@ -185,7 +182,6 @@ static void add_profile(string name, string address, string phone, string WeChat
         last_hrisk_personal_file->priority_num = pri_num;
         registration_sequence_calculation(last_hrisk_personal_file, reg_pro[RegID]);
         fib_heap_insert_key(hrisk_heap, pri_num);
-        ID2priority.add(ID, pri_num);
         priority2ID.add(pri_num, ID);
         ID2ptr.add(ID, last_hrisk_personal_file);
         queueing_personal_file.push_back(last_hrisk_personal_file);
@@ -262,7 +258,10 @@ static void DDL_letter(int64_t ID, int64_t DDL)
         sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_ddl);
         return;
     }
-    int64_t prio_num=ID2priority.retrieve(ID);
+    if (ptr->inoculate_date != -1)
+        return;
+    int64_t prio_num = ptr->priority_num;
+    fib_heap_delete(Queueing_heap, prio_num);
     ptr->inoculate_date = DDL;
     ptr->previous_node->next_node = ptr->next_node;
     ptr->next_node->previous_node = ptr->previous_node;
@@ -277,7 +276,19 @@ static void DDL_letter(int64_t ID, int64_t DDL)
     assign_waiting++;
 }
 
-static void change_pro(int64_t ID, int64_t prof) {}
+static void change_pro(int64_t ID, int64_t prof)
+{
+    personal_profile *ptr = ID2ptr.retrieve(ID);
+    if (prof == ptr->profession)
+        return;
+    int64_t pre_prio_num = ptr->priority_num, now_prio_num = prof << 40 + ptr->agegroup << 33 + ptr->registrationdate;
+    ptr->priority_num = now_prio_num;
+    ptr->profession = prof;
+    priority2ID.remove(pre_prio_num);
+    priority2ID.add(now_prio_num, ID);
+    if (ptr->inoculate_date != -1)
+        return;
+}
 
 static void change_risks(int64_t ID, int64_t Risks) {}
 
