@@ -24,9 +24,10 @@ typedef struct personal_profile
     int64_t priority_num;
     bool is_inoculated = false;
     bool once_withdraw = false;
+    bool is_delay = false;
 
-    personal_profile *next_node=NULL;
-    personal_profile *previous_node=NULL;
+    personal_profile *next_node = NULL;
+    personal_profile *previous_node = NULL;
 } personal_profile;
 
 typedef struct registration_profile

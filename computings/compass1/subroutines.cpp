@@ -26,15 +26,14 @@ static vector<personal_profile *> queueing_personal_file;
 static personal_profile *first_queueing_personal_file;
 static personal_profile *last_queueing_personal_file;
 
+static vector<personal_profile *> delay_personal_file;
+
 static personal_profile *first_hrisk_personal_file;
 static personal_profile *last_hrisk_personal_file;
 
 static vector<personal_profile *> inoculated_personal_file;
 static personal_profile *first_inoculated_personal_file;
 static personal_profile *last_inoculated_personal_file;
-
-static personal_profile *first_delay_personal_file;
-static personal_profile *last_delay_personal_file;
 
 static personal_profile *first_withdraw_personal_file;
 static personal_profile *last_withdraw_personal_file;
@@ -142,7 +141,7 @@ static void add_profile(string name, string address, string phone, string WeChat
 {
     int64_t pri_num;
     pri_num = profession << 40 + agegroup << 33 + date;
-    if (ID2ptr.retrieve(ID)!=NULL)
+    if (ID2ptr.retrieve(ID) != NULL)
     {
         cout << "Already Registered!\n";
         return;
@@ -250,6 +249,11 @@ static void monthly_report()
 static void DDL_letter(int64_t ID, int64_t DDL)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
+    if (ptr == NULL)
+    {
+        cout << "Fake ID!\n";
+        return;
+    }
     if (ptr->is_inoculated)
         return;
     if (DDL < ptr->inoculate_date)
@@ -262,15 +266,26 @@ static void DDL_letter(int64_t ID, int64_t DDL)
         return;
     int64_t prio_num = ptr->priority_num;
     fib_heap_delete(Queueing_heap, prio_num);
-    ptr->inoculate_date = DDL;
-    ptr->previous_node->next_node = ptr->next_node;
-    ptr->next_node->previous_node = ptr->previous_node;
-    ptr->previous_node = last_assigned_personal_file;
+    if (ptr->previous_node != NULL && ptr->next_node != NULL)
+    {
+        ptr->inoculate_date = DDL;
+        ptr->previous_node->next_node = ptr->next_node;
+        ptr->next_node->previous_node = ptr->previous_node;
+        ptr->previous_node = last_assigned_personal_file;
+    }
     ptr->next_node = NULL;
     if (first_assigned_personal_file == NULL)
         first_assigned_personal_file = ptr;
     last_assigned_personal_file = ptr;
     assigned_personal_file.push_back(ptr);
+    for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)
+    {
+        if (*i == ptr)
+        {
+            queueing_personal_file.erase(i);
+            break;
+        }
+    }
     sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_ddl);
     queue_waiting--;
     assign_waiting++;
@@ -279,6 +294,11 @@ static void DDL_letter(int64_t ID, int64_t DDL)
 static void change_pro(int64_t ID, int64_t prof)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
+    if (ptr == NULL)
+    {
+        cout << "Fake ID!\n";
+        return;
+    }
     if (prof == ptr->profession)
         return;
     int64_t pre_prio_num = ptr->priority_num, now_prio_num = prof << 40 + ptr->agegroup << 33 + ptr->registrationdate;
@@ -288,9 +308,54 @@ static void change_pro(int64_t ID, int64_t prof)
     priority2ID.add(now_prio_num, ID);
     if (ptr->inoculate_date != -1)
         return;
+    fib_heap_update(Queueing_heap, pre_prio_num, now_prio_num);
 }
 
-static void change_risks(int64_t ID, int64_t Risks) {}
+static void change_risks(int64_t ID, int64_t Risks)
+{
+    personal_profile *ptr = ID2ptr.retrieve(ID);
+    if (ptr == NULL)
+    {
+        cout << "Fake ID!\n";
+        return;
+    }
+    if (Risks == ptr->risk)
+        return;
+
+    if (ptr->inoculate_date != -1)
+    {
+        ptr->risk = Risks;
+        return;
+    }
+
+    if (Risks <= 2 && ptr->risk <= 2)
+    {
+        ptr->risk = Risks;
+        return;
+    }
+    ptr->previous_node->next_node = ptr->next_node;
+    ptr->next_node->previous_node = ptr->previous_node;
+    if (Risks <= 2)
+    {
+        if (first_hrisk_personal_file == last_hrisk_personal_file)
+        {
+            first_hrisk_personal_file = NULL;
+            last_hrisk_personal_file = NULL;
+        }
+        fib_heap_delete(hrisk_heap, ptr->priority_num);
+        fib_heap_insert_key(Queueing_heap, ptr->priority_num);
+        if (first_queueing_personal_file == NULL)
+            first_queueing_personal_file = ptr;
+        ptr->previous_node = last_queueing_personal_file;
+        last_queueing_personal_file = ptr;
+        ptr->next_node = NULL;
+    }
+    else
+    {
+        fib_heap_delete(Queueing_heap, ptr->priority_num);
+        fib_heap_insert_key(hrisk_heap, ptr->priority_num);
+    }
+}
 
 static void withdraw(int64_t ID)
 {
