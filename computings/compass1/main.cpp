@@ -93,21 +93,21 @@ int main()
             cin >> profession;
             if (profession <= 0 || profession > 8)
             {
-                cout << "plz enter a value between 1 and 8";
+                cout << "plz enter a value between 1 and 8\n";
                 break;
             }
             cout << "agegroup\n";
             cin >> agegroup;
             if (agegroup <= 0 || agegroup > 7)
             {
-                cout << "plz enter a value between 1 and 7";
+                cout << "plz enter a value between 1 and 7\n";
                 break;
             }
             cout << "risk\n";
             cin >> risk;
             if (risk < 0 || risk > 3)
             {
-                cout << "plz enter a value between 0 and 3";
+                cout << "plz enter a value between 0 and 3\n";
                 break;
             }
             // add_profile(address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, regID);
