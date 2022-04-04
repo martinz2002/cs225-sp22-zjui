@@ -5,50 +5,73 @@
 using namespace std;
 
 static int32_t date = 0;
-int64_t num_reg = 0;
-int64_t num_ino = 0;
-int64_t max_num_reg = 20;
-int64_t max_num_ino = 20;
-int64_t daily_total = 0;
+static int64_t num_reg = 0;
+static int64_t num_ino = 0;
+static int64_t max_num_reg = 20;
+static int64_t max_num_ino = 20;
+static int64_t daily_total = 0;
 
-int64_t *daily;
+static int64_t total_reg_person = 0;
+static int64_t queue_waiting = 0;
+static int64_t assign_waiting = 0;
+static int64_t total_treatment = 0;
+static double_t aver_waiting = 0;
 
-registration_profile **reg_pro = new registration_profile *[20];
-inoculate_profile **ino_pro = new inoculate_profile *[20];
+static int64_t *daily;
 
-list<personal_profile *> queueing_personal_file;
-personal_profile *first_queueing_personal_file;
-personal_profile *last_queueing_personal_file;
+static registration_profile **reg_pro = new registration_profile *[20];
+static inoculate_profile **ino_pro = new inoculate_profile *[20];
 
-list<personal_profile *> hrisk_personal_file;
-personal_profile *first_hrisk_personal_file;
-personal_profile *last_hrisk_personal_file;
+static vector<personal_profile *> queueing_personal_file;
+static personal_profile *first_queueing_personal_file;
+static personal_profile *last_queueing_personal_file;
 
-list<personal_profile *> inoculated_personal_file;
-personal_profile *first_inoculated_personal_file;
-personal_profile *last_inoculated_personal_file;
+static personal_profile *first_hrisk_personal_file;
+static personal_profile *last_hrisk_personal_file;
 
-personal_profile *first_delay_personal_file;
-personal_profile *last_delay_personal_file;
+static vector<personal_profile *> inoculated_personal_file;
+static personal_profile *first_inoculated_personal_file;
+static personal_profile *last_inoculated_personal_file;
 
-list<personal_profile *> withdraw_personal_file;
-personal_profile *first_withdraw_personal_file;
-personal_profile *last_withdraw_personal_file;
+static personal_profile *first_delay_personal_file;
+static personal_profile *last_delay_personal_file;
 
-int64_t *dist;
+static personal_profile *first_withdraw_personal_file;
+static personal_profile *last_withdraw_personal_file;
 
-hashmap<int64_t, int64_t> ID2priority = hashmap<int64_t, int64_t>(20);
+static vector<personal_profile *> assigned_personal_file;
+static personal_profile *first_assigned_personal_file;
+static personal_profile *last_assigned_personal_file;
 
-hashmap<int64_t, int64_t> priority2ID = hashmap<int64_t, int64_t>(20);
+static int64_t *dist;
 
-hashmap<int64_t, personal_profile *> ID2ptr = hashmap<int64_t, personal_profile *>(20);
+static hashmap<int64_t, int64_t> ID2priority = hashmap<int64_t, int64_t>(20);
 
-FibHeap *Queueing_heap = new FibHeap;
-FibHeap *hrisk_heap = new FibHeap;
+static hashmap<int64_t, int64_t> priority2ID = hashmap<int64_t, int64_t>(20);
+
+static hashmap<int64_t, personal_profile *> ID2ptr = hashmap<int64_t, personal_profile *>(20);
+
+static FibHeap *Queueing_heap = new FibHeap;
+static FibHeap *hrisk_heap = new FibHeap;
 
 bool compare_by_dist(int64_t num1, int64_t num2)
 {
     return dist[num1] < dist[num2];
+}
+
+bool cmp_by_name(personal_profile *file1, personal_profile *file2)
+{
+    return file1->email < file2->email;
+}
+
+bool cmp_by_pof(personal_profile *file1, personal_profile *file2)
+{
+    return file1->profession < file2->profession;
+}
+
+bool cmp_by_agegp(personal_profile *file1, personal_profile *file2)
+{
+    return file1->agegroup < file2->agegroup;
 }
 
 void alloc_for_reg()
@@ -114,7 +137,7 @@ static void calc_reg_dist()
         sort(reg_pro[_]->vaccination_sequence, reg_pro[_]->vaccination_sequence + num_ino, compare_by_dist);
     }
 }
-static void add_profile(string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t RegID)
+static void add_profile(string name, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t RegID)
 {
     int64_t pri_num;
     pri_num = profession << 40 + agegroup << 33 + date;
@@ -123,17 +146,19 @@ static void add_profile(string address, string phone, string WeChat, string emai
         cout << "Already Registered!\n";
         return;
     }
+    total_reg_person++;
+    queue_waiting++;
     if (risk <= 2)
     {
 
         if (first_queueing_personal_file == NULL)
         {
-            first_queueing_personal_file = newprofile(first_queueing_personal_file, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, date, RegID);
+            first_queueing_personal_file = newprofile(first_queueing_personal_file, name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, date, RegID);
             last_queueing_personal_file = first_queueing_personal_file;
         }
         else
         {
-            last_queueing_personal_file = newprofile(first_queueing_personal_file, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, date, RegID);
+            last_queueing_personal_file = newprofile(first_queueing_personal_file, name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, date, RegID);
         }
         last_queueing_personal_file->priority_num = pri_num;
         registration_sequence_calculation(last_queueing_personal_file, reg_pro[RegID]);
@@ -141,17 +166,18 @@ static void add_profile(string address, string phone, string WeChat, string emai
         ID2priority.add(ID, pri_num);
         priority2ID.add(pri_num, ID);
         ID2ptr.add(ID, last_queueing_personal_file);
+        queueing_personal_file.push_back(last_queueing_personal_file);
     }
     else
     {
         if (first_hrisk_personal_file == NULL)
         {
-            first_hrisk_personal_file = newprofile(first_hrisk_personal_file, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, date, RegID);
+            first_hrisk_personal_file = newprofile(first_hrisk_personal_file, name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, date, RegID);
             last_hrisk_personal_file = first_hrisk_personal_file;
         }
         else
         {
-            last_hrisk_personal_file = newprofile(first_hrisk_personal_file, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, date, RegID);
+            last_hrisk_personal_file = newprofile(first_hrisk_personal_file, name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, date, RegID);
         }
         last_hrisk_personal_file->priority_num = pri_num;
         registration_sequence_calculation(last_hrisk_personal_file, reg_pro[RegID]);
@@ -159,17 +185,86 @@ static void add_profile(string address, string phone, string WeChat, string emai
         ID2priority.add(ID, pri_num);
         priority2ID.add(pri_num, ID);
         ID2ptr.add(ID, last_hrisk_personal_file);
+        queueing_personal_file.push_back(last_hrisk_personal_file);
     }
 }
 
-static void weekly_report() {}
+static void weekly_report(int op)
+{
 
-static void monthly_report() {}
+    switch (op)
+    {
+    case 0:
+        sort(queueing_personal_file.begin(), queueing_personal_file.end(), cmp_by_name);
+        sort(inoculated_personal_file.begin(), inoculated_personal_file.end(), cmp_by_name);
+        sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_name);
+        break;
+    case 1:
+        sort(queueing_personal_file.begin(), queueing_personal_file.end(), cmp_by_agegp);
+        sort(inoculated_personal_file.begin(), inoculated_personal_file.end(), cmp_by_agegp);
+        sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_agegp);
+        break;
+    case 2:
+        sort(queueing_personal_file.begin(), queueing_personal_file.end(), cmp_by_pof);
+        sort(inoculated_personal_file.begin(), inoculated_personal_file.end(), cmp_by_pof);
+        sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_pof);
+        break;
+    default:
+        return;
+    }
+    for (int _ = 0; _ < queue_waiting; _++)
+    {
+        cout << "\nName:" << queueing_personal_file[_]->name << "\n";
+        cout << "Age group:" << queueing_personal_file[_]->agegroup << "\n";
+        cout << "Profession:" << queueing_personal_file[_]->profession << "\n";
+        cout << "Risk:" << queueing_personal_file[_]->risk << "\n";
+        cout << "Waiting time until now:" << date - queueing_personal_file[_]->registrationdate << "\n";
+    }
+    for (int _ = 0; _ < assign_waiting; _++)
+    {
+        cout << "\nName:" << assigned_personal_file[_]->name << "\n";
+        cout << "Age group:" << assigned_personal_file[_]->agegroup << "\n";
+        cout << "Profession:" << assigned_personal_file[_]->profession << "\n";
+        cout << "Risk:" << assigned_personal_file[_]->risk << "\n";
+        cout << "Waiting time until now:" << date - assigned_personal_file[_]->registrationdate << "\n";
+    }
+    for (int _ = 0; _ < total_treatment; _++)
+    {
+        cout << "\nName: " << inoculated_personal_file[_]->name << "\n";
+        cout << "Age group: " << inoculated_personal_file[_]->agegroup << "\n";
+        cout << "Profession: " << inoculated_personal_file[_]->profession << "\n";
+        cout << "Risk: " << inoculated_personal_file[_]->risk << "\n";
+        cout << "Waiting time: " << inoculated_personal_file[_]->inoculate_date - inoculated_personal_file[_]->registrationdate << "\n";
+    }
+}
+
+static void monthly_report()
+{
+    cout << "\nTotal Registered: " << total_reg_person << "\n";
+    cout << "Waiting in queue: " << queue_waiting << "\n";
+    cout << "Waiting in total: " << assign_waiting + queue_waiting << "\n";
+    cout << "Treatment appointments: " << assign_waiting << "\n";
+    cout << "Withdraw: " << total_reg_person - queue_waiting - assign_waiting - total_treatment << "\n";
+}
 
 static void DDL_letter(int64_t ID, int64_t DDL) {}
-
-static void next_day() {}
 
 static void change_pro(int64_t ID, int64_t prof) {}
 
 static void change_risks(int64_t ID, int64_t Risks) {}
+
+static void withdraw(int64_t ID)
+{
+}
+
+static void next_day()
+{
+    if (date % 7 == 6)
+    {
+    }
+    if (date % 30 == 29)
+    {
+    }
+
+    date++;
+}
