@@ -11,7 +11,7 @@ public:
     string phone;
     string WeChat;
     string email;
-    int64_t ID;
+    int64_t ID; //1-3
     int64_t *vaccination_sequence;
     int profession; // I to VIII
     int risk;
