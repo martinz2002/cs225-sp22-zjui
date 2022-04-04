@@ -1,5 +1,6 @@
 #include "headers/profile.h"
-static void newprofile(personal_profile *lastnode, char *address, char *phone, char *WeChat, char *email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate, int64_t RegID)
+using std::string;
+static void newprofile(personal_profile *lastnode, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate, int64_t RegID)
 {
     personal_profile *new_profile = new personal_profile;
     new_profile->ID = ID;
