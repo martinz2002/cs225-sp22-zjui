@@ -1,6 +1,6 @@
 #include "headers/profile.h"
 using std::string;
-static personal_profile* newprofile(personal_profile *lastnode, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate, int64_t RegID)
+extern personal_profile* newprofile(personal_profile *lastnode, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate, int64_t RegID)
 {
     personal_profile *new_profile = new personal_profile;
     new_profile->ID = ID;
@@ -23,17 +23,17 @@ static personal_profile* newprofile(personal_profile *lastnode, string address, 
 
 
 
-static void change_profession(personal_profile *profile, int new_profession)
+extern void change_profession(personal_profile *profile, int new_profession)
 {
     profile->profession = new_profession;
 }
 
-static void change_risk(personal_profile *profile, int risk)
+extern void change_risk(personal_profile *profile, int risk)
 {
     profile->risk = risk;
 }
 
-static void registration_sequence_calculation(personal_profile *p_profile, registration_profile *r_profile)
+extern void registration_sequence_calculation(personal_profile *p_profile, registration_profile *r_profile)
 {
     p_profile->vaccination_sequence = r_profile->vaccination_sequence;
 }
