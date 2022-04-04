@@ -17,3 +17,7 @@ static void report();
 static void DDL_letter(int64_t ID,int64_t DDL);
 
 static void next_day();
+
+static void change_pro(int64_t ID,int64_t prof);
+
+static void change_risks(int64_t ID,int64_t Risks);
