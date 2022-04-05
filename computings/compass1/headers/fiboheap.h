@@ -30,7 +30,8 @@ void fib_heap_delete(FibHeap *heap, Type key);
 // 移除最小节点
 void fib_heap_extract_min(FibHeap *heap);
 // 更新heap的中的oldkey为newkey
-void fib_heap_update(FibHeap *heap, Type oldkey, Type newkey); // 将h1, h2合并成一个堆，并返回合并后的堆
+void fib_heap_update(FibHeap *heap, Type oldkey, Type newkey); 
+// 将h1, h2合并成一个堆，并返回合并后的堆
 FibHeap *fib_heap_union(FibHeap *h1, FibHeap *h2);
 // 在斐波那契堆heap中是否存在键值为key的节点；存在返回1，否则返回0。
 int fib_heap_contains(FibHeap *heap, Type key);

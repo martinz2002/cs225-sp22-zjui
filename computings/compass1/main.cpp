@@ -1,4 +1,4 @@
-#include "headers/subroutines.h"
+#include "subroutines.cpp"
 using namespace std;
 
 int main()
@@ -26,7 +26,7 @@ int main()
             cout << "plz provide the y-coordinate of registration point:\n";
             cin >> y;
             registration_point_order++;
-            // reg_reg(x, y);
+            reg_reg(x, y);
             break;
         }
         case 2:
@@ -38,13 +38,13 @@ int main()
             cin >> y;
             cout << "plz provide the daily capacity of inoculation of the very point:\n";
             cin >> c;
-            // reg_ino(x, y, c);
+            reg_ino(x, y, c);
             break;
         }
         }
     } while (type != 3);
 
-    // calc_reg_dist();
+    calc_reg_dist();
 
     int op;
     do
@@ -66,7 +66,7 @@ int main()
         {
         case 1:
         {
-            string address, phone, WeChat, email;
+            string name, address, phone, WeChat, email;
             int64_t ID, birthdate, regID;
             int risk, profession, agegroup;
             cout << "ID\n";
@@ -83,6 +83,8 @@ int main()
             }
             cout << "address\n";
             cin >> address;
+            cout << "name\n";
+            cin >> name;
             cout << "phone\n";
             cin >> phone;
             cout << "WeChat\n";
@@ -110,7 +112,7 @@ int main()
                 cout << "plz enter a value between 0 and 3\n";
                 break;
             }
-            // add_profile(address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, regID);
+            add_profile(name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, regID);
             break;
         }
         case 2:
@@ -150,7 +152,7 @@ int main()
                 }
                 else
                 {
-                    // change_pro(ID, profession);
+                    change_pro(ID, profession);
                 }
                 break;
             }
@@ -165,7 +167,7 @@ int main()
                 }
                 else
                 {
-                    // change_risks(ID, risk);
+                    change_risks(ID, risk);
                 }
                 break;
             }
@@ -180,12 +182,12 @@ int main()
             cin >> ID;
             cout << "plz enter the corresponding requested due date:\n";
             cin >> DDL;
-            // DDL_letter(ID, DDL);
+            DDL_letter(ID, DDL);
             break;
         }
         case 5:
         {
-            // next_day();
+            next_day();
         }
         }
     } while (op != 6);

@@ -21,4 +21,5 @@ static void change_pro(int64_t ID, int64_t prof);
 static void change_risks(int64_t ID, int64_t Risks);
 
 static void withdraw(int64_t ID);
+
 #endif

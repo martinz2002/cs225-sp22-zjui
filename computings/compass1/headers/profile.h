@@ -20,6 +20,7 @@ typedef struct personal_profile
     int64_t birthdate;
     int64_t registrationdate;
     int64_t regID;
+    int64_t inoID;
     int64_t inoculate_date = -1;
     int64_t priority_num;
     bool is_inoculated = false;

@@ -54,7 +54,7 @@ bool compare_by_dist(int64_t num1, int64_t num2)
 bool cmp_by_name(personal_profile *file1, personal_profile *file2)
 // a subroutine for comparation by email address
 {
-    return file1->email < file2->email;
+    return file1->name < file2->name;
 }
 
 bool cmp_by_pof(personal_profile *file1, personal_profile *file2)
@@ -105,8 +105,8 @@ static void reg_reg(int64_t x, int64_t y)
     reg_pro[num_reg] = new registration_profile;
     reg_pro[num_reg]->x_coordinate = x;
     reg_pro[num_reg]->y_coordinate = y;
-    num_reg++;
     reg_pro[num_reg]->ID = num_reg;
+    num_reg++;
     if (num_reg >= max_num_reg)
         alloc_for_reg(); // reallocate if more memory space is required
 }
@@ -117,9 +117,9 @@ static void reg_ino(int64_t x, int64_t y, int cap)
     ino_pro[num_ino] = new inoculate_profile;
     ino_pro[num_ino]->x_coordinate = x;
     ino_pro[num_ino]->y_coordinate = y;
-    num_ino++;
     ino_pro[num_ino]->ID = num_ino;
     ino_pro[num_ino]->daily_processnum = cap;
+    num_ino++;
     daily_total += cap;
     if (num_ino >= max_num_ino)
         alloc_for_ino(); // reallocate if more memory space is required
@@ -436,6 +436,7 @@ static void withdraw(int64_t ID)
         }
         queue_waiting--;
     }
+    withdraw_personal_file.push_back(ptr);
     ptr->is_assigned = false;
     ptr->once_withdraw = false;
     ptr->is_delay = false;
@@ -444,22 +445,160 @@ static void withdraw(int64_t ID)
 
 void treat_assigned(int64_t *copy_daily, int64_t *copy_total)
 {
+    vector<personal_profile *>::iterator i = assigned_personal_file.begin();
     personal_profile *ptr;
-    int64_t prio_num;
-    while (*copy_total >= 0 && Queueing_heap->min != NULL)
+    int64_t ino_id = 0;
+    while (*copy_total > 0 && !assigned_personal_file.empty())
     {
-        prio_num=priority2ID.re
+        ptr = *i;
+        ptr->is_inoculated = true;
+        ptr->is_assigned = false;
+        ptr->once_withdraw = false;
+        ptr->is_delay = false;
+        ptr->withdraw = false;
+        ptr->inoculate_date = date;
+        while (copy_daily[ptr->vaccination_sequence[ino_id]] <= 0)
+        {
+            ino_id++;
+        }
+        copy_daily[ptr->vaccination_sequence[ino_id]]--;
+        ptr->inoID = ptr->vaccination_sequence[ino_id];
+        *copy_total--;
+        assign_waiting--;
+        aver_waiting = (aver_waiting * total_treatment + date - ptr->registrationdate) / (total_treatment + 1);
+        total_treatment++;
+        i = assigned_personal_file.erase(i);
+        inoculated_personal_file.push_back(ptr);
     }
 }
 
 void treat_queue(int64_t *copy_daily, int64_t *copy_total)
 {
+    vector<personal_profile *>::iterator i = queueing_personal_file.begin();
+    int64_t ino_id = 0;
+    personal_profile *ptr;
+    int64_t *prio_num, id;
+    while (*copy_total >= 0 && fib_heap_get_min(Queueing_heap, prio_num))
+    {
+        fib_heap_extract_min(Queueing_heap);
+        id = priority2ID.retrieve(*prio_num);
+        ptr = ID2ptr.retrieve(id);
+        if (ptr->risk <= 1 && ptr->once_withdraw == false)
+        {
+            ptr->is_inoculated = true;
+            ptr->is_assigned = false;
+            ptr->once_withdraw = false;
+            ptr->is_delay = false;
+            ptr->withdraw = false;
+            ptr->inoculate_date = date;
+            while (copy_daily[ptr->vaccination_sequence[ino_id]] <= 0)
+            {
+                ino_id++;
+            }
+            copy_daily[ptr->vaccination_sequence[ino_id]]--;
+            ptr->inoID = ptr->vaccination_sequence[ino_id];
+            *copy_total--;
+            queue_waiting--;
+            aver_waiting = (aver_waiting * total_treatment + date - ptr->registrationdate) / (total_treatment + 1);
+            total_treatment++;
+            while (*i != ptr)
+            {
+                i++;
+            }
+            queueing_personal_file.erase(i);
+            i = queueing_personal_file.begin();
+            inoculated_personal_file.push_back(ptr);
+        }
+        else
+        {
+            ptr->is_inoculated = false;
+            ptr->is_assigned = false;
+            ptr->is_delay = true;
+            ptr->withdraw = false;
+            int64_t delay = date;
+            if (ptr->risk == 2)
+            {
+                delay += 30;
+            }
+            else
+            {
+                delay += 14;
+            }
+            ptr->inoculate_date = delay;
+            delay_personal_file.push_back(ptr);
+            sort(delay_personal_file.begin(), delay_personal_file.end(), cmp_by_ddl);
+        }
+    }
 }
 void treat_delay(int64_t *copy_daily, int64_t *copy_total)
 {
+    vector<personal_profile *>::iterator i = delay_personal_file.begin();
+    personal_profile *ptr;
+    int64_t ino_id = 0;
+    while (*copy_total > 0 && !delay_personal_file.empty() && (*i)->inoculate_date <= date)
+    {
+        ptr = *i;
+        ptr->is_inoculated = true;
+        ptr->is_assigned = false;
+        ptr->once_withdraw = false;
+        ptr->is_delay = false;
+        ptr->withdraw = false;
+        ptr->inoculate_date = date;
+        while (copy_daily[ptr->vaccination_sequence[ino_id]] <= 0)
+        {
+            ino_id++;
+        }
+        copy_daily[ptr->vaccination_sequence[ino_id]]--;
+        ptr->inoID = ptr->vaccination_sequence[ino_id];
+        *copy_total--;
+        queue_waiting--;
+        aver_waiting = (aver_waiting * total_treatment + date - ptr->registrationdate) / (total_treatment + 1);
+        total_treatment++;
+        i = delay_personal_file.erase(i);
+        inoculated_personal_file.push_back(ptr);
+    }
 }
+
 void treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
 {
+    if (!delay_personal_file.empty())
+    {
+        return;
+    }
+    vector<personal_profile *>::iterator i = queueing_personal_file.begin();
+    int64_t ino_id = 0;
+    personal_profile *ptr;
+    int64_t *prio_num, id;
+    while (*copy_total >= 0 && fib_heap_get_min(hrisk_heap, prio_num))
+    {
+        fib_heap_extract_min(hrisk_heap);
+        id = priority2ID.retrieve(*prio_num);
+        ptr = ID2ptr.retrieve(id);
+
+        ptr->is_inoculated = true;
+        ptr->is_assigned = false;
+        ptr->once_withdraw = false;
+        ptr->is_delay = false;
+        ptr->withdraw = false;
+        ptr->inoculate_date = date;
+        while (copy_daily[ptr->vaccination_sequence[ino_id]] <= 0)
+        {
+            ino_id++;
+        }
+        copy_daily[ptr->vaccination_sequence[ino_id]]--;
+        ptr->inoID = ptr->vaccination_sequence[ino_id];
+        *copy_total--;
+        queue_waiting--;
+        aver_waiting = (aver_waiting * total_treatment + date - ptr->registrationdate) / (total_treatment + 1);
+        total_treatment++;
+        while (*i != ptr)
+        {
+            i++;
+        }
+        queueing_personal_file.erase(i);
+        i = queueing_personal_file.begin();
+        inoculated_personal_file.push_back(ptr);
+    }
 }
 static void next_day()
 {
