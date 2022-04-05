@@ -12,11 +12,11 @@ typedef struct personal_profile
     string phone;
     string WeChat;
     string email;
-    int64_t ID; // 1-3
+    int64_t ID; 
     int64_t *vaccination_sequence;
     int profession; // I to VIII
-    int risk; //0-3
-    int agegroup; // 1-7
+    int risk;       // 0-3
+    int agegroup;   // 1-7
     int64_t birthdate;
     int64_t registrationdate;
     int64_t regID;
@@ -25,6 +25,7 @@ typedef struct personal_profile
     bool is_inoculated = false;
     bool once_withdraw = false;
     bool is_delay = false;
+    bool withdraw = false;
     bool is_assigned = false;
 
     personal_profile *next_node = NULL;

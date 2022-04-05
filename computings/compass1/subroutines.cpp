@@ -70,13 +70,13 @@ bool cmp_by_agegp(personal_profile *file1, personal_profile *file2)
 }
 
 bool cmp_by_ddl(personal_profile *file1, personal_profile *file2)
-// a subroutine for comparation by inoculation date 
+// a subroutine for comparation by inoculation date
 {
     return file1->inoculate_date < file2->inoculate_date;
 }
 
 void alloc_for_reg()
-//reallocate for larger memory space to contain registration profile
+// reallocate for larger memory space to contain registration profile
 {
     max_num_reg *= 2;
     registration_profile **new_reg = new registration_profile *[max_num_reg];
@@ -88,7 +88,7 @@ void alloc_for_reg()
 }
 
 void alloc_for_ino()
-///reallocate for larger memory space to contain inoculation profile
+/// reallocate for larger memory space to contain inoculation profile
 {
     max_num_ino *= 2;
     inoculate_profile **new_ino = new inoculate_profile *[max_num_ino];
@@ -100,7 +100,7 @@ void alloc_for_ino()
 }
 
 static void reg_reg(int64_t x, int64_t y)
-//register a new registration point to the registration profile list
+// register a new registration point to the registration profile list
 {
     reg_pro[num_reg] = new registration_profile;
     reg_pro[num_reg]->x_coordinate = x;
@@ -108,11 +108,11 @@ static void reg_reg(int64_t x, int64_t y)
     num_reg++;
     reg_pro[num_reg]->ID = num_reg;
     if (num_reg >= max_num_reg)
-        alloc_for_reg(); //reallocate if more memory space is required
+        alloc_for_reg(); // reallocate if more memory space is required
 }
 
 static void reg_ino(int64_t x, int64_t y, int cap)
-//register a new inoculation point to the inoculation profile list
+// register a new inoculation point to the inoculation profile list
 {
     ino_pro[num_ino] = new inoculate_profile;
     ino_pro[num_ino]->x_coordinate = x;
@@ -122,11 +122,11 @@ static void reg_ino(int64_t x, int64_t y, int cap)
     ino_pro[num_ino]->daily_processnum = cap;
     daily_total += cap;
     if (num_ino >= max_num_ino)
-        alloc_for_ino();//reallocate if more memory space is required
+        alloc_for_ino(); // reallocate if more memory space is required
 }
 
 static void calc_reg_dist()
-//calculate the distance between each registration point and inoculation points
+// calculate the distance between each registration point and inoculation points
 {
     dist = new int64_t[num_ino];
     daily = new int64_t[num_ino];
@@ -146,7 +146,7 @@ static void calc_reg_dist()
 static void add_profile(string name, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t RegID)
 {
     int64_t pri_num;
-    pri_num = profession << 40 + agegroup << 33 + date;
+    pri_num = profession << 50 + agegroup << 45 + date << 20 + total_reg_person;
     if (ID2ptr.retrieve(ID) != NULL)
     {
         cout << "Already Registered!\n";
@@ -245,9 +245,10 @@ static void DDL_letter(int64_t ID, int64_t DDL)
         sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_ddl);
         return;
     }
-    if (ptr->inoculate_date != -1 && !ptr->is_delay)
+    else if (ptr->is_assigned)
+    {
         return;
-
+    }
     if (ptr->is_delay)
     {
         for (vector<personal_profile *>::iterator i = delay_personal_file.begin(); i != delay_personal_file.end(); i++)
@@ -258,26 +259,53 @@ static void DDL_letter(int64_t ID, int64_t DDL)
                 break;
             }
         }
-        ptr->is_delay = false;
+        for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)
+        {
+            if (*i == ptr)
+            {
+                queueing_personal_file.erase(i);
+                break;
+            }
+        }
+        queue_waiting--;
+    }
+    else if (ptr->withdraw)
+    {
+        for (vector<personal_profile *>::iterator i = withdraw_personal_file.begin(); i != withdraw_personal_file.end(); i++)
+        {
+            if (*i == ptr)
+            {
+                withdraw_personal_file.erase(i);
+                break;
+            }
+        }
     }
     else
     {
         int64_t prio_num = ptr->priority_num;
-        fib_heap_delete(Queueing_heap, prio_num);
+        if (ptr->risk != 3)
+            fib_heap_delete(Queueing_heap, prio_num);
+        else
+            fib_heap_delete(hrisk_heap, ptr->priority_num);
+
+        for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)
+        {
+            if (*i == ptr)
+            {
+                queueing_personal_file.erase(i);
+                break;
+            }
+        }
+        queue_waiting--;
     }
     assigned_personal_file.push_back(ptr);
-    for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)
-    {
-        if (*i == ptr)
-        {
-            queueing_personal_file.erase(i);
-            break;
-        }
-    }
     sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_ddl);
-    queue_waiting--;
     assign_waiting++;
     ptr->is_assigned = true;
+    ptr->is_inoculated = false;
+    ptr->once_withdraw = false;
+    ptr->is_delay = false;
+    ptr->withdraw = false;
 }
 
 static void change_pro(int64_t ID, int64_t prof)
@@ -290,14 +318,17 @@ static void change_pro(int64_t ID, int64_t prof)
     }
     if (prof == ptr->profession)
         return;
-    int64_t pre_prio_num = ptr->priority_num, now_prio_num = prof << 40 + ptr->agegroup << 33 + ptr->registrationdate;
+    int64_t pre_prio_num = ptr->priority_num, now_prio_num = prof << 50 + ptr->agegroup << 45 + ptr->registrationdate << 20 + total_reg_person;
     ptr->priority_num = now_prio_num;
     ptr->profession = prof;
     priority2ID.remove(pre_prio_num);
     priority2ID.add(now_prio_num, ID);
-    if (ptr->inoculate_date != -1)
+    if (ptr->is_delay || ptr->withdraw || ptr->is_inoculated || ptr->is_assigned)
         return;
-    fib_heap_update(Queueing_heap, pre_prio_num, now_prio_num);
+    if (ptr->risk != 3)
+        fib_heap_update(Queueing_heap, pre_prio_num, now_prio_num);
+    else
+        fib_heap_update(hrisk_heap, pre_prio_num, now_prio_num);
 }
 
 static void change_risks(int64_t ID, int64_t Risks)
@@ -311,7 +342,7 @@ static void change_risks(int64_t ID, int64_t Risks)
     if (Risks == ptr->risk)
         return;
 
-    if (ptr->inoculate_date != -1 && !ptr->is_delay)
+    if (ptr->is_assigned || ptr->withdraw || ptr->is_inoculated)
     {
         ptr->risk = Risks;
         return;
@@ -322,8 +353,6 @@ static void change_risks(int64_t ID, int64_t Risks)
         ptr->risk = Risks;
         return;
     }
-    ptr->previous_node->next_node = ptr->next_node;
-    ptr->next_node->previous_node = ptr->previous_node;
     if (Risks <= 2)
     {
         fib_heap_delete(hrisk_heap, ptr->priority_num);
@@ -346,6 +375,7 @@ static void change_risks(int64_t ID, int64_t Risks)
                     break;
                 }
             }
+            ptr->is_delay = false;
             fib_heap_insert_key(hrisk_heap, ptr->priority_num);
         }
     }
@@ -359,43 +389,72 @@ static void withdraw(int64_t ID)
         cout << "Fake ID!\n";
         return;
     }
-    if (ptr->is_inoculated || ptr->once_withdraw)
+    if (ptr->is_inoculated || ptr->withdraw)
     {
         return;
     }
-    ptr->once_withdraw = true;
-    for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)
+    if (ptr->is_assigned)
     {
-        if (*i == ptr)
-        {
-            queueing_personal_file.erase(i);
-            break;
-        }
-    }
-    if (ptr->is_delay)
-    {
-        for (vector<personal_profile *>::iterator i = delay_personal_file.begin(); i != delay_personal_file.end(); i++)
+        for (vector<personal_profile *>::iterator i = assigned_personal_file.begin(); i != assigned_personal_file.end(); i++)
         {
             if (*i == ptr)
             {
-                delay_personal_file.erase(i);
+                assigned_personal_file.erase(i);
                 break;
             }
         }
-        queue_waiting--;
-    }
-    else if (ptr->risk == 3)
-    {
-        fib_heap_delete(hrisk_heap, ptr->priority_num);
-        queue_waiting--;
+        assign_waiting--;
     }
     else
     {
+        for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)
+        {
+            if (*i == ptr)
+            {
+                queueing_personal_file.erase(i);
+                break;
+            }
+        }
+        if (ptr->is_delay)
+        {
+            for (vector<personal_profile *>::iterator i = delay_personal_file.begin(); i != delay_personal_file.end(); i++)
+            {
+                if (*i == ptr)
+                {
+                    delay_personal_file.erase(i);
+                    break;
+                }
+            }
+        }
+        else if (ptr->risk == 3)
+        {
+            fib_heap_delete(hrisk_heap, ptr->priority_num);
+        }
+        else
+        {
+            fib_heap_delete(Queueing_heap, ptr->priority_num);
+        }
         queue_waiting--;
-        fib_heap_delete(Queueing_heap, ptr->priority_num);
     }
+    ptr->is_assigned = false;
+    ptr->once_withdraw = false;
+    ptr->is_delay = false;
+    ptr->withdraw = true;
 }
 
+void treat_assigned(int64_t *copy_daily, int64_t *copy_total)
+{
+}
+
+void treat_queue(int64_t *copy_daily, int64_t *copy_total)
+{
+}
+void treat_delay(int64_t *copy_daily, int64_t *copy_total)
+{
+}
+void treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
+{
+}
 static void next_day()
 {
     if (date % 7 == 6)
@@ -421,5 +480,13 @@ static void next_day()
         cout << "The following is the monthly report\n\n";
         monthly_report();
     }
+    int64_t copy_daily[num_ino];
+    int64_t *copy_total;
+    *copy_total = daily_total;
+    memcpy(copy_daily, daily, num_ino * sizeof(int64_t));
+    treat_assigned(copy_daily, copy_total);
+    treat_queue(copy_daily, copy_total);
+    treat_delay(copy_daily, copy_total);
+    treat_hrisk(copy_daily, copy_total);
     date++;
 }
