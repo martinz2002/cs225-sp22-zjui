@@ -626,7 +626,7 @@ static void next_day()
         cout << "1. order of agegroup\n";
         cout << "2. order of profession\n";
         cin >> op;
-        while (op < 0 || op > 8)
+        while (op < 0 || op > 2)
         {
             cout << "plz enter a value between 0 and 2\n";
             cin >> op;
