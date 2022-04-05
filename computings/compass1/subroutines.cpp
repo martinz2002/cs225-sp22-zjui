@@ -42,8 +42,8 @@ static hashmap<int64_t, int64_t> priority2ID = hashmap<int64_t, int64_t>(20); //
 
 static hashmap<int64_t, personal_profile *> ID2ptr = hashmap<int64_t, personal_profile *>(20); // hashmap from ID to personal profile
 
-static FibHeap *Queueing_heap = new FibHeap; // quene heap
-static FibHeap *hrisk_heap = new FibHeap;    // high risk heap
+static FibHeap *Queueing_heap = fib_heap_make(); // quene heap
+static FibHeap *hrisk_heap = fib_heap_make();    // high risk heap
 
 bool compare_by_dist(int64_t num1, int64_t num2)
 // a subroutine for comparation between distance for num1 and num2, return 1 if distance for num1 is the smaller one
@@ -444,6 +444,12 @@ static void withdraw(int64_t ID)
 
 void treat_assigned(int64_t *copy_daily, int64_t *copy_total)
 {
+    personal_profile *ptr;
+    int64_t prio_num;
+    while (*copy_total >= 0 && Queueing_heap->min != NULL)
+    {
+        prio_num=priority2ID.re
+    }
 }
 
 void treat_queue(int64_t *copy_daily, int64_t *copy_total)
