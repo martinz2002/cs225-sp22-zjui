@@ -24,7 +24,7 @@ static registration_profile **reg_pro = new registration_profile *[20];
 static inoculate_profile **ino_pro = new inoculate_profile *[20];
 // initialization for registration_profile and inoculate_profile
 
-static personal_profile *my_personal_file = NULL;
+personal_profile *my_personal_file = NULL;
 
 static vector<personal_profile *> queueing_personal_file; // the quene of the waiting people
 
@@ -146,7 +146,13 @@ static void calc_reg_dist()
 static void add_profile(string name, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t RegID)
 {
     int64_t pri_num;
-    pri_num = profession << 50 + agegroup << 45 + date << 20 + total_reg_person;
+    pri_num = profession;
+    pri_num <<= 5;
+    pri_num += agegroup;
+    pri_num <<= 25;
+    pri_num += date;
+    pri_num <<= 20;
+    pri_num += total_reg_person;
     if (ID2ptr.retrieve(ID) != NULL)
     {
         cout << "Already Registered!\n";
@@ -193,6 +199,7 @@ static void weekly_report(int op)
     default:
         return;
     }
+    cout << "Queue Waiting: \n";
     for (int _ = 0; _ < queue_waiting; _++)
     {
         cout << "\nName:" << queueing_personal_file[_]->name << "\n";
@@ -201,6 +208,7 @@ static void weekly_report(int op)
         cout << "Risk:" << queueing_personal_file[_]->risk << "\n";
         cout << "Waiting time until now:" << date - queueing_personal_file[_]->registrationdate << "\n";
     }
+    cout << "\nAssigned Waiting: \n";
     for (int _ = 0; _ < assign_waiting; _++)
     {
         cout << "\nName:" << assigned_personal_file[_]->name << "\n";
@@ -209,6 +217,7 @@ static void weekly_report(int op)
         cout << "Risk:" << assigned_personal_file[_]->risk << "\n";
         cout << "Waiting time until now:" << date - assigned_personal_file[_]->registrationdate << "\n";
     }
+    cout << "\nTreatment: \n";
     for (int _ = 0; _ < total_treatment; _++)
     {
         cout << "\nName: " << inoculated_personal_file[_]->name << "\n";
@@ -448,7 +457,7 @@ void treat_assigned(int64_t *copy_daily, int64_t *copy_total)
     vector<personal_profile *>::iterator i = assigned_personal_file.begin();
     personal_profile *ptr;
     int64_t ino_id = 0;
-    while (*copy_total > 0 && !assigned_personal_file.empty())
+    while ((*copy_total) > 0 && !assigned_personal_file.empty())
     {
         ptr = *i;
         ptr->is_inoculated = true;
@@ -463,7 +472,7 @@ void treat_assigned(int64_t *copy_daily, int64_t *copy_total)
         }
         copy_daily[ptr->vaccination_sequence[ino_id]]--;
         ptr->inoID = ptr->vaccination_sequence[ino_id];
-        *copy_total--;
+        (*copy_total)--;
         assign_waiting--;
         aver_waiting = (aver_waiting * total_treatment + date - ptr->registrationdate) / (total_treatment + 1);
         total_treatment++;
@@ -477,7 +486,7 @@ void treat_queue(int64_t *copy_daily, int64_t *copy_total)
     vector<personal_profile *>::iterator i = queueing_personal_file.begin();
     int64_t ino_id = 0;
     personal_profile *ptr;
-    int64_t *prio_num, id;
+    int64_t *prio_num = new int64_t, id;
     while (*copy_total >= 0 && fib_heap_get_min(Queueing_heap, prio_num))
     {
         fib_heap_extract_min(Queueing_heap);
@@ -497,7 +506,7 @@ void treat_queue(int64_t *copy_daily, int64_t *copy_total)
             }
             copy_daily[ptr->vaccination_sequence[ino_id]]--;
             ptr->inoID = ptr->vaccination_sequence[ino_id];
-            *copy_total--;
+            (*copy_total)--;
             queue_waiting--;
             aver_waiting = (aver_waiting * total_treatment + date - ptr->registrationdate) / (total_treatment + 1);
             total_treatment++;
@@ -532,12 +541,13 @@ void treat_queue(int64_t *copy_daily, int64_t *copy_total)
 }
 void treat_delay(int64_t *copy_daily, int64_t *copy_total)
 {
-    vector<personal_profile *>::iterator i = delay_personal_file.begin();
+    vector<personal_profile *>::iterator i = queueing_personal_file.begin();
+    vector<personal_profile *>::iterator i_d = delay_personal_file.begin();
     personal_profile *ptr;
     int64_t ino_id = 0;
-    while (*copy_total > 0 && !delay_personal_file.empty() && (*i)->inoculate_date <= date)
+    while ((*copy_total) > 0 && !delay_personal_file.empty() && (*i_d)->inoculate_date <= date)
     {
-        ptr = *i;
+        ptr = *i_d;
         ptr->is_inoculated = true;
         ptr->is_assigned = false;
         ptr->once_withdraw = false;
@@ -550,11 +560,17 @@ void treat_delay(int64_t *copy_daily, int64_t *copy_total)
         }
         copy_daily[ptr->vaccination_sequence[ino_id]]--;
         ptr->inoID = ptr->vaccination_sequence[ino_id];
-        *copy_total--;
+        (*copy_total)--;
         queue_waiting--;
         aver_waiting = (aver_waiting * total_treatment + date - ptr->registrationdate) / (total_treatment + 1);
         total_treatment++;
-        i = delay_personal_file.erase(i);
+        i_d = delay_personal_file.erase(i_d);
+        while (*i != ptr)
+        {
+            i++;
+        }
+        queueing_personal_file.erase(i);
+        i = queueing_personal_file.begin();
         inoculated_personal_file.push_back(ptr);
     }
 }
@@ -568,8 +584,8 @@ void treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
     vector<personal_profile *>::iterator i = queueing_personal_file.begin();
     int64_t ino_id = 0;
     personal_profile *ptr;
-    int64_t *prio_num, id;
-    while (*copy_total >= 0 && fib_heap_get_min(hrisk_heap, prio_num))
+    int64_t *prio_num = new int64_t, id;
+    while ((*copy_total) >= 0 && fib_heap_get_min(hrisk_heap, prio_num))
     {
         fib_heap_extract_min(hrisk_heap);
         id = priority2ID.retrieve(*prio_num);
@@ -587,7 +603,7 @@ void treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
         }
         copy_daily[ptr->vaccination_sequence[ino_id]]--;
         ptr->inoID = ptr->vaccination_sequence[ino_id];
-        *copy_total--;
+        (*copy_total)--;
         queue_waiting--;
         aver_waiting = (aver_waiting * total_treatment + date - ptr->registrationdate) / (total_treatment + 1);
         total_treatment++;
@@ -610,15 +626,13 @@ static void next_day()
         cout << "1. order of agegroup\n";
         cout << "2. order of profession\n";
         cin >> op;
-        if (op < 0 || op > 8)
+        while (op < 0 || op > 8)
         {
             cout << "plz enter a value between 0 and 2\n";
+            cin >> op;
         }
-        else
-        {
-            cout << "The following is the weekly report\n\n";
-            weekly_report(op);
-        }
+        cout << "The following is the weekly report\n\n";
+        weekly_report(op);
     }
     if (date % 30 == 29)
     {
@@ -626,7 +640,7 @@ static void next_day()
         monthly_report();
     }
     int64_t copy_daily[num_ino];
-    int64_t *copy_total;
+    int64_t *copy_total = new int64_t;
     *copy_total = daily_total;
     memcpy(copy_daily, daily, num_ino * sizeof(int64_t));
     treat_assigned(copy_daily, copy_total);

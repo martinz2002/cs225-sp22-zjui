@@ -11,9 +11,10 @@ int main()
         cout << "2. Add inoculation point:\n";
         cout << "3. Start program\n";
         cin >> type;
-        if (type != 1 && type != 2 && type != 3)
+        while (type != 1 && type != 2 && type != 3)
         {
             cout << "You must choose 1 or 2 or 3\n";
+            cin >> type;
         }
 
         switch (type)
@@ -71,15 +72,15 @@ int main()
             int risk, profession, agegroup;
             cout << "ID\n";
             cin >> ID;
-            cout << "birthdate";
+            cout << "birthdate\n";
             cin >> birthdate;
             cout << "regID\n";
-            cout << "it should be larger than 0 and smaller than" << registration_point_order << "\n";
+            cout << "it should be larger than 0 and smaller and equal than " << registration_point_order << "\n";
             cin >> regID;
-            if (regID <= 0 || regID > registration_point_order)
+            while (regID <= 0 || regID > registration_point_order)
             {
                 cout << "plz enter a value in the range of registration point order\n";
-                break;
+                cin >> regID;
             }
             cout << "address\n";
             cin >> address;
@@ -93,26 +94,26 @@ int main()
             cin >> email;
             cout << "profession\n";
             cin >> profession;
-            if (profession <= 0 || profession > 8)
+            while (profession <= 0 || profession > 8)
             {
                 cout << "plz enter a value between 1 and 8\n";
-                break;
+                cin >> profession;
             }
             cout << "agegroup\n";
             cin >> agegroup;
-            if (agegroup <= 0 || agegroup > 7)
+            while (agegroup <= 0 || agegroup > 7)
             {
                 cout << "plz enter a value between 1 and 7\n";
-                break;
+                cin >> agegroup;
             }
             cout << "risk\n";
             cin >> risk;
-            if (risk < 0 || risk > 3)
+            while (risk < 0 || risk > 3)
             {
                 cout << "plz enter a value between 0 and 3\n";
-                break;
+                cin >> risk;
             }
-            add_profile(name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, regID);
+            add_profile(name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, regID-1);
             break;
         }
         case 2:
@@ -145,30 +146,24 @@ int main()
             {
                 cout << "plz enter the changed profession value:\n";
                 cin >> profession;
-                if (profession <= 0 || profession > 8)
+                while (profession <= 0 || profession > 8)
                 {
                     cout << "plz enter a value between 1 and 8\n";
-                    break;
-                }
-                else
-                {
-                    change_pro(ID, profession);
-                }
+                    cin >> profession;
+                }            
+                change_pro(ID, profession);
                 break;
             }
             case 2:
             {
                 cout << "plz enter the changed risk value:\n";
                 cin >> risk;
-                if (risk < 0 || risk > 3)
+                while (risk < 0 || risk > 3)
                 {
                     cout << "plz enter a value between 0 and 3\n";
-                    break;
+                    cin >> risk;
                 }
-                else
-                {
-                    change_risks(ID, risk);
-                }
+                change_risks(ID, risk);
                 break;
             }
             }
