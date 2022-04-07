@@ -69,11 +69,11 @@ int main()
         cout << "7. Quit\n";
         cin >> op;
 
-        if (op != 1 && op != 2 && op != 3 && op != 4 && op != 5 && op != 6)
+        if (op != 1 && op != 2 && op != 3 && op != 4 && op != 5 && op != 6&& op != 7)
         {
-            cout << "You must choose 1 or 2 or 3 or 4 or 5 or 6\n";
+            cout << "You must choose 1 or 2 or 3 or 4 or 5 or 6 or 7\n";
+            continue;
         }
-
         switch (op)
         {
         case 1: // Register a new profile
