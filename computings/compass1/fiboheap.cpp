@@ -1,34 +1,15 @@
 #include "headers/fiboheap.h"
-/**
- * fibonacci heap realized by C
- *copied from
- * @author skywang
- * @date 2014/04/05
- */
-
-
-
-
-
 #define LOG2(x) ((log((double)(x))) / (log(2.0)))
 
 static FibNode *fib_heap_search(FibHeap *heap, Type key);
 
-/*
- * remove nodes from doubly-linked lists
- */
-static void fib_node_remove(FibNode *node)
+static void fib_node_remove(FibNode *node)  // Remove node from a doubly-linked list
 {
     node->left->right = node->right;
     node->right->left = node->left;
 }
 
-/*add a single "node" before the doubly-linked list "root"
- *   a …… root
- *   a …… node …… root
-
-*/
-static void fib_node_add(FibNode *node, FibNode *root)
+static void fib_node_add(FibNode *node, FibNode *root)  // Add a node before the doubly-linked list "root"
 {
     node->left        = root->left;
     root->left->right = node;
@@ -37,7 +18,7 @@ static void fib_node_add(FibNode *node, FibNode *root)
 }
 
 /*linked list B to the back of list A*/
-static void fib_node_cat(FibNode *a, FibNode *b)
+static void fib_node_cat(FibNode *a, FibNode *b)    // 
 {
     FibNode *tmp;
 

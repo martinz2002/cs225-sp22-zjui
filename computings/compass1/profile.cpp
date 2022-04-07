@@ -1,3 +1,13 @@
+/**
+ * @file profile.cpp
+ * @author Jiang Wenhan
+ * @brief The data structure for patients' profiles.
+ * @date 2022-04-05
+ *
+ * @copyright Copyright (c) 2022 Zhejiang University
+ *
+ */
+
 #include "headers/profile.h"
 using std::string;
 extern personal_profile *newprofile(personal_profile *lastnode, string name, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate, int64_t RegID)
