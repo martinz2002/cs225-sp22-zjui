@@ -24,8 +24,6 @@ static registration_profile **reg_pro = new registration_profile *[20];
 static inoculate_profile **ino_pro = new inoculate_profile *[20];
 // initialization for registration_profile and inoculate_profile
 
-personal_profile *my_personal_file = NULL;
-
 static vector<personal_profile *> queueing_personal_file; // the quene of the waiting people
 
 static vector<personal_profile *> delay_personal_file;
@@ -160,7 +158,8 @@ static void add_profile(string name, string address, string phone, string WeChat
     }
     total_reg_person++;
     queue_waiting++;
-    my_personal_file = newprofile(my_personal_file, name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, date, RegID);
+    personal_profile *my_personal_file;
+    my_personal_file = newprofile(name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, date, RegID);
     my_personal_file->priority_num = pri_num;
     registration_sequence_calculation(my_personal_file, reg_pro[RegID]);
     priority2ID.add(pri_num, ID);
@@ -450,6 +449,43 @@ static void withdraw(int64_t ID)
     ptr->once_withdraw = false;
     ptr->is_delay = false;
     ptr->withdraw = true;
+}
+
+// cancel_withdraw(ID)
+static void cancel_withdraw(int64_t ID)
+{
+    personal_profile *ptr = ID2ptr.retrieve(ID);
+    if (ptr == NULL)
+    {
+        cout << "Fake ID!\n";
+        return;
+    }
+    if (ptr->is_inoculated || !ptr->withdraw)
+    {
+        return;
+    }
+    queue_waiting++;
+    for(vector<personal_profile *>::iterator i = withdraw_personal_file.begin(); i != withdraw_personal_file.end(); i++)
+    {
+        if (*i == ptr)
+        {
+            withdraw_personal_file.erase(i);
+            break;
+        }
+    }
+    ptr->is_assigned = false;
+    ptr->once_withdraw = true;
+    ptr->is_delay = false;
+    ptr->withdraw = false;
+    queueing_personal_file.push_back(ptr);
+    if (ptr->risk <= 2)
+    {
+        fib_heap_insert_key(Queueing_heap, ptr->priority_num);
+    }
+    else
+    {
+        fib_heap_insert_key(hrisk_heap, ptr->priority_num);
+    }
 }
 
 void treat_assigned(int64_t *copy_daily, int64_t *copy_total)

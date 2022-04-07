@@ -28,9 +28,6 @@ typedef struct personal_profile
     bool is_delay = false;
     bool withdraw = false;
     bool is_assigned = false;
-
-    personal_profile *next_node = NULL;
-    personal_profile *previous_node = NULL;
 } personal_profile;
 
 typedef struct registration_profile

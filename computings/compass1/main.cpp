@@ -51,11 +51,12 @@ int main()
     do
     {
         cout << "1. Register a new profile\n";
-        cout << "2. Withdrawl\n";
+        cout << "2. Withdraw\n";
         cout << "3. Change one's profile\n";
         cout << "4. Add one's priority letter\n";
         cout << "5. Start next day\n";
-        cout << "6. Quit\n";
+        cout << "6. Cancel withdraw\n";
+        cout << "7. Quit\n";
         cin >> op;
 
         if (op != 1 && op != 2 && op != 3 && op != 4 && op != 5 && op != 6)
@@ -113,7 +114,7 @@ int main()
                 cout << "plz enter a value between 0 and 3\n";
                 cin >> risk;
             }
-            add_profile(name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, regID-1);
+            add_profile(name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, regID - 1);
             break;
         }
         case 2:
@@ -151,7 +152,7 @@ int main()
                 {
                     cout << "plz enter a value between 1 and 8\n";
                     cin >> profession;
-                }            
+                }
                 change_pro(ID, profession);
                 break;
             }
@@ -184,9 +185,18 @@ int main()
         case 5:
         {
             next_day();
+            break;
+        }
+        case 6:
+        {
+            int64_t ID;
+            cout << "plz enter the ID:\n";
+            cin >> ID;
+            cancel_withdraw(ID);
+            break;
         }
         }
-    } while (op != 6);
+    } while (op != 7);
 
     return 0;
 }
