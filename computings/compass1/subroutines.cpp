@@ -338,11 +338,11 @@ static void DDL_letter(int64_t ID, string sDDL)
                 break;
             }
         }
-        queue_waiting--;
+        queue_waiting--;// decrease the number of person waiting in the queue
     }
-    assigned_personal_file.push_back(ptr);
-    sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_ddl);
-    assign_waiting++;
+    assigned_personal_file.push_back(ptr);// add the person to the assigned list
+    sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_ddl);// sort the assigned list by DDL
+    assign_waiting++;// increase the number of person assigned
     ptr->is_assigned = true;
     ptr->is_inoculated = false;
     ptr->once_withdraw = false;
@@ -353,51 +353,51 @@ static void DDL_letter(int64_t ID, string sDDL)
 static void change_pro(int64_t ID, int64_t prof)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
-    if (ptr == NULL)
+    if (ptr == NULL)// if the person is not in the database
     {
-        cout << "Fake ID!\n";
+        cout << "The ID is not in the database." << endl; // print error message
         return;
     }
-    if (prof == ptr->profession)
+    if (prof == ptr->profession)// if the profession is the same as the current one
         return;
-    int64_t pre_prio_num = ptr->priority_num;
-    int64_t now_prio_num = prof;
+    int64_t pre_prio_num = ptr->priority_num;// get the priority number of the person
+    int64_t now_prio_num = prof;// get the new priority number of the person
     now_prio_num <<= 5;
     now_prio_num += ptr->agegroup;
     now_prio_num <<= 25;
     now_prio_num += ptr->registrationdate - (*first_date);
     now_prio_num <<= 20;
     now_prio_num += total_reg_person;
-    ptr->priority_num = now_prio_num;
-    ptr->profession = prof;
-    priority2ID.remove(pre_prio_num);
-    priority2ID.add(now_prio_num, ID);
-    if (ptr->is_delay || ptr->withdraw || ptr->is_inoculated || ptr->is_assigned)
+    ptr->priority_num = now_prio_num;// set the new priority number to the person
+    ptr->profession = prof;// set the new profession to the person
+    priority2ID.remove(pre_prio_num);// remove the person from the priority hash table
+    priority2ID.add(now_prio_num, ID);// add the person to the priority hash table
+    if (ptr->is_delay || ptr->withdraw || ptr->is_inoculated || ptr->is_assigned)// if the person is in the delay list or the withdraw list or the assigned list or the inoculated list
         return;
-    if (ptr->risk != 3)
-        fib_heap_update(Queueing_heap, pre_prio_num, now_prio_num);
-    else
-        fib_heap_update(hrisk_heap, pre_prio_num, now_prio_num);
+    if (ptr->risk != 3)// if the person is not a high risk person
+        fib_heap_update(Queueing_heap, pre_prio_num, now_prio_num);// add the person to the queueing heap
+    else// if the person is a high risk person
+        fib_heap_update(hrisk_heap, pre_prio_num, now_prio_num);// add the person to the high risk heap
 }
 
 static void change_risks(int64_t ID, int64_t Risks)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
-    if (ptr == NULL)
+    if (ptr == NULL)// if the person is not in the database
     {
-        cout << "Fake ID!\n";
+        cout << "The ID is not in the database." << endl; // print error message
         return;
     }
-    if (Risks == ptr->risk)
+    if (Risks == ptr->risk)// if the risks are the same as the current one
         return;
 
-    if (ptr->is_assigned || ptr->withdraw || ptr->is_inoculated)
+    if (ptr->is_assigned || ptr->withdraw || ptr->is_inoculated)// if the person is in the assigned list or the withdraw list or the inoculated list
     {
         ptr->risk = Risks;
         return;
     }
 
-    if (Risks <= 2 && ptr->risk <= 2)
+    if (Risks <= 2 && ptr->risk <= 2)// if the person is not a high risk person and the new risks are not a high risk
     {
         ptr->risk = Risks;
         return;
@@ -411,21 +411,21 @@ static void change_risks(int64_t ID, int64_t Risks)
     {
         if (!ptr->is_delay)
         {
-            fib_heap_delete(Queueing_heap, ptr->priority_num);
-            fib_heap_insert_key(hrisk_heap, ptr->priority_num);
+            fib_heap_delete(Queueing_heap, ptr->priority_num);// delete the person from the queueing heap
+            fib_heap_insert_key(hrisk_heap, ptr->priority_num);// add the person to the high risk heap
         }
         else
         {
-            for (vector<personal_profile *>::iterator i = delay_personal_file.begin(); i != delay_personal_file.end(); i++)
+            for (vector<personal_profile *>::iterator i = delay_personal_file.begin(); i != delay_personal_file.end(); i++)// find the person in the delay list
             {
-                if (*i == ptr)
+                if ((*i)->ID == ID)
                 {
-                    delay_personal_file.erase(i);
+                    delay_personal_file.erase(i);// remove the person from the delay list
                     break;
                 }
             }
-            ptr->is_delay = false;
-            fib_heap_insert_key(hrisk_heap, ptr->priority_num);
+            ptr->is_delay = false;// set the person is not in the delay list
+            fib_heap_insert_key(hrisk_heap, ptr->priority_num);// add the person to the high risk heap
         }
     }
 }
@@ -433,59 +433,62 @@ static void change_risks(int64_t ID, int64_t Risks)
 static void withdraw(int64_t ID)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
-    if (ptr == NULL)
+    if (ptr == NULL)// if the person is not in the database
     {
-        cout << "Fake ID!\n";
+        cout << "The ID is not in the database." << endl; // print error message
         return;
     }
-    if (ptr->is_inoculated || ptr->withdraw)
-    {
+    if (ptr->is_inoculated || ptr->withdraw)// if the person is in the inoculated list or the withdraw list
+   {
+        cout << "The person is in the inoculated list or the withdraw list." << endl; // print error message
         return;
     }
+
+
     if (ptr->is_assigned)
     {
-        for (vector<personal_profile *>::iterator i = assigned_personal_file.begin(); i != assigned_personal_file.end(); i++)
+        for (vector<personal_profile *>::iterator i = assigned_personal_file.begin(); i != assigned_personal_file.end(); i++)// find the person in the assigned list
         {
-            if (*i == ptr)
+            if ((*i)->ID == ID)
             {
-                assigned_personal_file.erase(i);
+                assigned_personal_file.erase(i);// remove the person from the assigned list
                 break;
             }
         }
-        assign_waiting--;
+        assign_waiting--;// decrease the number of person assigned
     }
     else
     {
-        for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)
+        for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)// find the person in the queueing list
         {
-            if (*i == ptr)
+            if ((*i)->ID == ID)
             {
-                queueing_personal_file.erase(i);
+                queueing_personal_file.erase(i);// remove the person from the queueing list
                 break;
             }
         }
         if (ptr->is_delay)
         {
-            for (vector<personal_profile *>::iterator i = delay_personal_file.begin(); i != delay_personal_file.end(); i++)
+            for (vector<personal_profile *>::iterator i = delay_personal_file.begin(); i != delay_personal_file.end(); i++)// find the person in the delay list
             {
-                if (*i == ptr)
+                if ((*i)->ID == ID)
                 {
-                    delay_personal_file.erase(i);
+                    delay_personal_file.erase(i);// remove the person from the delay list
                     break;
                 }
             }
         }
         else if (ptr->risk == 3)
         {
-            fib_heap_delete(hrisk_heap, ptr->priority_num);
+            fib_heap_delete(hrisk_heap, ptr->priority_num);// delete the person from the high risk heap
         }
         else
         {
-            fib_heap_delete(Queueing_heap, ptr->priority_num);
+            fib_heap_delete(Queueing_heap, ptr->priority_num);// delete the person from the queueing heap
         }
         queue_waiting--;
     }
-    withdraw_personal_file.push_back(ptr);
+    withdraw_personal_file.push_back(ptr);// add the person to the withdraw list
     ptr->is_assigned = false;
     ptr->once_withdraw = false;
     ptr->is_delay = false;
@@ -495,21 +498,22 @@ static void withdraw(int64_t ID)
 static void cancel_withdraw(int64_t ID)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
-    if (ptr == NULL)
+    if (ptr == NULL)// if the person is not in the database
     {
-        cout << "Fake ID!\n";
+        cout << "The ID is not in the database." << endl; // print error message
         return;
     }
-    if (ptr->is_inoculated || !ptr->withdraw)
+    if (ptr->is_inoculated || !ptr->withdraw)// if the person is in the inoculated list or not in the withdraw list
     {
+        cout << "The person is in the inoculated list or not in the withdraw list." << endl; // print error message
         return;
     }
-    queue_waiting++;
-    for (vector<personal_profile *>::iterator i = withdraw_personal_file.begin(); i != withdraw_personal_file.end(); i++)
+    queue_waiting++;// increase the number of person in the queueing list
+    for (vector<personal_profile *>::iterator i = withdraw_personal_file.begin(); i != withdraw_personal_file.end(); i++)// find the person in the withdraw list
     {
-        if (*i == ptr)
+        if ((*i)->ID == ID)
         {
-            withdraw_personal_file.erase(i);
+            withdraw_personal_file.erase(i);// remove the person from the withdraw list
             break;
         }
     }
@@ -517,24 +521,24 @@ static void cancel_withdraw(int64_t ID)
     ptr->once_withdraw = true;
     ptr->is_delay = false;
     ptr->withdraw = false;
-    ptr->registrationdate = *date;
-    queueing_personal_file.push_back(ptr);
+    ptr->registrationdate = *date;// set the registration date to the current date
+    queueing_personal_file.push_back(ptr);// add the person to the queueing list
     if (ptr->risk <= 2)
     {
-        fib_heap_insert_key(Queueing_heap, ptr->priority_num);
+        fib_heap_insert_key(Queueing_heap, ptr->priority_num);// add the person to the queueing heap
     }
     else
     {
-        fib_heap_insert_key(hrisk_heap, ptr->priority_num);
+        fib_heap_insert_key(hrisk_heap, ptr->priority_num);// add the person to the high risk heap
     }
 }
 
 void treat_assigned(int64_t *copy_daily, int64_t *copy_total)
 {
-    vector<personal_profile *>::iterator i = assigned_personal_file.begin();
+    vector<personal_profile *>::iterator i = assigned_personal_file.begin();// set the iterator to the beginning of the assigned list
     personal_profile *ptr;
     int64_t ino_id = 0;
-    while ((*copy_total) > 0 && !assigned_personal_file.empty())
+    while ((*copy_total) > 0 && !assigned_personal_file.empty())// while there are people in the assigned list and the number of people treated today is less than the daily capacity
     {
         ptr = *i;
         ptr->is_inoculated = true;
@@ -542,19 +546,19 @@ void treat_assigned(int64_t *copy_daily, int64_t *copy_total)
         ptr->once_withdraw = false;
         ptr->is_delay = false;
         ptr->withdraw = false;
-        ptr->inoculate_date = *date;
-        while (copy_daily[ptr->vaccination_sequence[ino_id]] <= 0)
+        ptr->inoculate_date = *date;// set the inoculate date to the current date
+        while (copy_daily[ptr->vaccination_sequence[ino_id]] <= 0)// find the next non-zero vaccination point
         {
             ino_id++;
         }
-        copy_daily[ptr->vaccination_sequence[ino_id]]--;
-        ptr->inoID = ptr->vaccination_sequence[ino_id];
-        (*copy_total)--;
-        assign_waiting--;
-        aver_waiting = (aver_waiting * total_treatment + ((*date) - ptr->registrationdate)) / (total_treatment + 1);
-        total_treatment++;
-        i = assigned_personal_file.erase(i);
-        inoculated_personal_file.push_back(ptr);
+        copy_daily[ptr->vaccination_sequence[ino_id]]--;// decrease the number of remain capacity in the corresponding vaccination point
+        ptr->inoID = ptr->vaccination_sequence[ino_id];// set the inoculation ID to the corresponding vaccination point
+        (*copy_total)--;// decrease the number of remain capacity today
+        assign_waiting--;// decrease the number of person assigned
+        aver_waiting = (aver_waiting * total_treatment + ((*date) - ptr->registrationdate)) / (total_treatment + 1);// update the average waiting time
+        total_treatment++;// increase the total number of people treated
+        i = assigned_personal_file.erase(i);// remove the person from the assigned list
+        inoculated_personal_file.push_back(ptr);// add the person to the inoculated list
     }
 }
 
@@ -566,9 +570,9 @@ void treat_queue(int64_t *copy_daily, int64_t *copy_total)
     int64_t *prio_num = new int64_t, id;
     while (*copy_total > 0 && fib_heap_get_min(Queueing_heap, prio_num))
     {
-        fib_heap_extract_min(Queueing_heap);
-        id = priority2ID.retrieve(*prio_num);
-        ptr = ID2ptr.retrieve(id);
+        fib_heap_extract_min(Queueing_heap);// extract the person with the minimum priority number from the queueing heap
+        id = priority2ID.retrieve(*prio_num);// find the corresponding ID
+        ptr = ID2ptr.retrieve(id);// find the corresponding person in the database
         if (ptr->risk <= 1 && ptr->once_withdraw == false)
         {
             ptr->is_inoculated = true;
@@ -576,24 +580,24 @@ void treat_queue(int64_t *copy_daily, int64_t *copy_total)
             ptr->once_withdraw = false;
             ptr->is_delay = false;
             ptr->withdraw = false;
-            ptr->inoculate_date = *date;
-            while (copy_daily[ptr->vaccination_sequence[ino_id]] <= 0)
+            ptr->inoculate_date = *date;// set the inoculate date to the current date
+            while (copy_daily[ptr->vaccination_sequence[ino_id]] <= 0)// find the next non-zero vaccination point
             {
                 ino_id++;
             }
-            copy_daily[ptr->vaccination_sequence[ino_id]]--;
-            ptr->inoID = ptr->vaccination_sequence[ino_id];
-            (*copy_total)--;
-            queue_waiting--;
-            aver_waiting = (aver_waiting * total_treatment + ((*date) - ptr->registrationdate)) / (total_treatment + 1);
-            total_treatment++;
+            copy_daily[ptr->vaccination_sequence[ino_id]]--;// decrease the number of remain capacity in the corresponding vaccination point
+            ptr->inoID = ptr->vaccination_sequence[ino_id];// set the inoculation ID to the corresponding vaccination point
+            (*copy_total)--;// decrease the number of remain capacity today
+            queue_waiting--;// decrease the number of person in the queueing list
+            aver_waiting = (aver_waiting * total_treatment + ((*date) - ptr->registrationdate)) / (total_treatment + 1);// update the average waiting time
+            total_treatment++;// increase the total number of people treated
             while (*i != ptr)
             {
                 i++;
             }
-            queueing_personal_file.erase(i);
-            i = queueing_personal_file.begin();
-            inoculated_personal_file.push_back(ptr);
+            queueing_personal_file.erase(i);// remove the person from the queueing list
+            i = queueing_personal_file.begin();// set the iterator to the beginning of the queueing list
+            inoculated_personal_file.push_back(ptr);// add the person to the inoculated list
         }
         else
         {
@@ -601,98 +605,98 @@ void treat_queue(int64_t *copy_daily, int64_t *copy_total)
             ptr->is_assigned = false;
             ptr->is_delay = true;
             ptr->withdraw = false;
-            CDate delay = *date;
+            CDate delay = *date;// set the delay date to the current date
             if (ptr->risk == 2)
             {
-                delay += 30;
+                delay += 30;// if the person is in the median risk list, set the delay date to 30 days later
             }
             else
             {
-                delay += 14;
+                delay += 14;// if the person once withdrawed, set the delay date to 14 days later
             }
-            ptr->inoculate_date = delay;
-            delay_personal_file.push_back(ptr);
-            sort(delay_personal_file.begin(), delay_personal_file.end(), cmp_by_ddl);
+            ptr->inoculate_date = delay;// set the inoculate date to the delay date
+            delay_personal_file.push_back(ptr);// add the person to the delay list
+            sort(delay_personal_file.begin(), delay_personal_file.end(), cmp_by_ddl);// sort the delay list by the delay date
         }
     }
 }
 
 void treat_delay(int64_t *copy_daily, int64_t *copy_total)
 {
-    vector<personal_profile *>::iterator i = queueing_personal_file.begin();
-    vector<personal_profile *>::iterator i_d = delay_personal_file.begin();
+    vector<personal_profile *>::iterator i = queueing_personal_file.begin();// set the iterator to the beginning of the queueing list
+    vector<personal_profile *>::iterator i_d = delay_personal_file.begin();// set the iterator to the beginning of the delay list
     personal_profile *ptr;
     int64_t ino_id = 0;
     while ((*copy_total) > 0 && !delay_personal_file.empty() && (*i_d)->inoculate_date - (*date) <= 0)
     {
-        ptr = *i_d;
+        ptr = *i_d;// set the pointer to the first person in the delay list
         ptr->is_inoculated = true;
         ptr->is_assigned = false;
         ptr->once_withdraw = false;
         ptr->is_delay = false;
         ptr->withdraw = false;
-        ptr->inoculate_date = *date;
+        ptr->inoculate_date = *date;// set the inoculate date to the current date
         while (copy_daily[ptr->vaccination_sequence[ino_id]] <= 0)
         {
             ino_id++;
         }
-        copy_daily[ptr->vaccination_sequence[ino_id]]--;
-        ptr->inoID = ptr->vaccination_sequence[ino_id];
-        (*copy_total)--;
-        queue_waiting--;
-        aver_waiting = (aver_waiting * total_treatment + ((*date) - ptr->registrationdate)) / (total_treatment + 1);
-        total_treatment++;
-        i_d = delay_personal_file.erase(i_d);
+        copy_daily[ptr->vaccination_sequence[ino_id]]--;// decrease the number of remain capacity in the corresponding vaccination point
+        ptr->inoID = ptr->vaccination_sequence[ino_id];// set the inoculation ID to the corresponding vaccination point
+        (*copy_total)--;// decrease the number of remain capacity today
+        queue_waiting--;// decrease the number of person in the queueing list
+        aver_waiting = (aver_waiting * total_treatment + ((*date) - ptr->registrationdate)) / (total_treatment + 1);// update the average waiting time
+        total_treatment++;// increase the total number of people treated
+        i_d = delay_personal_file.erase(i_d);// remove the person from the delay list
         while (*i != ptr)
         {
             i++;
         }
-        queueing_personal_file.erase(i);
-        i = queueing_personal_file.begin();
-        inoculated_personal_file.push_back(ptr);
+        queueing_personal_file.erase(i);// remove the person from the queueing list
+        i = queueing_personal_file.begin();// set the iterator to the beginning of the queueing list
+        inoculated_personal_file.push_back(ptr);// add the person to the inoculated list
     }
 }
 
 
 void treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
 {
-    if (!delay_personal_file.empty())
+    if (!delay_personal_file.empty())// if there are people in the delay list
     {
         return;
     }
-    vector<personal_profile *>::iterator i = queueing_personal_file.begin();
+    vector<personal_profile *>::iterator i = queueing_personal_file.begin();// set the iterator to the beginning of the queueing list
     int64_t ino_id = 0;
     personal_profile *ptr;
     int64_t *prio_num = new int64_t, id;
     while ((*copy_total) > 0 && fib_heap_get_min(hrisk_heap, prio_num))
     {
-        fib_heap_extract_min(hrisk_heap);
-        id = priority2ID.retrieve(*prio_num);
-        ptr = ID2ptr.retrieve(id);
+        fib_heap_extract_min(hrisk_heap);// extract the person with the minimum priority number from the high risk queueing heap
+        id = priority2ID.retrieve(*prio_num);// find the corresponding ID
+        ptr = ID2ptr.retrieve(id);// find the corresponding person in the database
 
         ptr->is_inoculated = true;
         ptr->is_assigned = false;
         ptr->once_withdraw = false;
         ptr->is_delay = false;
         ptr->withdraw = false;
-        ptr->inoculate_date = *date;
+        ptr->inoculate_date = *date;// set the inoculate date to the current date
         while (copy_daily[ptr->vaccination_sequence[ino_id]] <= 0)
         {
             ino_id++;
         }
-        copy_daily[ptr->vaccination_sequence[ino_id]]--;
-        ptr->inoID = ptr->vaccination_sequence[ino_id];
-        (*copy_total)--;
-        queue_waiting--;
-        aver_waiting = (aver_waiting * total_treatment + ((*date) - ptr->registrationdate)) / (total_treatment + 1);
-        total_treatment++;
+        copy_daily[ptr->vaccination_sequence[ino_id]]--;// decrease the number of remain capacity in the corresponding vaccination point
+        ptr->inoID = ptr->vaccination_sequence[ino_id];// set the inoculation ID to the corresponding vaccination point
+        (*copy_total)--;// decrease the number of remain capacity today
+        queue_waiting--;// decrease the number of person in the queueing list
+        aver_waiting = (aver_waiting * total_treatment + ((*date) - ptr->registrationdate)) / (total_treatment + 1);// update the average waiting time
+        total_treatment++;// increase the total number of people treated
         while (*i != ptr)
         {
             i++;
         }
-        queueing_personal_file.erase(i);
-        i = queueing_personal_file.begin();
-        inoculated_personal_file.push_back(ptr);
+        queueing_personal_file.erase(i);// remove the person from the queueing list
+        i = queueing_personal_file.begin();// set the iterator to the beginning of the queueing list
+        inoculated_personal_file.push_back(ptr);// add the person to the inoculated list
     }
 }
 
@@ -719,15 +723,15 @@ static void next_day()
         cout << "The following is the monthly report\n\n";
         monthly_report();
     }
-    int64_t copy_daily[num_ino];
-    int64_t *copy_total = new int64_t;
-    *copy_total = daily_total;
-    memcpy(copy_daily, daily, num_ino * sizeof(int64_t));
-    treat_assigned(copy_daily, copy_total);
-    treat_queue(copy_daily, copy_total);
-    treat_delay(copy_daily, copy_total);
-    treat_hrisk(copy_daily, copy_total);
-    (*date)++;
+    int64_t copy_daily[num_ino];// copy the number of remain capacity in each vaccination point
+    int64_t *copy_total = new int64_t;// copy the number of remain capacity today
+    *copy_total = daily_total;// set the number of the total capacity to remain capacity today 
+    memcpy(copy_daily, daily, num_ino * sizeof(int64_t));// copy the daily total number tp remain capacity
+    treat_assigned(copy_daily, copy_total); // treat the people who are assigned
+    treat_queue(copy_daily, copy_total);// treat the people who are in the queueing list
+    treat_delay(copy_daily, copy_total);// treat the people who are in the delay list
+    treat_hrisk(copy_daily, copy_total);// treat the people who are in the high risk queueing list
+    (*date)++;// increase the current date
     cout << endl
          << "********************\n Today is ";
     (*date).print();
