@@ -61,11 +61,12 @@ int main()
     do
     {
         cout << "1. Register a new profile\n";
-        cout << "2. Withdrawl\n";
+        cout << "2. Withdraw\n";
         cout << "3. Change one's profile\n";
         cout << "4. Add one's priority letter\n";
         cout << "5. Start next day\n";
-        cout << "6. Quit\n";
+        cout << "6. Cancel withdraw\n";
+        cout << "7. Quit\n";
         cin >> op;
 
         if (op != 1 && op != 2 && op != 3 && op != 4 && op != 5 && op != 6)
@@ -194,9 +195,18 @@ int main()
         case 5: // Start the next day
         {
             next_day();
+            break;
+        }
+        case 6:
+        {
+            int64_t ID;
+            cout << "plz enter the ID:\n";
+            cin >> ID;
+            cancel_withdraw(ID);
+            break;
         }
         }
-    } while (op != 6);
+    } while (op != 7);
 
     // op == 6: the program automatically quits
 
