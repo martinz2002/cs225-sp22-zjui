@@ -2,6 +2,7 @@
 #ifndef PROF_H
 #define PROF_H
 #include <bits/stdc++.h>
+#include "date.h"
 
 using std::string;
 typedef struct personal_profile
@@ -17,20 +18,20 @@ typedef struct personal_profile
     int profession; // I to VIII
     int risk;       // 0-3
     int agegroup;   // 1-7
-    int64_t birthdate;
-    int64_t registrationdate;
+    // int64_t birthdate;
+    CDate *birthday;
+    // int64_t registrationdate;
+    CDate registrationdate;
     int64_t regID;
     int64_t inoID;
-    int64_t inoculate_date = -1;
+    // int64_t inoculate_date = -1;
+    CDate inoculate_date;
     int64_t priority_num;
     bool is_inoculated = false;
     bool once_withdraw = false;
     bool is_delay = false;
     bool withdraw = false;
     bool is_assigned = false;
-
-    personal_profile *next_node = NULL;
-    personal_profile *previous_node = NULL;
 } personal_profile;
 
 typedef struct registration_profile
