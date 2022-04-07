@@ -1,5 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
+#ifndef date_h
+#define date_h
 class date
 {
 public:
@@ -67,3 +69,4 @@ public:
         return y * 365 + m * 30 + day;
     }
 };
+#endif
