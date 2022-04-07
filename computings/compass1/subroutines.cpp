@@ -97,20 +97,18 @@ void alloc_for_ino()
     ino_pro = new_ino;
 }
 
-static void reg_reg(int64_t x, int64_t y)
-// register a new registration point to the registration profile list
+static void reg_reg(int64_t x, int64_t y)   // register a new registration point to the registration profile list
 {
     reg_pro[num_reg] = new registration_profile;
     reg_pro[num_reg]->x_coordinate = x;
     reg_pro[num_reg]->y_coordinate = y;
     reg_pro[num_reg]->ID = num_reg;
     num_reg++;
-    if (num_reg >= max_num_reg)
-        alloc_for_reg(); // reallocate if more memory space is required
+    if (num_reg >= max_num_reg) // reallocate if running out of allocated memory
+        alloc_for_reg();
 }
 
-static void reg_ino(int64_t x, int64_t y, int cap)
-// register a new inoculation point to the inoculation profile list
+static void reg_ino(int64_t x, int64_t y, int cap)  // register a new inoculation point to the inoculation profile list
 {
     ino_pro[num_ino] = new inoculate_profile;
     ino_pro[num_ino]->x_coordinate = x;
@@ -123,8 +121,7 @@ static void reg_ino(int64_t x, int64_t y, int cap)
         alloc_for_ino(); // reallocate if more memory space is required
 }
 
-static void calc_reg_dist()
-// calculate the distance between each registration point and inoculation points
+static void calc_reg_dist() // calculate the distance between each registration point and inoculation points
 {
     dist = new int64_t[num_ino];
     daily = new int64_t[num_ino];
