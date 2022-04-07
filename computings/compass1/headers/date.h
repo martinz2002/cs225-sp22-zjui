@@ -68,5 +68,19 @@ public:
         }
         return y * 365 + m * 30 + day;
     }
+    void nextday()
+    {
+        day++;
+        if (day > 30)
+        {
+            day = 1;
+            month++;
+            if (month > 12)
+            {
+                month = 1;
+                year++;
+            }
+        }
+    }
 };
 #endif
