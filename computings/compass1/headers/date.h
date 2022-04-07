@@ -1,3 +1,14 @@
+/**
+ * @file date.h
+ * @author Li Rong, Zhong Tiantian
+ * @brief Providing Class CDate for dates.
+ * @version 0.1
+ * @date 2022-04-07
+ * 
+ * @copyright Copyright (c) 2022 Zhejiang University
+ * 
+ */
+
 #include <bits/stdc++.h>
 using namespace std;
 #ifndef CDate_hh
@@ -26,6 +37,7 @@ public:
         year = local_time->tm_year + 1900;
         month = local_time->tm_mon + 1;
         day = local_time->tm_mday;
+        
     }
     void print()
     {
@@ -129,6 +141,116 @@ public:
             d.year++;
         }
         return d;
+    }
+    bool operator< (CDate d)
+    {
+        if (year < d.year)
+        {
+            return true;
+        }
+        else if (year > d.year)
+        {
+            return false;
+        }
+        else
+        {
+            if (month < d.month)
+            {
+                return true;
+            }
+            else if (month > d.month)
+            {
+                return false;
+            }
+            else
+            {
+                if (day < d.day)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+    }
+    bool operator== (CDate d)
+    {
+        if (year == d.year && month == d.month && day == d.day)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    bool operator> (CDate d)
+    {
+        if (year > d.year)
+        {
+            return true;
+        }
+        else if (year < d.year)
+        {
+            return false;
+        }
+        else
+        {
+            if (month > d.month)
+            {
+                return true;
+            }
+            else if (month < d.month)
+            {
+                return false;
+            }
+            else
+            {
+                if (day > d.day)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+    }
+    bool operator<= (CDate d)
+    {
+        if (year < d.year)
+        {
+            return true;
+        }
+        else if (year > d.year)
+        {
+            return false;
+        }
+        else
+        {
+            if (month < d.month)
+            {
+                return true;
+            }
+            else if (month > d.month)
+            {
+                return false;
+            }
+            else
+            {
+                if (day < d.day)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
     }
 };
 #endif
