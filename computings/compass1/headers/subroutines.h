@@ -1,3 +1,14 @@
+/**
+ * @file subroutines.h
+ * @author Li Rong
+ * @brief Providing the function models for misc functions.
+ * @version 0.1
+ * @date 2022-04-04
+ * 
+ * @copyright Copyright (c) 2022 Zhejiang University
+ * 
+ */
+
 #ifndef SUB_R
 #define SUB_R
 #include <bits/stdc++.h>
@@ -22,6 +33,5 @@ static void change_risks(int64_t ID, int64_t Risks);
 
 static void withdraw(int64_t ID);
 
-// static CDate *date;
 
 #endif

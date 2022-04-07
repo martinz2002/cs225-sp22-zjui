@@ -63,9 +63,9 @@ bool compare_by_dist(int64_t num1, int64_t num2)
  * @brief a subroutine for comparation by email address
  * 
  * @param file1 
- * @param file2 
- * @return true 
- * @return false 
+ * @param file2 Profiles to compare
+ * @return true String of the first person's name is smaller than the second
+ * @return false vice versa
  */
 bool cmp_by_name(personal_profile *file1, personal_profile *file2)
 {
@@ -86,20 +86,39 @@ bool cmp_by_pof(personal_profile *file1, personal_profile *file2)
     return file1->profession < file2->profession;
 }
 
+/**
+ * @brief a subroutine for comparation by agegroup
+ * 
+ * @param file1 
+ * @param file2 
+ * @return true 
+ * @return false 
+ */
 bool cmp_by_agegp(personal_profile *file1, personal_profile *file2)
-// a subroutine for comparation by agegroup
 {
     return file1->agegroup < file2->agegroup;
 }
 
+
+/**
+ * @brief a subroutine for comparation by inoculation date
+ * 
+ * @param file1 
+ * @param file2 
+ * @return true 
+ * @return false 
+ */
 bool cmp_by_ddl(personal_profile *file1, personal_profile *file2)
-// a subroutine for comparation by inoculation date
 {
     return (file1->inoculate_date - file2->inoculate_date) < 0;
 }
 
+
+/**
+ * @brief reallocate for larger memory space to contain registration profile
+ * 
+ */
 void alloc_for_reg()
-// reallocate for larger memory space to contain registration profile
 {
     max_num_reg *= 2;
     registration_profile **new_reg = new registration_profile *[max_num_reg];
@@ -110,8 +129,12 @@ void alloc_for_reg()
     reg_pro = new_reg;
 }
 
+
+/**
+ * @brief reallocate for larger memory space to contain inoculation profile
+ * 
+ */
 void alloc_for_ino()
-/// reallocate for larger memory space to contain inoculation profile
 {
     max_num_ino *= 2;
     inoculate_profile **new_ino = new inoculate_profile *[max_num_ino];
@@ -122,7 +145,14 @@ void alloc_for_ino()
     ino_pro = new_ino;
 }
 
-static void reg_reg(int64_t x, int64_t y) // register a new registration point to the registration profile list
+
+/**
+ * @brief register a new registration point to the registration profile list
+ * 
+ * @param x X coordination of the point
+ * @param y Y coordination of the point
+ */
+static void reg_reg(int64_t x, int64_t y)
 {
     reg_pro[num_reg] = new registration_profile;
     reg_pro[num_reg]->x_coordinate = x;
@@ -133,7 +163,15 @@ static void reg_reg(int64_t x, int64_t y) // register a new registration point t
         alloc_for_reg();
 }
 
-static void reg_ino(int64_t x, int64_t y, int cap) // register a new inoculation point to the inoculation profile list
+
+/**
+ * @brief register a new inoculation point to the inoculation profile list
+ * 
+ * @param x X coordinate of the point
+ * @param y Y coordinate of the point
+ * @param cap capacity of the point, i.e. maximum number of people receiving inoculation on the same day
+ */
+static void reg_ino(int64_t x, int64_t y, int cap)
 {
     ino_pro[num_ino] = new inoculate_profile;
     ino_pro[num_ino]->x_coordinate = x;
@@ -146,7 +184,12 @@ static void reg_ino(int64_t x, int64_t y, int cap) // register a new inoculation
         alloc_for_ino(); // reallocate if more memory space is required
 }
 
-static void calc_reg_dist() // calculate the distance between each registration point and inoculation points
+
+/**
+ * @brief calculate the distance between each registration point and inoculation points
+ * 
+ */
+static void calc_reg_dist()
 {
     dist = new int64_t[num_ino];
     daily = new int64_t[num_ino];
@@ -163,6 +206,13 @@ static void calc_reg_dist() // calculate the distance between each registration 
         sort(reg_pro[_]->vaccination_sequence, reg_pro[_]->vaccination_sequence + num_ino, compare_by_dist);
     }
 }
+
+/**
+ * @brief Calculate a person's age group by its birthdate
+ * 
+ * @param birthdate 
+ * @return int The index of the age group
+ */
 static int calc_agegroup(CDate *birthdate)
 {
     int64_t dateDiff = date->year - birthdate->year;
@@ -199,6 +249,22 @@ static int calc_agegroup(CDate *birthdate)
         return 7;
     }
 }
+
+
+/**
+ * @brief Add a person's profile giving his/her basic information
+ * 
+ * @param name 
+ * @param address 
+ * @param phone 
+ * @param WeChat 
+ * @param email 
+ * @param risk 
+ * @param ID 
+ * @param profession 
+ * @param birthdate 
+ * @param RegID 
+ */
 static void add_profile(string name, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, string birthdate, int64_t RegID)
 {
     CDate *dateBirthdate = new CDate();
@@ -247,6 +313,11 @@ static void add_profile(string name, string address, string phone, string WeChat
     }
 }
 
+/**
+ * @brief Generate weekly report giving certain operation code.
+ * 
+ * @param op 
+ */
 static void weekly_report(int op)
 {
 
@@ -300,6 +371,11 @@ static void weekly_report(int op)
     sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_ddl);
 }
 
+
+/**
+ * @brief Generate a monthly report
+ * 
+ */
 static void monthly_report()
 {
     cout << "\nTotal Registered: " << total_reg_person << "\n";
@@ -309,10 +385,17 @@ static void monthly_report()
     cout << "Withdraw: " << total_reg_person - queue_waiting - assign_waiting - total_treatment << "\n";
 }
 
-static void DDL_letter(int64_t ID, string sbDDL)
+
+/**
+ * @brief Submit a letter to claim the deadline
+ * 
+ * @param ID 
+ * @param sDDL 
+ */
+static void DDL_letter(int64_t ID, string sDDL)
 {
     CDate *DDL = new CDate;
-    if (!DDL->set(sbDDL))
+    if (!DDL->set(sDDL))
     {
         cout << "Invalid date format. Use \'yyyy-mm-dd\'." << endl;
         return;
@@ -398,6 +481,13 @@ static void DDL_letter(int64_t ID, string sbDDL)
     ptr->withdraw = false;
 }
 
+
+/**
+ * @brief Change a profile's profession giving its ID and new profession number
+ * 
+ * @param ID 
+ * @param prof 
+ */
 static void change_pro(int64_t ID, int64_t prof)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
@@ -428,6 +518,13 @@ static void change_pro(int64_t ID, int64_t prof)
         fib_heap_update(hrisk_heap, pre_prio_num, now_prio_num);
 }
 
+
+/**
+ * @brief Change the risk level of a profile giving profile ID and new risk number
+ * 
+ * @param ID 
+ * @param Risks 
+ */
 static void change_risks(int64_t ID, int64_t Risks)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
@@ -479,7 +576,7 @@ static void change_risks(int64_t ID, int64_t Risks)
 }
 
 /**
- * @brief withdraw: withdraw the profile giving its ID
+ * @brief withdraw the profile giving its ID
  *
  * @param ID
  */

@@ -39,6 +39,8 @@ typedef struct registration_profile
 
     int64_t ID;
     int64_t *vaccination_sequence;
+
+    // Location of the registration point
     int x_coordinate;
     int y_coordinate;
 } registration_profile;
@@ -46,6 +48,8 @@ typedef struct registration_profile
 typedef struct inoculate_profile
 {
     int64_t ID;
+
+    // Location of the inoculation point
     int x_coordinate;
     int y_coordinate;
     int daily_processnum;
