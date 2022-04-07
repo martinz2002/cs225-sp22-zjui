@@ -13,6 +13,8 @@ using namespace std;
 
 int main()
 {
+    cout << "Welcome to the Silly Medical Treatment System (SMTS). Current date: ";
+    (*date).print();
     int type;
     int registration_point_order = 0;
     do
@@ -49,6 +51,11 @@ int main()
             cin >> y;
             cout << "plz provide the daily capacity of inoculation of the very point:\n";
             cin >> c;
+            while(c < 0)
+            {
+                cout << "Invalid capacity.\n";
+                cin >> c;
+            }
             reg_ino(x, y, c);
             break;
         }
@@ -185,10 +192,11 @@ int main()
         }
         case 4: // Add one's priority letter
         {
-            int64_t ID, DDL;
+            int64_t ID;
+            string DDL;
             cout << "plz enter the ID:\n";
             cin >> ID;
-            cout << "plz enter the corresponding requested due date:\n";
+            cout << "plz enter the corresponding requested due date (yyyy-mm-dd):\n";
             cin >> DDL;
             DDL_letter(ID, DDL);
             break;

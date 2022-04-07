@@ -143,7 +143,7 @@ static void calc_reg_dist() // calculate the distance between each registration 
 static int calc_agegroup(CDate *birthdate)
 {
     int64_t dateDiff = date->year - birthdate->year;
-    if (dateDiff < 0)
+    if ((*date) - (*birthdate) < 0)
     {
         return -1; // Exit
     }
@@ -179,11 +179,16 @@ static int calc_agegroup(CDate *birthdate)
 static void add_profile(string name, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, string birthdate, int64_t RegID)
 {
     CDate *dateBirthdate = new CDate();
-    dateBirthdate->set(birthdate);
+    if (!dateBirthdate->set(birthdate))
+    {
+        cout << "Invalid birthday format. Use \'yyyy-mm-dd\'." << endl;
+        return;
+    }
     int agegroup = calc_agegroup(dateBirthdate);
     if (agegroup == -1) // Invalid birthdate
     {
-        cout << "Invalid birthday. (Not born yet)" << endl;
+        cout << "Invalid birthday. (Not born yet) Today is ";
+        (*date).print();
         delete dateBirthdate;
         return;
     }
@@ -281,8 +286,15 @@ static void monthly_report()
     cout << "Withdraw: " << total_reg_person - queue_waiting - assign_waiting - total_treatment << "\n";
 }
 
-static void DDL_letter(int64_t ID, CDate *DDL)
+static void DDL_letter(int64_t ID, string sbDDL)
 {
+    CDate *DDL = new CDate;
+    if (!DDL->set(sbDDL))
+    {
+        cout << "Invalid date format. Use \'yyyy-mm-dd\'." << endl;
+        return;
+    }
+
     personal_profile *ptr = ID2ptr.retrieve(ID);
     if (ptr == NULL)
     {
@@ -290,7 +302,10 @@ static void DDL_letter(int64_t ID, CDate *DDL)
         return;
     }
     if (ptr->is_inoculated)
+    {
+        cout << "This patient has been inoculated." << endl;
         return;
+    }
     if (ptr->is_assigned && (*DDL) - ptr->inoculate_date < 0)
     {
         ptr->inoculate_date = (*DDL);
@@ -575,7 +590,7 @@ void treat_queue(int64_t *copy_daily, int64_t *copy_total)
     int64_t ino_id = 0;
     personal_profile *ptr;
     int64_t *prio_num = new int64_t, id;
-    while (*copy_total >= 0 && fib_heap_get_min(Queueing_heap, prio_num))
+    while (*copy_total > 0 && fib_heap_get_min(Queueing_heap, prio_num))
     {
         fib_heap_extract_min(Queueing_heap);
         id = priority2ID.retrieve(*prio_num);
@@ -612,7 +627,7 @@ void treat_queue(int64_t *copy_daily, int64_t *copy_total)
             ptr->is_assigned = false;
             ptr->is_delay = true;
             ptr->withdraw = false;
-            int64_t delay = date;
+            CDate delay = *date;
             if (ptr->risk == 2)
             {
                 delay += 30;
@@ -633,7 +648,7 @@ void treat_delay(int64_t *copy_daily, int64_t *copy_total)
     vector<personal_profile *>::iterator i_d = delay_personal_file.begin();
     personal_profile *ptr;
     int64_t ino_id = 0;
-    while ((*copy_total) > 0 && !delay_personal_file.empty() && (*i_d)->inoculate_date <= date)
+    while ((*copy_total) > 0 && !delay_personal_file.empty() && (*i_d)->inoculate_date - (*date) <= 0)
     {
         ptr = *i_d;
         ptr->is_inoculated = true;
@@ -641,7 +656,7 @@ void treat_delay(int64_t *copy_daily, int64_t *copy_total)
         ptr->once_withdraw = false;
         ptr->is_delay = false;
         ptr->withdraw = false;
-        ptr->inoculate_date = date;
+        ptr->inoculate_date = *date;
         while (copy_daily[ptr->vaccination_sequence[ino_id]] <= 0)
         {
             ino_id++;
@@ -650,7 +665,7 @@ void treat_delay(int64_t *copy_daily, int64_t *copy_total)
         ptr->inoID = ptr->vaccination_sequence[ino_id];
         (*copy_total)--;
         queue_waiting--;
-        aver_waiting = (aver_waiting * total_treatment + date - ptr->registrationdate) / (total_treatment + 1);
+        aver_waiting = (aver_waiting * total_treatment + ((*date) - ptr->registrationdate)) / (total_treatment + 1);
         total_treatment++;
         i_d = delay_personal_file.erase(i_d);
         while (*i != ptr)
@@ -673,7 +688,7 @@ void treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
     int64_t ino_id = 0;
     personal_profile *ptr;
     int64_t *prio_num = new int64_t, id;
-    while ((*copy_total) >= 0 && fib_heap_get_min(hrisk_heap, prio_num))
+    while ((*copy_total) > 0 && fib_heap_get_min(hrisk_heap, prio_num))
     {
         fib_heap_extract_min(hrisk_heap);
         id = priority2ID.retrieve(*prio_num);
@@ -684,7 +699,7 @@ void treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
         ptr->once_withdraw = false;
         ptr->is_delay = false;
         ptr->withdraw = false;
-        ptr->inoculate_date = date;
+        ptr->inoculate_date = *date;
         while (copy_daily[ptr->vaccination_sequence[ino_id]] <= 0)
         {
             ino_id++;
@@ -693,7 +708,7 @@ void treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
         ptr->inoID = ptr->vaccination_sequence[ino_id];
         (*copy_total)--;
         queue_waiting--;
-        aver_waiting = (aver_waiting * total_treatment + date - ptr->registrationdate) / (total_treatment + 1);
+        aver_waiting = (aver_waiting * total_treatment + ((*date) - ptr->registrationdate)) / (total_treatment + 1);
         total_treatment++;
         while (*i != ptr)
         {
@@ -706,7 +721,7 @@ void treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
 }
 static void next_day()
 {
-    if (date % 7 == 6)
+    if (((*date) - (*first_date)) % 7 == 6)
     {
         int op;
         cout << "plz choose the type of ordering scheme:\n";
@@ -722,7 +737,7 @@ static void next_day()
         cout << "The following is the weekly report\n\n";
         weekly_report(op);
     }
-    if (date % 30 == 29)
+    if (((*date) - (*first_date)) % 30 == 29)
     {
         cout << "The following is the monthly report\n\n";
         monthly_report();
@@ -735,5 +750,8 @@ static void next_day()
     treat_queue(copy_daily, copy_total);
     treat_delay(copy_daily, copy_total);
     treat_hrisk(copy_daily, copy_total);
-    date++;
+    (*date)++;
+    cout << endl << "********************\n Today is ";
+    (*date).print();
+    cout << "********************" << endl << endl;
 }

@@ -31,11 +31,18 @@ public:
     {
         cout << year << "-" << month << "-" << day << " " << endl;
     }
-    void set(int y, int m, int d, int h, int mi, int s)
+    bool set(int y, int m, int d)
     {
+        if (m < 1 || m > 12 || d < 0 || d > 30)
+        // Assuming we only have 30 days a month in Computing Assignment World
+        // Thus we have 360 days a year
+        {
+            return false;
+        }
         year = y;
         month = m;
         day = d;
+        return true;
     }
     void set(CDate d)
     {
@@ -43,31 +50,41 @@ public:
         month = d.month;
         day = d.day;
     }
-    void set(string s)
+    bool set(string s)
     {
         int y, m, d, h, mi, sec;
-        sscanf(s.c_str(), "%d-%d-%d", &y, &m, &d);
+        if (sscanf(s.c_str(), "%d-%d-%d", &y, &m, &d) != 3)
+        {
+            return false;
+        }
+        if (m < 1 || m > 12 || d < 0 || d > 30)
+        // Assuming we only have 30 days a month in Computing Assignment World
+        // Thus we have 360 days a year
+        {
+            return false;
+        }
         year = y;
         month = m;
         day = d;
+        return true;
     }
     int operator-(CDate d)
     {
-        int y, m, day;
+        int y, m, days;
         y = year - d.year;
         m = month - d.month;
-        day = day - d.day;
-        if (day < 0)
+        days = day - d.day;
+        if (days < 0)
         {
             m--;
-            day += 30;
+            days += 30;
         }
         if (m < 0)
         {
             y--;
             m += 12;
         }
-        return y * 365 + m * 30 + day;
+        return y * 360 + m * 30 + days;
     }
     void nextday()
     {
@@ -83,7 +100,7 @@ public:
             }
         }
     }
-    void operator++()
+    void operator++(int)
     {
         nextday();
     }
