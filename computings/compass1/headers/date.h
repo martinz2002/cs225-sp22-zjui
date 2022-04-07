@@ -20,7 +20,8 @@ public:
         month = m;
         day = d;
     }
-    CDate(time_t current_time){
+    CDate(time_t current_time)
+    {
         struct tm *local_time = localtime(&current_time);
         year = local_time->tm_year + 1900;
         month = local_time->tm_mon + 1;
@@ -81,6 +82,36 @@ public:
                 year++;
             }
         }
+    }
+    void operator++()
+    {
+        nextday();
+    }
+    CDate operator+= (int n)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            nextday();
+        }
+        return *this;
+    }
+    CDate operator+ (CDate datesss)
+    {
+        CDate d;
+        d.year = year + datesss.year;
+        d.month = month + datesss.month;
+        d.day = day + datesss.day;
+        if (d.day > 30)
+        {
+            d.day -= 30;
+            d.month++;
+        }
+        if (d.month > 12)
+        {
+            d.month -= 12;
+            d.year++;
+        }
+        return d;
     }
 };
 #endif
