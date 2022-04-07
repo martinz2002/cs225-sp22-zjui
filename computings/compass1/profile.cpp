@@ -25,6 +25,7 @@ extern personal_profile *newprofile(string name, string address, string phone, s
     new_profile->WeChat = WeChat;
     new_profile->risk = risk;
     new_profile->regID = RegID;
+    return new_profile;
 }
 
 extern void change_profession(personal_profile *profile, int new_profession)
