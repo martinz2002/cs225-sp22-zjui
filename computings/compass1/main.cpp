@@ -146,7 +146,7 @@ int main()
             cout << "2. risk\n";
             cin >> choice;
 
-            while (op != 1 && op != 2)
+            while (choice != 1 && choice != 2)
             {
                 cout << "You must choose 1 or 2\n\n";
                 cin >> choice;

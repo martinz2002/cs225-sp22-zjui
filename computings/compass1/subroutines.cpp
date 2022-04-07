@@ -97,7 +97,7 @@ void alloc_for_ino()
     ino_pro = new_ino;
 }
 
-static void reg_reg(int64_t x, int64_t y)   // register a new registration point to the registration profile list
+static void reg_reg(int64_t x, int64_t y) // register a new registration point to the registration profile list
 {
     reg_pro[num_reg] = new registration_profile;
     reg_pro[num_reg]->x_coordinate = x;
@@ -108,7 +108,7 @@ static void reg_reg(int64_t x, int64_t y)   // register a new registration point
         alloc_for_reg();
 }
 
-static void reg_ino(int64_t x, int64_t y, int cap)  // register a new inoculation point to the inoculation profile list
+static void reg_ino(int64_t x, int64_t y, int cap) // register a new inoculation point to the inoculation profile list
 {
     ino_pro[num_ino] = new inoculate_profile;
     ino_pro[num_ino]->x_coordinate = x;
@@ -462,7 +462,7 @@ static void cancel_withdraw(int64_t ID)
         return;
     }
     queue_waiting++;
-    for(vector<personal_profile *>::iterator i = withdraw_personal_file.begin(); i != withdraw_personal_file.end(); i++)
+    for (vector<personal_profile *>::iterator i = withdraw_personal_file.begin(); i != withdraw_personal_file.end(); i++)
     {
         if (*i == ptr)
         {
@@ -474,6 +474,7 @@ static void cancel_withdraw(int64_t ID)
     ptr->once_withdraw = true;
     ptr->is_delay = false;
     ptr->withdraw = false;
+    ptr->registrationdate = date;
     queueing_personal_file.push_back(ptr);
     if (ptr->risk <= 2)
     {
