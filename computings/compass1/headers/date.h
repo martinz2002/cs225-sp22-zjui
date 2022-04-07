@@ -142,5 +142,115 @@ public:
         }
         return d;
     }
+    bool operator< (CDate d)
+    {
+        if (year < d.year)
+        {
+            return true;
+        }
+        else if (year > d.year)
+        {
+            return false;
+        }
+        else
+        {
+            if (month < d.month)
+            {
+                return true;
+            }
+            else if (month > d.month)
+            {
+                return false;
+            }
+            else
+            {
+                if (day < d.day)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+    }
+    bool operator== (CDate d)
+    {
+        if (year == d.year && month == d.month && day == d.day)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    bool operator> (CDate d)
+    {
+        if (year > d.year)
+        {
+            return true;
+        }
+        else if (year < d.year)
+        {
+            return false;
+        }
+        else
+        {
+            if (month > d.month)
+            {
+                return true;
+            }
+            else if (month < d.month)
+            {
+                return false;
+            }
+            else
+            {
+                if (day > d.day)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+    }
+    bool operator<= (CDate d)
+    {
+        if (year < d.year)
+        {
+            return true;
+        }
+        else if (year > d.year)
+        {
+            return false;
+        }
+        else
+        {
+            if (month < d.month)
+            {
+                return true;
+            }
+            else if (month > d.month)
+            {
+                return false;
+            }
+            else
+            {
+                if (day < d.day)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+    }
 };
 #endif
