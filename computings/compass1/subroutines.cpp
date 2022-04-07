@@ -5,7 +5,8 @@
 using namespace std;
 
 // static int32_t date = 0;
-static CDate date = time(NULL);
+static CDate *date = new CDate(time(NULL));
+static CDate *first_date = new CDate(time(NULL));
 static int64_t num_reg = 0;
 static int64_t num_ino = 0;
 static int64_t max_num_reg = 20;
@@ -71,7 +72,7 @@ bool cmp_by_agegp(personal_profile *file1, personal_profile *file2)
 bool cmp_by_ddl(personal_profile *file1, personal_profile *file2)
 // a subroutine for comparation by inoculation date
 {
-    return file1->inoculate_date < file2->inoculate_date;
+    return (file1->inoculate_date - file2->inoculate_date) < 0;
 }
 
 void alloc_for_reg()
@@ -141,19 +142,57 @@ static void calc_reg_dist() // calculate the distance between each registration 
 }
 static int calc_agegroup(CDate *birthdate)
 {
-    return birthdate->year - date;
+    int64_t dateDiff = date->year - birthdate->year;
+    if (dateDiff < 0)
+    {
+        return -1; // Exit
+    }
+    else if (dateDiff <= 12) // Age Group I
+    {
+        return 1;
+    }
+    else if (dateDiff <= 18) // Age Group II
+    {
+        return 2;
+    }
+    else if (dateDiff <= 35) // Age Group III
+    {
+        return 3;
+    }
+    else if (dateDiff <= 50) // Age Group IV
+    {
+        return 4;
+    }
+    else if (dateDiff <= 65) // Age Group V
+    {
+        return 5;
+    }
+    else if (dateDiff <= 75) // Age Group VI
+    {
+        return 6;
+    }
+    else // Age Group VII
+    {
+        return 7;
+    }
 }
 static void add_profile(string name, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, string birthdate, int64_t RegID)
 {
     CDate *dateBirthdate = new CDate();
     dateBirthdate->set(birthdate);
     int agegroup = calc_agegroup(dateBirthdate);
+    if (agegroup == -1) // Invalid birthdate
+    {
+        cout << "Invalid birthday. (Not born yet)" << endl;
+        delete dateBirthdate;
+        return;
+    }
     int64_t pri_num;
     pri_num = profession;
     pri_num <<= 5;
     pri_num += agegroup;
     pri_num <<= 25;
-    pri_num += date;
+    pri_num += (*date) - (*first_date);
     pri_num <<= 20;
     pri_num += total_reg_person;
     if (ID2ptr.retrieve(ID) != NULL)
@@ -164,7 +203,7 @@ static void add_profile(string name, string address, string phone, string WeChat
     total_reg_person++;
     queue_waiting++;
     personal_profile *my_personal_file;
-    my_personal_file = newprofile(name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, date, RegID);
+    my_personal_file = newprofile(name, address, phone, WeChat, email, risk, ID, profession, agegroup, dateBirthdate, *date, RegID);
     my_personal_file->priority_num = pri_num;
     registration_sequence_calculation(my_personal_file, reg_pro[RegID]);
     priority2ID.add(pri_num, ID);
@@ -210,7 +249,7 @@ static void weekly_report(int op)
         cout << "Age group:" << queueing_personal_file[_]->agegroup << "\n";
         cout << "Profession:" << queueing_personal_file[_]->profession << "\n";
         cout << "Risk:" << queueing_personal_file[_]->risk << "\n";
-        cout << "Waiting time until now:" << date - queueing_personal_file[_]->registrationdate << "\n";
+        cout << "Waiting time until now:" << (*date) - queueing_personal_file[_]->registrationdate << "\n";
     }
     cout << "\nAssigned Waiting: \n";
     for (int _ = 0; _ < assign_waiting; _++)
@@ -219,7 +258,7 @@ static void weekly_report(int op)
         cout << "Age group:" << assigned_personal_file[_]->agegroup << "\n";
         cout << "Profession:" << assigned_personal_file[_]->profession << "\n";
         cout << "Risk:" << assigned_personal_file[_]->risk << "\n";
-        cout << "Waiting time until now:" << date - assigned_personal_file[_]->registrationdate << "\n";
+        cout << "Waiting time until now:" << (*date) - assigned_personal_file[_]->registrationdate << "\n";
     }
     cout << "\nTreatment: \n";
     for (int _ = 0; _ < total_treatment; _++)
@@ -242,7 +281,7 @@ static void monthly_report()
     cout << "Withdraw: " << total_reg_person - queue_waiting - assign_waiting - total_treatment << "\n";
 }
 
-static void DDL_letter(int64_t ID, int64_t DDL)
+static void DDL_letter(int64_t ID, CDate *DDL)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
     if (ptr == NULL)
@@ -252,9 +291,9 @@ static void DDL_letter(int64_t ID, int64_t DDL)
     }
     if (ptr->is_inoculated)
         return;
-    if (ptr->is_assigned && DDL < ptr->inoculate_date)
+    if (ptr->is_assigned && (*DDL) - ptr->inoculate_date < 0)
     {
-        ptr->inoculate_date = DDL;
+        ptr->inoculate_date = (*DDL);
         sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_ddl);
         return;
     }
@@ -331,7 +370,14 @@ static void change_pro(int64_t ID, int64_t prof)
     }
     if (prof == ptr->profession)
         return;
-    int64_t pre_prio_num = ptr->priority_num, now_prio_num = prof << 50 + ptr->agegroup << 45 + ptr->registrationdate << 20 + total_reg_person;
+    int64_t pre_prio_num = ptr->priority_num;
+    int64_t now_prio_num = prof;
+    now_prio_num <<= 5;
+    now_prio_num += ptr->agegroup;
+    now_prio_num <<= 25;
+    now_prio_num += ptr->registrationdate - (*first_date);
+    now_prio_num <<= 20;
+    now_prio_num += total_reg_person;
     ptr->priority_num = now_prio_num;
     ptr->profession = prof;
     priority2ID.remove(pre_prio_num);
@@ -482,7 +528,7 @@ static void cancel_withdraw(int64_t ID)
     ptr->once_withdraw = true;
     ptr->is_delay = false;
     ptr->withdraw = false;
-    ptr->registrationdate = date;
+    ptr->registrationdate = *date;
     queueing_personal_file.push_back(ptr);
     if (ptr->risk <= 2)
     {
@@ -507,7 +553,7 @@ void treat_assigned(int64_t *copy_daily, int64_t *copy_total)
         ptr->once_withdraw = false;
         ptr->is_delay = false;
         ptr->withdraw = false;
-        ptr->inoculate_date = date;
+        ptr->inoculate_date = *date;
         while (copy_daily[ptr->vaccination_sequence[ino_id]] <= 0)
         {
             ino_id++;
@@ -516,7 +562,7 @@ void treat_assigned(int64_t *copy_daily, int64_t *copy_total)
         ptr->inoID = ptr->vaccination_sequence[ino_id];
         (*copy_total)--;
         assign_waiting--;
-        aver_waiting = (aver_waiting * total_treatment + date - ptr->registrationdate) / (total_treatment + 1);
+        aver_waiting = (aver_waiting * total_treatment + ((*date) - ptr->registrationdate)) / (total_treatment + 1);
         total_treatment++;
         i = assigned_personal_file.erase(i);
         inoculated_personal_file.push_back(ptr);
@@ -541,7 +587,7 @@ void treat_queue(int64_t *copy_daily, int64_t *copy_total)
             ptr->once_withdraw = false;
             ptr->is_delay = false;
             ptr->withdraw = false;
-            ptr->inoculate_date = date;
+            ptr->inoculate_date = *date;
             while (copy_daily[ptr->vaccination_sequence[ino_id]] <= 0)
             {
                 ino_id++;
@@ -550,7 +596,7 @@ void treat_queue(int64_t *copy_daily, int64_t *copy_total)
             ptr->inoID = ptr->vaccination_sequence[ino_id];
             (*copy_total)--;
             queue_waiting--;
-            aver_waiting = (aver_waiting * total_treatment + date - ptr->registrationdate) / (total_treatment + 1);
+            aver_waiting = (aver_waiting * total_treatment + ((*date) - ptr->registrationdate)) / (total_treatment + 1);
             total_treatment++;
             while (*i != ptr)
             {

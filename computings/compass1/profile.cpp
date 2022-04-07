@@ -10,14 +10,14 @@
 
 #include "headers/profile.h"
 using std::string;
-extern personal_profile *newprofile(string name, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate, int64_t RegID)
+extern personal_profile *newprofile(string name, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, CDate *birthdate, CDate registrationdate, int64_t RegID)
 {
     personal_profile *new_profile = new personal_profile;
     new_profile->name = name;
     new_profile->ID = ID;
     new_profile->address = address;
     new_profile->agegroup = agegroup;
-    new_profile->birthdate = birthdate;
+    new_profile->birthday = birthdate;
     new_profile->profession = profession;
     new_profile->registrationdate = registrationdate;
     new_profile->email = email;
