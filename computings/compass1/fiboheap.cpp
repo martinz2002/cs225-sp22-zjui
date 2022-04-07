@@ -110,8 +110,11 @@ static FibNode* fib_node_make(Type key)
     return node;
 }
 
-/*
- * insert nodes into fibonacci heap
+/**
+ * @brief Insert a existing node into the heap
+ * 
+ * @param heap the heap where the node is inserted
+ * @param node the node to insert
  */
 static void fib_heap_insert_node(FibHeap *heap, FibNode *node)
 {
@@ -126,8 +129,11 @@ static void fib_heap_insert_node(FibHeap *heap, FibNode *node)
     heap->keyNum++;
 }
 
-/*
- * create a node with key value "key", and insert it into heap
+/**
+ * @brief Insert a key to the heap
+ * 
+ * @param heap the heap where the key is inserted
+ * @param key the key to insert
  */
 void fib_heap_insert_key(FibHeap *heap, Type key)
 {
@@ -143,8 +149,12 @@ void fib_heap_insert_key(FibHeap *heap, Type key)
     fib_heap_insert_node(heap, node);
 }
 
-/*
- * combine h1 and h2 and return the combined heap
+/**
+ * @brief combine h1 and h2 and return the merged heap
+ * 
+ * @param h1 a pointer to a heap
+ * @param h2 a pointer to a heap
+ * @return FibHeap* the pointer to the merged heap
  */
 FibHeap* fib_heap_union(FibHeap *h1, FibHeap *h2)
 {
@@ -189,9 +199,11 @@ FibHeap* fib_heap_union(FibHeap *h1, FibHeap *h2)
     return h1;
 }
 
-/*
- * remove the minimum node of heap from the root linked list，
- * which means the tree that the minimum node belongs to is removed from the heap!
+/**
+ * @brief remove the minimum node of heap from the root of a linked list, which means the tree that the minimum node belongs to is removed from the heap
+ * 
+ * @param heap 
+ * @return FibNode* 
  */
 static FibNode *fib_heap_remove_min(FibHeap *heap)
 {
@@ -209,8 +221,12 @@ static FibNode *fib_heap_remove_min(FibHeap *heap)
     return min;
 }
 
-/*
- * link node to the root nodes
+/**
+ * @brief Link a node to the root node
+ * 
+ * @param heap 
+ * @param node 
+ * @param root 
  */
 static void fib_heap_link(FibHeap * heap, FibNode * node, FibNode *root)
 {
@@ -227,8 +243,10 @@ static void fib_heap_link(FibHeap * heap, FibNode * node, FibNode *root)
     node->marked = 0;
 }
 
-/*
- * create space for fib_heap_consolidate
+/**
+ * @brief allocate space for fib_heap_consolidate
+ * 
+ * @param heap 
  */
 static void fib_heap_cons_make(FibHeap * heap)
 {
@@ -246,8 +264,10 @@ static void fib_heap_cons_make(FibHeap * heap)
             sizeof(FibHeap *) * (heap->maxDegree + 1));
 }
 
-/*
- * combine the trees that have same degree on the left side and right side of the fibonacci heap's root linked list
+/**
+ * @brief combine the trees that have same degree on the left side and right side of the fibonacci heap's root linked list
+ * 
+ * @param heap 
  */
 static void fib_heap_consolidate(FibHeap *heap)
 {
@@ -301,8 +321,11 @@ static void fib_heap_consolidate(FibHeap *heap)
     }
 }
 
-/*
- * remove the minimum node and return the fibonacci heap whose nodes has been removed
+/**
+ * @brief [helper] remove the minimum node and return the fibonacci heap whose nodes has been removed
+ * 
+ * @param heap 
+ * @return FibNode* the fibonacci heap whose nodes has been removed
  */
 FibNode* _fib_heap_extract_min(FibHeap *heap)
 {
@@ -341,6 +364,11 @@ FibNode* _fib_heap_extract_min(FibHeap *heap)
     return min;
 }
 
+/**
+ * @brief Extract the minimum node of a heap
+ * 
+ * @param heap 
+ */
 void fib_heap_extract_min(FibHeap *heap)
 {
     FibNode *node;
@@ -353,8 +381,12 @@ void fib_heap_extract_min(FibHeap *heap)
         free(node);
 }
 
-/*
- * 在斐波那契堆heap中是否存在键值为key的节点；存在返回1，否则返回0。
+/**
+ * @brief Check whether there's a node with value key
+ * 
+ * @param heap 
+ * @param pkey the key to search
+ * @return int exist -- 1; not exist -- 0
  */
 int fib_heap_get_min(FibHeap *heap, Type *pkey)
 {
@@ -365,8 +397,11 @@ int fib_heap_get_min(FibHeap *heap, Type *pkey)
     return 1;
 }
 
-/*
- * 修改度数
+/**
+ * @brief Modify the degree of a node
+ * 
+ * @param parent 
+ * @param degree 
  */
 static void renew_degree(FibNode *parent, int degree)
 {
@@ -375,9 +410,12 @@ static void renew_degree(FibNode *parent, int degree)
         renew_degree(parent->parent, degree);
 }
 
-/*
- * 将node从父节点parent的子链接中剥离出来，
- * 并使node成为"堆的根链表"中的一员。
+/**
+ * @brief Make a node independent from its parents and become a member of the root list
+ * 
+ * @param heap the heap where the node lies
+ * @param node the node to make independent
+ * @param parent the parent node of the node
  */
 static void fib_heap_cut(FibHeap *heap, FibNode *node, FibNode *parent)
 {
@@ -396,13 +434,12 @@ static void fib_heap_cut(FibHeap *heap, FibNode *node, FibNode *parent)
     fib_node_add(node, heap->min);
 }
 
-/*
- * 对节点node进行"级联剪切"
- *
- * 级联剪切：如果减小后的结点破坏了最小堆性质，
- *     则把它切下来(即从所在双向链表中删除，并将
- *     其插入到由最小树根节点形成的双向链表中)，
- *     然后再从"被切节点的父节点"到所在树根节点递归执行级联剪枝
+/**
+ * @brief Perform cascading cut to node
+ * NOTE: 如果减小后的结点破坏了最小堆性质，则把它切下来(即从所在双向链表中删除，并将其插入到由最小树根节点形成的双向链表中)，然后再从"被切节点的父节点"到所在树根节点递归执行级联剪枝
+ * 
+ * @param heap 
+ * @param node 
  */
 static void fib_heap_cascading_cut(FibHeap *heap, FibNode *node)
 {
@@ -419,8 +456,12 @@ static void fib_heap_cascading_cut(FibHeap *heap, FibNode *node)
     }
 }
 
-/*
- * 将斐波那契堆heap中节点node的值减少为key
+/**
+ * @brief Reduce the key of a node to a given value
+ * 
+ * @param heap 
+ * @param node 
+ * @param key the key to reduce to
  */
 static void fib_heap_decrease(FibHeap *heap, FibNode *node, Type key)
 {
@@ -449,8 +490,12 @@ static void fib_heap_decrease(FibHeap *heap, FibNode *node, Type key)
         heap->min = node;
 }
 
-/*
- * 将斐波那契堆heap中节点node的值增加为key
+/**
+ * @brief Increase the key of a node to a given value
+ * 
+ * @param heap 
+ * @param node 
+ * @param key the key to increase to
  */
 static void fib_heap_increase(FibHeap *heap, FibNode *node, Type key)
 {
@@ -504,8 +549,12 @@ static void fib_heap_increase(FibHeap *heap, FibNode *node, Type key)
     }
 }
 
-/*
- * 更新二项堆heap的节点node的键值为key
+/**
+ * @brief [helper] update the key of a node
+ * 
+ * @param heap 
+ * @param node 
+ * @param key 
  */
 void _fib_heap_update(FibHeap *heap, FibNode *node, Type key)
 {
@@ -529,8 +578,12 @@ void fib_heap_update(FibHeap *heap, Type oldkey, Type newkey)
         _fib_heap_update(heap, node, newkey);
 }
 
-/*
- * 在最小堆root中查找键值为key的节点
+/**
+ * @brief look for a node with key in root
+ * 
+ * @param root 
+ * @param key 
+ * @return FibNode* 
  */
 static FibNode* fib_node_search(FibNode *root, Type key)
 {
@@ -558,8 +611,12 @@ static FibNode* fib_node_search(FibNode *root, Type key)
     return p;
 }
 
-/*
- * 在斐波那契堆heap中查找键值为key的节点
+/**
+ * @brief Find a node with key
+ * 
+ * @param heap 
+ * @param key 
+ * @return FibNode* 
  */
 static FibNode *fib_heap_search(FibHeap *heap, Type key)
 {
@@ -569,17 +626,23 @@ static FibNode *fib_heap_search(FibHeap *heap, Type key)
     return fib_node_search(heap->min, key);
 }
 
-/*
- * 在斐波那契堆heap中是否存在键值为key的节点。
- * 存在返回1，否则返回0。
+/**
+ * @brief Find a node with key in the heap
+ * 
+ * @param heap 
+ * @param key 
+ * @return int 1 if exists; 0 if not
  */
 int fib_heap_contains(FibHeap *heap, Type key)
 {
     return fib_heap_search(heap,key)!=NULL ? 1: 0;
 }
 
-/*
- * 删除结点node
+/**
+ * @brief Remove a node
+ * 
+ * @param heap 
+ * @param node the node to remove
  */
 static void _fib_heap_delete(FibHeap *heap, FibNode *node)
 {
@@ -589,6 +652,12 @@ static void _fib_heap_delete(FibHeap *heap, FibNode *node)
     free(node);
 }
 
+/**
+ * @brief Remove a node
+ * 
+ * @param heap 
+ * @param key 
+ */
 void fib_heap_delete(FibHeap *heap, Type key)
 {
     FibNode *node;
@@ -603,8 +672,10 @@ void fib_heap_delete(FibHeap *heap, Type key)
     _fib_heap_delete(heap, node);
 }
 
-/*
- * 销毁斐波那契堆
+/**
+ * @brief Dispose a node
+ * 
+ * @param node 
  */
 static void fib_node_destroy(FibNode *node)
 {
@@ -621,6 +692,11 @@ static void fib_node_destroy(FibNode *node)
     } while(node != start);
 }
 
+/**
+ * @brief Destroy a fibonacci heap
+ * 
+ * @param heap 
+ */
 void fib_heap_destroy(FibHeap *heap)
 {
     fib_node_destroy(heap->min);
@@ -636,6 +712,14 @@ void fib_heap_destroy(FibHeap *heap)
  *     prev       -- 当前节点的前一个节点(父节点or兄弟节点)
  *     direction  --  1，表示当前节点是一个左孩子;
  *                    2，表示当前节点是一个兄弟节点。
+ */
+
+/**
+ * @brief [helper] Print fibonacci heap
+ * 
+ * @param node current node
+ * @param prev precedental node of current node
+ * @param direction indicating the type of current node; 1 = left child; 2 = sibling
  */
 static void _fib_print(FibNode *node, FibNode *prev, int direction)
 {
@@ -660,6 +744,11 @@ static void _fib_print(FibNode *node, FibNode *prev, int direction)
     } while(node != start);
 }
 
+/**
+ * @brief Print a fibonacci heap
+ * 
+ * @param heap 
+ */
 void fib_print(FibHeap *heap)
 {
     int i=0;
