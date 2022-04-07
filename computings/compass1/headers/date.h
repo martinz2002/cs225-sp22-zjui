@@ -1,3 +1,14 @@
+/**
+ * @file date.h
+ * @author Li Rong, Zhong Tiantian
+ * @brief Providing Class CDate for dates.
+ * @version 0.1
+ * @date 2022-04-07
+ * 
+ * @copyright Copyright (c) 2022 Zhejiang University
+ * 
+ */
+
 #include <bits/stdc++.h>
 using namespace std;
 #ifndef CDate_hh
