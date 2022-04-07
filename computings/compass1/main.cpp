@@ -69,7 +69,7 @@ int main()
         cout << "7. Quit\n";
         cin >> op;
 
-        if (op != 1 && op != 2 && op != 3 && op != 4 && op != 5 && op != 6&& op != 7)
+        if (op != 1 && op != 2 && op != 3 && op != 4 && op != 5 && op != 6 && op != 7)
         {
             cout << "You must choose 1 or 2 or 3 or 4 or 5 or 6 or 7\n";
             continue;
@@ -78,12 +78,13 @@ int main()
         {
         case 1: // Register a new profile
         {
-            string name, address, phone, WeChat, email;
-            int64_t ID, birthdate, regID;
-            int risk, profession, agegroup;
+            string name, address, phone, WeChat, email, birthdate;
+            int64_t ID, regID;
+            int risk, profession;
+            // int agegroup;
             cout << "ID\n";
             cin >> ID;
-            cout << "birthdate\n";
+            cout << "birthdate (yyyy-mm-dd)\n";
             cin >> birthdate;
             cout << "regID\n";
             cout << "it should be larger than 0 and smaller and equal than " << registration_point_order << "\n";
@@ -110,13 +111,13 @@ int main()
                 cout << "plz enter a value between 1 and 8\n";
                 cin >> profession;
             }
-            cout << "agegroup\n";
-            cin >> agegroup;
-            while (agegroup <= 0 || agegroup > 7)
-            {
-                cout << "plz enter a value between 1 and 7\n";
-                cin >> agegroup;
-            }
+            // cout << "agegroup\n";
+            // cin >> agegroup;
+            // while (agegroup <= 0 || agegroup > 7)
+            // {
+            //     cout << "plz enter a value between 1 and 7\n";
+            //     cin >> agegroup;
+            // }
             cout << "risk\n";
             cin >> risk;
             while (risk < 0 || risk > 3)
@@ -124,7 +125,7 @@ int main()
                 cout << "plz enter a value between 0 and 3\n";
                 cin >> risk;
             }
-            add_profile(name, address, phone, WeChat, email, risk, ID, profession, agegroup, birthdate, regID - 1);
+            add_profile(name, address, phone, WeChat, email, risk, ID, profession, birthdate, regID - 1);
             break;
         }
         case 2: // Withdrawl a profile with index ID

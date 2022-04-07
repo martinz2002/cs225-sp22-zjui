@@ -2,6 +2,7 @@
 #ifndef PROF_H
 #define PROF_H
 #include <bits/stdc++.h>
+#include "date.h"
 
 using std::string;
 typedef struct personal_profile
@@ -17,7 +18,8 @@ typedef struct personal_profile
     int profession; // I to VIII
     int risk;       // 0-3
     int agegroup;   // 1-7
-    int64_t birthdate;
+    // int64_t birthdate;
+    CDate *birthday;
     int64_t registrationdate;
     int64_t regID;
     int64_t inoID;

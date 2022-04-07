@@ -2,10 +2,10 @@
 #include "id_hash.cpp"
 #include "profile.cpp"
 #include "fiboheap.cpp"
-#include "headers/date.h"
 using namespace std;
 
-static int32_t date = 0;
+// static int32_t date = 0;
+static CDate date = time(NULL);
 static int64_t num_reg = 0;
 static int64_t num_ino = 0;
 static int64_t max_num_reg = 20;
@@ -139,8 +139,15 @@ static void calc_reg_dist() // calculate the distance between each registration 
         sort(reg_pro[_]->vaccination_sequence, reg_pro[_]->vaccination_sequence + num_ino, compare_by_dist);
     }
 }
-static void add_profile(string name, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t RegID)
+static int calc_agegroup(CDate *birthdate)
 {
+    return birthdate->year - date;
+}
+static void add_profile(string name, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, string birthdate, int64_t RegID)
+{
+    CDate *dateBirthdate = new CDate();
+    dateBirthdate->set(birthdate);
+    int agegroup = calc_agegroup(dateBirthdate);
     int64_t pri_num;
     pri_num = profession;
     pri_num <<= 5;
