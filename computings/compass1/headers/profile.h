@@ -1,10 +1,24 @@
-
+/**
+ * @file profile.h
+ * @author Li Rong
+ * @brief Provides declearations of structure personal_profile and its properties.
+ * @version 0.1
+ * @date 2022-04-07
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #ifndef PROF_H
 #define PROF_H
 #include <bits/stdc++.h>
 #include "date.h"
 
 using std::string;
+
+/**
+ * @brief Structure for personal profiles
+ * 
+ */
 typedef struct personal_profile
 
 {
@@ -34,6 +48,10 @@ typedef struct personal_profile
     bool is_assigned = false;
 } personal_profile;
 
+/**
+ * @brief Structure for registration point information
+ * 
+ */
 typedef struct registration_profile
 {
 
@@ -45,6 +63,11 @@ typedef struct registration_profile
     int y_coordinate;
 } registration_profile;
 
+
+/**
+ * @brief Structure for inoculation point information
+ * 
+ */
 typedef struct inoculate_profile
 {
     int64_t ID;
@@ -55,10 +78,5 @@ typedef struct inoculate_profile
     int daily_processnum;
 
 } inoculate_profile;
-
-extern personal_profile *newprofile(personal_profile *lastnode, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, int agegroup, int64_t birthdate, int64_t registrationdate, int64_t RegID);
-extern void change_risk(personal_profile *profile, int risk);
-extern void change_profession(personal_profile *profile, int new_profession);
-extern void registration_sequence_calculation(personal_profile *p_profile, registration_profile *r_profile);
 
 #endif

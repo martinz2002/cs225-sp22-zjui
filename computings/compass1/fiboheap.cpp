@@ -1,15 +1,39 @@
+/**
+ * @file fiboheap.cpp
+ * @author skywang (original writer); Li Rong & Zhong Tiantian (Modifier & commentor)
+ * @brief An implementation of fibonacci heap.
+ * @version 0.1
+ * @date 2014-04-05
+ * 
+ * @copyright Copyright (c) 2014
+ * 
+ */
+
 #include "headers/fiboheap.h"
 #define LOG2(x) ((log((double)(x))) / (log(2.0)))
 
 static FibNode *fib_heap_search(FibHeap *heap, Type key);
 
-static void fib_node_remove(FibNode *node)  // Remove node from a doubly-linked list
+
+/**
+ * @brief Remove node from a doubly-linked list
+ * 
+ * @param node the node to be removed
+ */
+static void fib_node_remove(FibNode *node)
 {
     node->left->right = node->right;
     node->right->left = node->left;
 }
 
-static void fib_node_add(FibNode *node, FibNode *root)  // Add a node before the doubly-linked list "root"
+
+/**
+ * @brief Add a node before the doubly-linked list "root"
+ * 
+ * @param node node to be added
+ * @param root root of the doubly-linked list
+ */
+static void fib_node_add(FibNode *node, FibNode *root)
 {
     node->left        = root->left;
     root->left->right = node;
@@ -17,7 +41,12 @@ static void fib_node_add(FibNode *node, FibNode *root)  // Add a node before the
     root->left        = node;
 }
 
-/*linked list B to the back of list A*/
+/**
+ * @brief concat list B to the back of list A
+ * 
+ * @param a front node
+ * @param b back node to be concated to a
+ */
 static void fib_node_cat(FibNode *a, FibNode *b)    // 
 {
     FibNode *tmp;
@@ -30,8 +59,10 @@ static void fib_node_cat(FibNode *a, FibNode *b)    //
 }
 
 
-/*
- * create fibonacci heap
+/**
+ * @brief Create a fibo heap
+ * 
+ * @return FibHeap* A pointer to the new heap
  */
 FibHeap* fib_heap_make()
 {
@@ -52,8 +83,12 @@ FibHeap* fib_heap_make()
     return heap;
 }
 
-/*
- * create nodes of fibonacci heap
+
+/**
+ * @brief Create new nodes for fibo heap
+ * 
+ * @param key key for the new node
+ * @return FibNode* the pointer to the heap with new node inserted
  */
 static FibNode* fib_node_make(Type key)
 {

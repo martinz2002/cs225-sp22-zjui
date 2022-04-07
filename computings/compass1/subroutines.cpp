@@ -1,222 +1,115 @@
+/**
+ * @file subroutines.cpp
+ * @author Li Rong
+ * @brief Subroutines used by main()
+ * @version 0.1
+ * @date 2022-04-07
+ * 
+ * @copyright Copyright (c) 2022 Zhejiang University
+ * 
+ */
+
+
 #include "headers/subroutines.h"
 #include "id_hash.cpp"
 #include "profile.cpp"
 #include "fiboheap.cpp"
 using namespace std;
 
-// static int32_t date = 0;
-static CDate *date = new CDate(time(NULL));       // Current date being processed by the system
-static CDate *first_date = new CDate(time(NULL)); // Date of the first run of the program
-static int64_t num_reg = 0;                       // Number of registration points
-static int64_t num_ino = 0;                       // Number of inoculation points
-static int64_t max_num_reg = 20;                  // Maximum Number of registration points
-static int64_t max_num_ino = 20;                  // Maximum Number of inoculation points
-
-static int64_t daily_total = 0; // the capacity of treatment from all registration points, initialized by 0
-
-static int64_t total_reg_person = 0; // number of people that have registered
-static int64_t queue_waiting = 0;    // number of people who haven't been inoculated but did not send the priority letter
-static int64_t assign_waiting = 0;   // number of people who haven't been inoculated but have already sent the priority letter
-static int64_t total_treatment = 0;  // the number of processed people
-static double_t aver_waiting = 0;    // the average time of waiting
-
-static int64_t *daily; // the array that contains the inoculation capacity of each inoculation point
-
-static registration_profile **reg_pro = new registration_profile *[max_num_reg]; // pointing to a list of registration pts profile
-static inoculate_profile **ino_pro = new inoculate_profile *[max_num_ino];       // pointing to a list of inoculation pts profile
-// initialization for registration_profile and inoculate_profile
-
-static vector<personal_profile *> queueing_personal_file; // the queue of the waiting people
-
-static vector<personal_profile *> delay_personal_file; // the queue of the patient
-
-static vector<personal_profile *> inoculated_personal_file; // the queue of the inoculated people
-
-static vector<personal_profile *> withdraw_personal_file; // the queue of the inoculated people
-
-static vector<personal_profile *> assigned_personal_file; // the queue of the people who have written priority letter
-
-static int64_t *dist; // the temporary distance sequence
-
-static hashmap<int64_t, int64_t> priority2ID = hashmap<int64_t, int64_t>(20); // hashmap from priority to ID
-
-static hashmap<int64_t, personal_profile *> ID2ptr = hashmap<int64_t, personal_profile *>(20); // hashmap from ID to personal profile
-
-static FibHeap *Queueing_heap = fib_heap_make(); // queuing heap; containing risk level 0, 1, and 2
-                                                 // when popping risk 2 patients will be pushed back to delay_personal_file
-static FibHeap *hrisk_heap = fib_heap_make();    // high risk (3) heap
-
-/**
- * @brief a subroutine for comparation between distance for num1 and num2, return 1 if distance for num1 is the smaller one
- * 
- * @param num1 id of the first location index
- * @param num2 id of the second location index
- * @return true dist[num1] < dist[num2]
- * @return false dist[num1] >= dist[num2]
- */
 bool compare_by_dist(int64_t num1, int64_t num2)
 {
     return dist[num1] < dist[num2];
 }
 
-/**
- * @brief a subroutine for comparation by email address
- * 
- * @param file1 
- * @param file2 Profiles to compare
- * @return true String of the first person's name is smaller than the second
- * @return false vice versa
- */
 bool cmp_by_name(personal_profile *file1, personal_profile *file2)
 {
     return file1->name < file2->name;
 }
 
-
-/**
- * @brief a subroutine for comparation by profession
- * 
- * @param file1 
- * @param file2 
- * @return true 
- * @return false 
- */
 bool cmp_by_pof(personal_profile *file1, personal_profile *file2)
 {
     return file1->profession < file2->profession;
 }
 
-/**
- * @brief a subroutine for comparation by agegroup
- * 
- * @param file1 
- * @param file2 
- * @return true 
- * @return false 
- */
 bool cmp_by_agegp(personal_profile *file1, personal_profile *file2)
 {
     return file1->agegroup < file2->agegroup;
 }
 
-
-/**
- * @brief a subroutine for comparation by inoculation date
- * 
- * @param file1 
- * @param file2 
- * @return true 
- * @return false 
- */
 bool cmp_by_ddl(personal_profile *file1, personal_profile *file2)
 {
     return (file1->inoculate_date - file2->inoculate_date) < 0;
 }
 
-
-/**
- * @brief reallocate for larger memory space to contain registration profile
- * 
- */
 void alloc_for_reg()
 {
-    max_num_reg *= 2;// double the size of the array
+    max_num_reg *= 2; // double the size of the array
     registration_profile **new_reg = new registration_profile *[max_num_reg];
-    for (int _ = 0; _ < num_reg; _++)// copy the old array to the new array
+    for (int _ = 0; _ < num_reg; _++) // copy the old array to the new array
     {
         new_reg[_] = reg_pro[_];
     }
-    reg_pro = new_reg;// update the pointer
+    reg_pro = new_reg; // update the pointer
 }
 
-
-/**
- * @brief reallocate for larger memory space to contain inoculation profile
- * 
- */
 void alloc_for_ino()
 {
-    max_num_ino *= 2;// double the size of the array
-    inoculate_profile **new_ino = new inoculate_profile *[max_num_ino];// allocate new memory space
-    for (int _ = 0; _ < num_ino; _++)// copy the old array to the new array
+    max_num_ino *= 2;                                                   // double the size of the array
+    inoculate_profile **new_ino = new inoculate_profile *[max_num_ino]; // allocate new memory space
+    for (int _ = 0; _ < num_ino; _++)                                   // copy the old array to the new array
     {
         new_ino[_] = ino_pro[_];
     }
-    ino_pro = new_ino;// update the pointer
+    ino_pro = new_ino; // update the pointer
 }
 
-
-/**
- * @brief register a new registration point to the registration profile list
- * 
- * @param x X coordination of the point
- * @param y Y coordination of the point
- */
 static void reg_reg(int64_t x, int64_t y)
 {
-    reg_pro[num_reg] = new registration_profile;// allocate new memory space
-    reg_pro[num_reg]->x_coordinate = x;// update the x coordinate
-    reg_pro[num_reg]->y_coordinate = y;// update the y coordinate
-    reg_pro[num_reg]->ID = num_reg;// update the ID
-    num_reg++;// update the number of registration points
-    if (num_reg >= max_num_reg) // reallocate if running out of allocated memory
+    reg_pro[num_reg] = new registration_profile; // allocate new memory space
+    reg_pro[num_reg]->x_coordinate = x;          // update the x coordinate
+    reg_pro[num_reg]->y_coordinate = y;          // update the y coordinate
+    reg_pro[num_reg]->ID = num_reg;              // update the ID
+    num_reg++;                                   // update the number of registration points
+    if (num_reg >= max_num_reg)                  // reallocate if running out of allocated memory
         alloc_for_reg();
 }
 
-
-/**
- * @brief register a new inoculation point to the inoculation profile list
- * 
- * @param x X coordinate of the point
- * @param y Y coordinate of the point
- * @param cap capacity of the point, i.e. maximum number of people receiving inoculation on the same day
- */
 static void reg_ino(int64_t x, int64_t y, int cap)
 {
-    ino_pro[num_ino] = new inoculate_profile;// allocate new memory space
-    ino_pro[num_ino]->x_coordinate = x;// update the x coordinate
-    ino_pro[num_ino]->y_coordinate = y;// update the y coordinate
-    ino_pro[num_ino]->ID = num_ino;// update the ID
-    ino_pro[num_ino]->daily_processnum = cap;// update the daily process number
-    num_ino++;// update the number of inoculation points
-    daily_total += cap;// update the total number of capacity
+    ino_pro[num_ino] = new inoculate_profile; // allocate new memory space
+    ino_pro[num_ino]->x_coordinate = x;       // update the x coordinate
+    ino_pro[num_ino]->y_coordinate = y;       // update the y coordinate
+    ino_pro[num_ino]->ID = num_ino;           // update the ID
+    ino_pro[num_ino]->daily_processnum = cap; // update the daily process number
+    num_ino++;                                // update the number of inoculation points
+    daily_total += cap;                       // update the total number of capacity
     if (num_ino >= max_num_ino)
         alloc_for_ino(); // reallocate if more memory space is required
 }
 
-
-/**
- * @brief calculate the distance between each registration point and inoculation points
- * 
- */
 static void calc_reg_dist()
 {
-    dist = new int64_t[num_ino];// allocate new memory space
-    daily = new int64_t[num_ino];// allocate new memory space
-    for (int _ = 0; _ < num_reg; _++)// calculate the distance between each registration point and inoculation points
+    dist = new int64_t[num_ino];      // allocate new memory space
+    daily = new int64_t[num_ino];     // allocate new memory space
+    for (int _ = 0; _ < num_reg; _++) // calculate the distance between each registration point and inoculation points
     {
-        reg_pro[_]->vaccination_sequence = new int64_t[num_ino];// allocate new memory space
-        for (int i = 0; i < num_ino; i++)// calculate the distance between each registration point and inoculation points
+        reg_pro[_]->vaccination_sequence = new int64_t[num_ino]; // allocate new memory space
+        for (int i = 0; i < num_ino; i++)                        // calculate the distance between each registration point and inoculation points
         {
-            dist[i] = sqrt(pow(ino_pro[i]->x_coordinate - reg_pro[_]->x_coordinate, 2) + pow(ino_pro[i]->y_coordinate - reg_pro[_]->y_coordinate, 2));// calculate the distance
-            reg_pro[_]->vaccination_sequence[i] = ino_pro[i]->ID;// update the vaccination sequence
-            if (_ == 0)// update the daily process number
+            dist[i] = sqrt(pow(ino_pro[i]->x_coordinate - reg_pro[_]->x_coordinate, 2) + pow(ino_pro[i]->y_coordinate - reg_pro[_]->y_coordinate, 2)); // calculate the distance
+            reg_pro[_]->vaccination_sequence[i] = ino_pro[i]->ID;                                                                                      // update the vaccination sequence
+            if (_ == 0)                                                                                                                                // update the daily process number
                 daily[i] = ino_pro[i]->daily_processnum;
         }
-        sort(reg_pro[_]->vaccination_sequence, reg_pro[_]->vaccination_sequence + num_ino, compare_by_dist);// sort the vaccination sequence by distance between registration point and inoculation point
+        sort(reg_pro[_]->vaccination_sequence, reg_pro[_]->vaccination_sequence + num_ino, compare_by_dist); // sort the vaccination sequence by distance between registration point and inoculation point
     }
 }
 
-/**
- * @brief Calculate a person's age group by its birthdate
- * 
- * @param birthdate 
- * @return int The index of the age group
- */
+
 static int calc_agegroup(CDate *birthdate)
 {
     int64_t dateDiff = date->year - birthdate->year;
-    if ((*date) - (*birthdate) < 0)// if the current date is earlier than the birthdate
+    if ((*date) - (*birthdate) < 0) // if the current date is earlier than the birthdate
     {
         return -1; // Exit
     }
@@ -250,35 +143,20 @@ static int calc_agegroup(CDate *birthdate)
     }
 }
 
-
-/**
- * @brief Add a person's profile giving his/her basic information
- * 
- * @param name 
- * @param address 
- * @param phone 
- * @param WeChat 
- * @param email 
- * @param risk 
- * @param ID 
- * @param profession 
- * @param birthdate 
- * @param RegID 
- */
 static void add_profile(string name, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, string birthdate, int64_t RegID)
 {
-    CDate *dateBirthdate = new CDate();// allocate new memory space
-    if (!dateBirthdate->set(birthdate))// if the birthdate is invalid
+    CDate *dateBirthdate = new CDate(); // allocate new memory space
+    if (!dateBirthdate->set(birthdate)) // if the birthdate is invalid
     {
-        cout << "Invalid birthday format. Use \'yyyy-mm-dd\'." << endl;// print error message
+        cout << "Invalid birthday format. Use \'yyyy-mm-dd\'." << endl; // print error message
         return;
     }
-    int agegroup = calc_agegroup(dateBirthdate);// calculate the agegroup
-    if (agegroup == -1) // Invalid birthdate
+    int agegroup = calc_agegroup(dateBirthdate); // calculate the agegroup
+    if (agegroup == -1)                          // Invalid birthdate
     {
-        cout << "Invalid birthday. (Not born yet) Today is ";// print error message
-        (*date).print();// print the current date
-        delete dateBirthdate;// free the memory space
+        cout << "Invalid birthday. (Not born yet) Today is "; // print error message
+        (*date).print();                                      // print the current date
+        delete dateBirthdate;                                 // free the memory space
         return;
     }
     int64_t pri_num;
@@ -289,61 +167,56 @@ static void add_profile(string name, string address, string phone, string WeChat
     pri_num += (*date) - (*first_date);
     pri_num <<= 20;
     pri_num += total_reg_person;
-    if (ID2ptr.retrieve(ID) != NULL)// if the ID is already in the database
+    if (ID2ptr.retrieve(ID) != NULL) // if the ID is already in the database
     {
-        cout << "The ID is already in the database." << endl;// print error message
-        delete dateBirthdate;// free the memory space
+        cout << "The ID is already in the database." << endl; // print error message
+        delete dateBirthdate;                                 // free the memory space
         return;
     }
-    total_reg_person++;// update the total number of registered people
-    queue_waiting++;// update the number of people waiting for registration
+    total_reg_person++; // update the total number of registered people
+    queue_waiting++;    // update the number of people waiting for registration
     personal_profile *my_personal_file;
     my_personal_file = newprofile(name, address, phone, WeChat, email, risk, ID, profession, agegroup, dateBirthdate, *date, RegID);
-    my_personal_file->priority_num = pri_num;// update the priority number
+    my_personal_file->priority_num = pri_num; // update the priority number
     registration_sequence_calculation(my_personal_file, reg_pro[RegID]);
-    priority2ID.add(pri_num, ID);// update the priority number to ID mapping
-    ID2ptr.add(ID, my_personal_file);// update the ID to pointer mapping
-    queueing_personal_file.push_back(my_personal_file);// update the queueing list
+    priority2ID.add(pri_num, ID);                       // update the priority number to ID mapping
+    ID2ptr.add(ID, my_personal_file);                   // update the ID to pointer mapping
+    queueing_personal_file.push_back(my_personal_file); // update the queueing list
     if (risk <= 2)
     {
-        fib_heap_insert_key(Queueing_heap, pri_num);// update the queueing heap
+        fib_heap_insert_key(Queueing_heap, pri_num); // update the queueing heap
     }
     else
     {
-        fib_heap_insert_key(hrisk_heap, pri_num);// update the high risk queueing heap
+        fib_heap_insert_key(hrisk_heap, pri_num); // update the high risk queueing heap
     }
 }
 
-/**
- * @brief Generate weekly report giving certain operation code.
- * 
- * @param op 
- */
 static void weekly_report(int op)
 {
 
     switch (op)
     {
     case 0:
-        sort(queueing_personal_file.begin(), queueing_personal_file.end(), cmp_by_name);// sort the queueing list by name
-        sort(inoculated_personal_file.begin(), inoculated_personal_file.end(), cmp_by_name);// sort the inoculated list by name
-        sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_name);// sort the assigned list by name
+        sort(queueing_personal_file.begin(), queueing_personal_file.end(), cmp_by_name);     // sort the queueing list by name
+        sort(inoculated_personal_file.begin(), inoculated_personal_file.end(), cmp_by_name); // sort the inoculated list by name
+        sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_name);     // sort the assigned list by name
         break;
     case 1:
-        sort(queueing_personal_file.begin(), queueing_personal_file.end(), cmp_by_agegp);// sort the queueing list by age group
-        sort(inoculated_personal_file.begin(), inoculated_personal_file.end(), cmp_by_agegp);// sort the inoculated list by age group
-        sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_agegp);// sort the assigned list by age group
+        sort(queueing_personal_file.begin(), queueing_personal_file.end(), cmp_by_agegp);     // sort the queueing list by age group
+        sort(inoculated_personal_file.begin(), inoculated_personal_file.end(), cmp_by_agegp); // sort the inoculated list by age group
+        sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_agegp);     // sort the assigned list by age group
         break;
     case 2:
-        sort(queueing_personal_file.begin(), queueing_personal_file.end(), cmp_by_pof);// sort the queueing list by profession
-        sort(inoculated_personal_file.begin(), inoculated_personal_file.end(), cmp_by_pof);// sort the inoculated list by profession
-        sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_pof);// sort the assigned list by profession
+        sort(queueing_personal_file.begin(), queueing_personal_file.end(), cmp_by_pof);     // sort the queueing list by profession
+        sort(inoculated_personal_file.begin(), inoculated_personal_file.end(), cmp_by_pof); // sort the inoculated list by profession
+        sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_pof);     // sort the assigned list by profession
         break;
     default:
         return;
     }
     cout << "Queue Waiting: \n";
-    for (int _ = 0; _ < queue_waiting; _++)// print the queueing list
+    for (int _ = 0; _ < queue_waiting; _++) // print the queueing list
     {
         cout << "\nName:" << queueing_personal_file[_]->name << "\n";
         cout << "Age group:" << queueing_personal_file[_]->agegroup << "\n";
@@ -352,7 +225,7 @@ static void weekly_report(int op)
         cout << "Waiting time until now:" << (*date) - queueing_personal_file[_]->registrationdate << "\n";
     }
     cout << "\nAssigned Waiting: \n";
-    for (int _ = 0; _ < assign_waiting; _++)// print the assigned list
+    for (int _ = 0; _ < assign_waiting; _++) // print the assigned list
     {
         cout << "\nName:" << assigned_personal_file[_]->name << "\n";
         cout << "Age group:" << assigned_personal_file[_]->agegroup << "\n";
@@ -361,7 +234,7 @@ static void weekly_report(int op)
         cout << "Waiting time until now:" << (*date) - assigned_personal_file[_]->registrationdate << "\n";
     }
     cout << "\nTreatment: \n";
-    for (int _ = 0; _ < total_treatment; _++)// print the treatment list
+    for (int _ = 0; _ < total_treatment; _++) // print the treatment list
     {
         cout << "\nName: " << inoculated_personal_file[_]->name << "\n";
         cout << "Age group: " << inoculated_personal_file[_]->agegroup << "\n";
@@ -373,12 +246,8 @@ static void weekly_report(int op)
 }
 
 
-/**
- * @brief Generate a monthly report
- * 
- */
 static void monthly_report()
-{// print the monthly report
+{ // print the monthly report
     cout << "\nTotal Registered: " << total_reg_person << "\n";
     cout << "Waiting in queue: " << queue_waiting << "\n";
     cout << "Waiting in total: " << assign_waiting + queue_waiting << "\n";
@@ -387,85 +256,79 @@ static void monthly_report()
 }
 
 
-/**
- * @brief Submit a letter to claim the deadline
- * 
- * @param ID 
- * @param sDDL 
- */
 static void DDL_letter(int64_t ID, string sDDL)
 {
     CDate *DDL = new CDate;
     if (!DDL->set(sDDL))
     {
         cout << "Invalid date format. Use \'yyyy-mm-dd\'." << endl;
-        delete DDL;// free the memory space
+        delete DDL; // free the memory space
         return;
     }
-    personal_profile *ptr = ID2ptr.retrieve(ID);// get the pointer of the person
-    if (ptr == NULL)// if the person is not in the database
+    personal_profile *ptr = ID2ptr.retrieve(ID); // get the pointer of the person
+    if (ptr == NULL)                             // if the person is not in the database
     {
-        cout << "The ID is not in the database." << endl;// print error message
-        delete DDL;// free the memory space
+        cout << "The ID is not in the database." << endl; // print error message
+        delete DDL;                                       // free the memory space
         return;
     }
-    if (ptr->is_inoculated)// if the person is already inoculated
+    if (ptr->is_inoculated) // if the person is already inoculated
     {
-        cout << "The person is already inoculated." << endl;// print error message
-        delete DDL;// free the memory space
+        cout << "The person is already inoculated." << endl; // print error message
+        delete DDL;                                          // free the memory space
         return;
     }
-    if (ptr->is_assigned && (*DDL) - ptr->inoculate_date < 0)// if the person is assigned and the DDL is before the inoculation date
+    if (ptr->is_assigned && (*DDL) - ptr->inoculate_date < 0) // if the person is assigned and the DDL is before the inoculation date
     {
         ptr->inoculate_date = (*DDL);
-        sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_ddl);// sort the assigned list by DDL
+        sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_ddl); // sort the assigned list by DDL
         return;
     }
     else if (ptr->is_assigned)
     {
-        cout << "The person is assigned and the DDL is before the inoculation date." << endl;// print error message
-        delete DDL;// free the memory space
+        cout << "The person is assigned and the DDL is before the inoculation date." << endl; // print error message
+        delete DDL;                                                                           // free the memory space
         return;
     }
     if (ptr->is_delay)
     {
-        for (vector<personal_profile *>::iterator i = delay_personal_file.begin(); i != delay_personal_file.end(); i++)// find the person in the delay list
+        for (vector<personal_profile *>::iterator i = delay_personal_file.begin(); i != delay_personal_file.end(); i++) // find the person in the delay list
         {
             if ((*i)->ID == ID)
             {
-                delay_personal_file.erase(i);// remove the person from the delay list
+                delay_personal_file.erase(i); // remove the person from the delay list
                 break;
             }
         }
-        for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)// find the person in the queueing list
+        for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++) // find the person in the queueing list
         {
             if ((*i)->ID == ID)
             {
-                queueing_personal_file.erase(i);// remove the person from the queueing list
+                queueing_personal_file.erase(i); // remove the person from the queueing list
                 break;
             }
         }
 
-        queue_waiting--;// decrease the number of person waiting in the queue
+        queue_waiting--; // decrease the number of person waiting in the queue
     }
-    else if (ptr->withdraw)// if the person is withdrawn
+    else if (ptr->withdraw) // if the person is withdrawn
     {
-        for (vector<personal_profile *>::iterator i = withdraw_personal_file.begin(); i != withdraw_personal_file.end(); i++)// find the person in the withdraw list
+        for (vector<personal_profile *>::iterator i = withdraw_personal_file.begin(); i != withdraw_personal_file.end(); i++) // find the person in the withdraw list
         {
             if ((*i)->ID == ID)
             {
-                withdraw_personal_file.erase(i);// remove the person from the withdraw list
+                withdraw_personal_file.erase(i); // remove the person from the withdraw list
                 break;
             }
         }
     }
     else
     {
-        int64_t prio_num = ptr->priority_num;// get the priority number of the person
-        if (ptr->risk != 3)// if the person is not a high risk
-            fib_heap_delete(Queueing_heap, prio_num);// delete the person from the queueing heap
+        int64_t prio_num = ptr->priority_num;         // get the priority number of the person
+        if (ptr->risk != 3)                           // if the person is not a high risk
+            fib_heap_delete(Queueing_heap, prio_num); // delete the person from the queueing heap
         else
-            fib_heap_delete(hrisk_heap, ptr->priority_num);// delete the person from the high risk heap
+            fib_heap_delete(hrisk_heap, ptr->priority_num); // delete the person from the high risk heap
 
         for (vector<personal_profile *>::iterator i = queueing_personal_file.begin(); i != queueing_personal_file.end(); i++)
         {
@@ -487,13 +350,6 @@ static void DDL_letter(int64_t ID, string sDDL)
     ptr->withdraw = false;
 }
 
-
-/**
- * @brief Change a profile's profession giving its ID and new profession number
- * 
- * @param ID 
- * @param prof 
- */
 static void change_pro(int64_t ID, int64_t prof)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
@@ -524,13 +380,6 @@ static void change_pro(int64_t ID, int64_t prof)
         fib_heap_update(hrisk_heap, pre_prio_num, now_prio_num);
 }
 
-
-/**
- * @brief Change the risk level of a profile giving profile ID and new risk number
- * 
- * @param ID 
- * @param Risks 
- */
 static void change_risks(int64_t ID, int64_t Risks)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
@@ -581,11 +430,6 @@ static void change_risks(int64_t ID, int64_t Risks)
     }
 }
 
-/**
- * @brief withdraw the profile giving its ID
- *
- * @param ID
- */
 static void withdraw(int64_t ID)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
@@ -648,11 +492,6 @@ static void withdraw(int64_t ID)
     ptr->withdraw = true;
 }
 
-/**
- * @brief cancel_withdraw: Cancel the withdrawal of profile ID
- *
- * @param ID
- */
 static void cancel_withdraw(int64_t ID)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
@@ -690,12 +529,6 @@ static void cancel_withdraw(int64_t ID)
     }
 }
 
-/**
- * @brief treat_assigned: Treat the patients.
- *
- * @param copy_daily
- * @param copy_total
- */
 void treat_assigned(int64_t *copy_daily, int64_t *copy_total)
 {
     vector<personal_profile *>::iterator i = assigned_personal_file.begin();
@@ -725,12 +558,6 @@ void treat_assigned(int64_t *copy_daily, int64_t *copy_total)
     }
 }
 
-/**
- * @brief treat_queue: Generate the queue for treatment order of the patients
- *
- * @param copy_daily
- * @param copy_total
- */
 void treat_queue(int64_t *copy_daily, int64_t *copy_total)
 {
     vector<personal_profile *>::iterator i = queueing_personal_file.begin();
@@ -790,12 +617,6 @@ void treat_queue(int64_t *copy_daily, int64_t *copy_total)
     }
 }
 
-/**
- * @brief
- *
- * @param copy_daily
- * @param copy_total
- */
 void treat_delay(int64_t *copy_daily, int64_t *copy_total)
 {
     vector<personal_profile *>::iterator i = queueing_personal_file.begin();
@@ -832,12 +653,7 @@ void treat_delay(int64_t *copy_daily, int64_t *copy_total)
     }
 }
 
-/**
- * @brief Treat the patients with high risk level.
- *
- * @param copy_daily
- * @param copy_total
- */
+
 void treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
 {
     if (!delay_personal_file.empty())
@@ -880,10 +696,6 @@ void treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
     }
 }
 
-/**
- * @brief Go to the next day.
- *
- */
 static void next_day()
 {
     if (((*date) - (*first_date)) % 7 == 6)

@@ -1,11 +1,11 @@
 /**
- * @file fiboheap.h
- * @author Li Rong
- * @brief 
+ * @file fiboheap.cpp
+ * @author skywang
+ * @brief Declearation of fibonacci heap.
  * @version 0.1
- * @date 2022-04-05
+ * @date 2014-04-05
  * 
- * @copyright Copyright (c) 2022 Zhejiang University
+ * @copyright Copyright (c) 2014
  * 
  */
 
