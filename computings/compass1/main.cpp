@@ -1,6 +1,6 @@
 /**
  * @file main.cpp
- * @author Li Rong
+ * @author Li Rong, Jiang Wenhan, Zhong Tiantian
  * @brief Computing Assignment 1 -- Medical Treatment System.
  * @date 2022-04-05
  *
@@ -13,10 +13,12 @@ using namespace std;
 
 int main()
 {
+    // (Trying to) make a user-friendly CLI
     cout << "Welcome to the Silly Medical Treatment System (SMTS). Current date: ";
     (*date).print();
     int type;
     int registration_point_order = 0;
+    // Handle with registration pts and inoculation pts
     do
     {
         cout << "1. Add registration point:\n";
@@ -33,6 +35,7 @@ int main()
         {
         case 1: // Add registration point
         {
+            // Registration point location
             int x, y;
             cout << "plz provide the x-coordinate of registration point:\n";
             cin >> x;
@@ -45,10 +48,12 @@ int main()
         case 2: // Add inoculation point
         {
             int x, y, c;
+            // Read location
             cout << "plz provide the x-coordinate of inoculation point:\n";
             cin >> x;
             cout << "plz provide the y-coordinate of inoculation point:\n";
             cin >> y;
+            // Read capacity; capacity should be a natural number; zero capacity indicates the point is closed
             cout << "plz provide the daily capacity of inoculation of the very point:\n";
             cin >> c;
             while(c < 0)
@@ -76,7 +81,7 @@ int main()
         cout << "7. Quit\n";
         cin >> op;
 
-        if (op != 1 && op != 2 && op != 3 && op != 4 && op != 5 && op != 6 && op != 7)
+        if (op != 1 && op != 2 && op != 3 && op != 4 && op != 5 && op != 6 && op != 7)  // Invalid operaiton code
         {
             cout << "You must choose 1 or 2 or 3 or 4 or 5 or 6 or 7\n";
             continue;
@@ -94,11 +99,11 @@ int main()
             cout << "birthdate (yyyy-mm-dd)\n";
             cin >> birthdate;
             cout << "regID\n";
-            cout << "it should be larger than 0 and smaller and equal than " << registration_point_order << "\n";
+            cout << "NOTE: it should be larger than 0 and smaller and equal than " << registration_point_order << "\n";
             cin >> regID;
             while (regID <= 0 || regID > registration_point_order)
             {
-                cout << "plz enter a value in the range of registration point order\n";
+                cout << "Invalid number. plz enter a value in the range of registration point order\n";
                 cin >> regID;
             }
             cout << "address\n";
@@ -109,10 +114,10 @@ int main()
             cin >> phone;
             cout << "WeChat\n";
             cin >> WeChat;
-            cout << "email\n";
+            cout << "email\n";  // Assume in this world email address can be any kind of format, even without "@"
             cin >> email;
             cout << "profession\n";
-            cin >> profession;
+            cin >> profession;  // Profession ranges from 1 to 8
             while (profession <= 0 || profession > 8)
             {
                 cout << "plz enter a value between 1 and 8\n";
@@ -127,12 +132,12 @@ int main()
             // }
             cout << "risk\n";
             cin >> risk;
-            while (risk < 0 || risk > 3)
+            while (risk < 0 || risk > 3)    // valid risk should be 1, 2 or 3
             {
                 cout << "plz enter a value between 0 and 3\n";
                 cin >> risk;
             }
-            add_profile(name, address, phone, WeChat, email, risk, ID, profession, birthdate, regID - 1);
+            add_profile(name, address, phone, WeChat, email, risk, ID, profession, birthdate, regID - 1);   // Register the profile
             break;
         }
         case 2: // Withdrawl a profile with index ID

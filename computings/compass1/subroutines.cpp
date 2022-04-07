@@ -5,12 +5,12 @@
 using namespace std;
 
 // static int32_t date = 0;
-static CDate *date = new CDate(time(NULL));
-static CDate *first_date = new CDate(time(NULL));
-static int64_t num_reg = 0;
-static int64_t num_ino = 0;
-static int64_t max_num_reg = 20;
-static int64_t max_num_ino = 20;
+static CDate *date = new CDate(time(NULL));       // Current date being processed by the system
+static CDate *first_date = new CDate(time(NULL)); // Date of the first run of the program
+static int64_t num_reg = 0;                       // Number of registration points
+static int64_t num_ino = 0;                       // Number of inoculation points
+static int64_t max_num_reg = 20;                  // Maximum Number of registration points
+static int64_t max_num_ino = 20;                  // Maximum Number of inoculation points
 
 static int64_t daily_total = 0; // the capacity of treatment from all registration points, initialized by 0
 
@@ -22,19 +22,19 @@ static double_t aver_waiting = 0;    // the average time of waiting
 
 static int64_t *daily; // the array that contains the inoculation capacity of each inoculation point
 
-static registration_profile **reg_pro = new registration_profile *[20];
-static inoculate_profile **ino_pro = new inoculate_profile *[20];
+static registration_profile **reg_pro = new registration_profile *[max_num_reg]; // pointing to a list of registration pts profile
+static inoculate_profile **ino_pro = new inoculate_profile *[max_num_ino];       // pointing to a list of inoculation pts profile
 // initialization for registration_profile and inoculate_profile
 
-static vector<personal_profile *> queueing_personal_file; // the quene of the waiting people
+static vector<personal_profile *> queueing_personal_file; // the queue of the waiting people
 
-static vector<personal_profile *> delay_personal_file;
+static vector<personal_profile *> delay_personal_file; // the queue of the patient
 
-static vector<personal_profile *> inoculated_personal_file; // the quene of the inoculated people
+static vector<personal_profile *> inoculated_personal_file; // the queue of the inoculated people
 
-static vector<personal_profile *> withdraw_personal_file; // the quene of the inoculated people
+static vector<personal_profile *> withdraw_personal_file; // the queue of the inoculated people
 
-static vector<personal_profile *> assigned_personal_file; // the quene of the people who have written priority letter
+static vector<personal_profile *> assigned_personal_file; // the queue of the people who have written priority letter
 
 static int64_t *dist; // the temporary distance sequence
 
@@ -42,23 +42,46 @@ static hashmap<int64_t, int64_t> priority2ID = hashmap<int64_t, int64_t>(20); //
 
 static hashmap<int64_t, personal_profile *> ID2ptr = hashmap<int64_t, personal_profile *>(20); // hashmap from ID to personal profile
 
-static FibHeap *Queueing_heap = fib_heap_make(); // quene heap
-static FibHeap *hrisk_heap = fib_heap_make();    // high risk heap
+static FibHeap *Queueing_heap = fib_heap_make(); // queuing heap; containing risk level 0, 1, and 2
+                                                 // when popping risk 2 patients will be pushed back to delay_personal_file
+static FibHeap *hrisk_heap = fib_heap_make();    // high risk (3) heap
 
+/**
+ * @brief a subroutine for comparation between distance for num1 and num2, return 1 if distance for num1 is the smaller one
+ * 
+ * @param num1 id of the first location index
+ * @param num2 id of the second location index
+ * @return true dist[num1] < dist[num2]
+ * @return false dist[num1] >= dist[num2]
+ */
 bool compare_by_dist(int64_t num1, int64_t num2)
-// a subroutine for comparation between distance for num1 and num2, return 1 if distance for num1 is the smaller one
 {
     return dist[num1] < dist[num2];
 }
 
+/**
+ * @brief a subroutine for comparation by email address
+ * 
+ * @param file1 
+ * @param file2 
+ * @return true 
+ * @return false 
+ */
 bool cmp_by_name(personal_profile *file1, personal_profile *file2)
-// a subroutine for comparation by email address
 {
     return file1->name < file2->name;
 }
 
+
+/**
+ * @brief a subroutine for comparation by profession
+ * 
+ * @param file1 
+ * @param file2 
+ * @return true 
+ * @return false 
+ */
 bool cmp_by_pof(personal_profile *file1, personal_profile *file2)
-// a subroutine for comparation by profession
 {
     return file1->profession < file2->profession;
 }
@@ -455,6 +478,11 @@ static void change_risks(int64_t ID, int64_t Risks)
     }
 }
 
+/**
+ * @brief withdraw: withdraw the profile giving its ID
+ *
+ * @param ID
+ */
 static void withdraw(int64_t ID)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
@@ -517,7 +545,11 @@ static void withdraw(int64_t ID)
     ptr->withdraw = true;
 }
 
-// cancel_withdraw(ID)
+/**
+ * @brief cancel_withdraw: Cancel the withdrawal of profile ID
+ *
+ * @param ID
+ */
 static void cancel_withdraw(int64_t ID)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
@@ -555,6 +587,12 @@ static void cancel_withdraw(int64_t ID)
     }
 }
 
+/**
+ * @brief treat_assigned: Treat the patients.
+ *
+ * @param copy_daily
+ * @param copy_total
+ */
 void treat_assigned(int64_t *copy_daily, int64_t *copy_total)
 {
     vector<personal_profile *>::iterator i = assigned_personal_file.begin();
@@ -584,6 +622,12 @@ void treat_assigned(int64_t *copy_daily, int64_t *copy_total)
     }
 }
 
+/**
+ * @brief treat_queue: Generate the queue for treatment order of the patients
+ *
+ * @param copy_daily
+ * @param copy_total
+ */
 void treat_queue(int64_t *copy_daily, int64_t *copy_total)
 {
     vector<personal_profile *>::iterator i = queueing_personal_file.begin();
@@ -642,6 +686,13 @@ void treat_queue(int64_t *copy_daily, int64_t *copy_total)
         }
     }
 }
+
+/**
+ * @brief
+ *
+ * @param copy_daily
+ * @param copy_total
+ */
 void treat_delay(int64_t *copy_daily, int64_t *copy_total)
 {
     vector<personal_profile *>::iterator i = queueing_personal_file.begin();
@@ -678,6 +729,12 @@ void treat_delay(int64_t *copy_daily, int64_t *copy_total)
     }
 }
 
+/**
+ * @brief Treat the patients with high risk level.
+ *
+ * @param copy_daily
+ * @param copy_total
+ */
 void treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
 {
     if (!delay_personal_file.empty())
@@ -719,6 +776,11 @@ void treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
         inoculated_personal_file.push_back(ptr);
     }
 }
+
+/**
+ * @brief Go to the next day.
+ *
+ */
 static void next_day()
 {
     if (((*date) - (*first_date)) % 7 == 6)
@@ -751,7 +813,9 @@ static void next_day()
     treat_delay(copy_daily, copy_total);
     treat_hrisk(copy_daily, copy_total);
     (*date)++;
-    cout << endl << "********************\n Today is ";
+    cout << endl
+         << "********************\n Today is ";
     (*date).print();
-    cout << "********************" << endl << endl;
+    cout << "********************" << endl
+         << endl;
 }
