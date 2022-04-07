@@ -1,9 +1,9 @@
 /**
  * @file fiboheap.cpp
- * @author skywang
+ * @author skywang (Original author), Li Rong (Modification for this assignment), Zhong Tiantian (Commentor)
  * @brief Declearation of fibonacci heap.
- * @version 0.1
- * @date 2014-04-05
+ * @version 0.2
+ * @date 2014-04-05, 2022-04-07
  * 
  * @copyright Copyright (c) 2014
  * 
@@ -16,21 +16,21 @@
 typedef int64_t Type;
 typedef struct _FibonacciNode
 {
-    Type key;                      // 关键字(键值)
-    int degree;                    // 度数
-    struct _FibonacciNode *left;   // 左兄弟
-    struct _FibonacciNode *right;  // 右兄弟
-    struct _FibonacciNode *child;  // 第一个孩子节点
-    struct _FibonacciNode *parent; // 父节点
-    int marked;                    //是否被删除第1个孩子(1表示删除，0表示未删除)
+    Type key;                      // key value
+    int degree;                    // degree value
+    struct _FibonacciNode *left;   // left sibling
+    struct _FibonacciNode *right;  // right sibling
+    struct _FibonacciNode *child;  // node of the first child
+    struct _FibonacciNode *parent; // parent node
+    int marked;                    // indicating whether the first child is removed
 } FibonacciNode, FibNode;
 
 typedef struct _FibonacciHeap
 {
-    int64_t keyNum;               // 堆中节点的总数
-    int maxDegree;                // 最大度
-    struct _FibonacciNode *min;   // 最小节点(某个最小堆的根节点)
-    struct _FibonacciNode **cons; // 最大度的内存区域
+    int64_t keyNum;               // Total number of nodes
+    int maxDegree;                // maximum degree
+    struct _FibonacciNode *min;   // minimum node, i.e. a root node of a minimum heap
+    struct _FibonacciNode **cons; // the memory space for a maximum heap
 } FibonacciHeap, FibHeap;
 
 FibHeap *fib_heap_make();                                      // Build a new heap

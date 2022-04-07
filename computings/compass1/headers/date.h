@@ -37,6 +37,7 @@ public:
         year = local_time->tm_year + 1900;
         month = local_time->tm_mon + 1;
         day = local_time->tm_mday;
+        
     }
     void print()
     {

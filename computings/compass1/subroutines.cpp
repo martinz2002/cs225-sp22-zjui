@@ -1,7 +1,7 @@
 /**
  * @file subroutines.cpp
  * @author Li Rong
- * @brief Subroutines used by main()
+ * @brief Implementations of subroutines used by main()
  * @version 0.1
  * @date 2022-04-07
  * 
