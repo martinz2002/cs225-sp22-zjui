@@ -159,8 +159,8 @@ static int calc_agegroup(CDate *birthdate);
 /**
  * @brief Add a person's profile giving his/her basic information
  *
- * @param name
- * @param address
+ * @param name name string of the patient
+ * @param address address string of the patient
  * @param phone
  * @param WeChat
  * @param email
