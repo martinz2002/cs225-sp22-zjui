@@ -145,6 +145,11 @@ static int calc_agegroup(CDate *birthdate)
 
 static void add_profile(string name, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, string birthdate, int64_t RegID)
 {
+    if(RegID>=num_reg)
+    {
+        cout<<"Registration ID is not valid"<<endl;
+        return;
+    }
     CDate *dateBirthdate = new CDate(); // allocate new memory space
     if (!dateBirthdate->set(birthdate)) // if the birthdate is invalid
     {
