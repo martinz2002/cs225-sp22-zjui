@@ -120,7 +120,53 @@ Treatment:
 ...
 ```
 
+#### Weekly / Monthly reports
 
+The weekly and monthly reports are printed to the console/result file `result.txt`, and
+
+- Before printing, it will ask you through the console terminal the standard for sorting:
+
+  ```
+  plz choose the type of ordering scheme:
+  0. order of name
+   1. order of agegroup
+  2. order of profession
+  ```
+
+- Then it tells whether this is a monthly report or weekly report:
+
+  ````
+  plz choose the type of ordering scheme:
+  0. order of name
+   1. order of agegroup
+  2. order of profession
+  The following is the weekly report
+  
+  Queue Waiting: 
+  
+  Name:a
+  Age group:3
+  Profession:3
+  Risk:1
+  Waiting time until now:12
+  
+  Assigned Waiting: 
+  
+  Treatment: 
+  ````
+
+### Input files format
+
+The following contents describe the format of each input files stored in `../data`.
+
+#### `data/modify_profiles.entries`
+
+This file describes the profile modification operations. It contains several entries, and each entry has several items in the following order:
+
+- **Date:** The date when modification happens.
+- **Operation code:** 0 = changing risks, 1 = changing professions
+- **ID:** Profile identity
+- **The new risk/profession value**
 
 ### Manual-run version
 
@@ -129,13 +175,13 @@ Treatment:
 To compile the auto-run version, run under MacOS/Linux,
 
 ````bash
-make auto
+make manual
 ````
 
 or under Windows,
 
 ```shell
-mingw32-make auto
+mingw32-make manual
 ```
 
 #### Running the System
