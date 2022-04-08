@@ -1,3 +1,16 @@
+/**
+ * @file id_hash.cpp
+ * @author KD, Li Rong
+ * @brief Hashing functions.
+ * @version 0.2
+ * @date 2022-04-07
+ * Created by KD on 6.03.21.
+ * Modified on 22.03.22 by KD
+ * Modified on 04.04.22 by Li Rong, with rehashing functions fixed
+ * @copyright Copyright (c) 2022 Zhejiang University
+ * 
+ */
+
 #include "headers/id_hash.h"
 
 //
@@ -6,6 +19,7 @@
 //
 //  Created by KD on 6.03.21.
 //  Modified on 22.03.22.
+// 
 //
 
 using std::hash;
