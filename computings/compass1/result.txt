@@ -1,0 +1,527 @@
+Welcome to the Silly Medical Treatment System (SMTS). Current date: 2022-4-8 
+
+********************
+ Today is 2022-4-9 
+********************
+
+[Error] Illegal entry at date:2022-4-9 
+    ID: 114511
+
+********************
+ Today is 2022-4-10 
+********************
+
+The person is in the inoculated list or the withdraw list.
+The person is already inoculated.
+
+********************
+ Today is 2022-4-11 
+********************
+
+The person is in the inoculated list or not in the withdraw list.
+[Error] Illegal entry at date:2022-4-11 
+    ID: 114511
+
+********************
+ Today is 2022-4-12 
+********************
+
+
+********************
+ Today is 2022-4-13 
+********************
+
+
+********************
+ Today is 2022-4-14 
+********************
+
+plz choose the type of ordering scheme:
+0. order of name
+ 1. order of agegroup
+2. order of profession
+The following is the weekly report
+
+Queue Waiting: 
+
+Assigned Waiting: 
+
+Treatment: 
+
+Name: a
+Age group: 3
+Profession: 3
+Risk: 2
+Waiting time: 0
+
+********************
+ Today is 2022-4-15 
+********************
+
+
+********************
+ Today is 2022-4-16 
+********************
+
+
+********************
+ Today is 2022-4-17 
+********************
+
+
+********************
+ Today is 2022-4-18 
+********************
+
+
+********************
+ Today is 2022-4-19 
+********************
+
+
+********************
+ Today is 2022-4-20 
+********************
+
+
+********************
+ Today is 2022-4-21 
+********************
+
+plz choose the type of ordering scheme:
+0. order of name
+ 1. order of agegroup
+2. order of profession
+The following is the weekly report
+
+Queue Waiting: 
+
+Assigned Waiting: 
+
+Treatment: 
+
+Name: a
+Age group: 3
+Profession: 3
+Risk: 2
+Waiting time: 0
+
+********************
+ Today is 2022-4-22 
+********************
+
+
+********************
+ Today is 2022-4-23 
+********************
+
+
+********************
+ Today is 2022-4-24 
+********************
+
+
+********************
+ Today is 2022-4-25 
+********************
+
+
+********************
+ Today is 2022-4-26 
+********************
+
+
+********************
+ Today is 2022-4-27 
+********************
+
+
+********************
+ Today is 2022-4-28 
+********************
+
+plz choose the type of ordering scheme:
+0. order of name
+ 1. order of agegroup
+2. order of profession
+The following is the weekly report
+
+Queue Waiting: 
+
+Assigned Waiting: 
+
+Treatment: 
+
+Name: a
+Age group: 3
+Profession: 3
+Risk: 2
+Waiting time: 0
+
+********************
+ Today is 2022-4-29 
+********************
+
+
+********************
+ Today is 2022-4-30 
+********************
+
+
+********************
+ Today is 2022-5-1 
+********************
+
+
+********************
+ Today is 2022-5-2 
+********************
+
+
+********************
+ Today is 2022-5-3 
+********************
+
+
+********************
+ Today is 2022-5-4 
+********************
+
+
+********************
+ Today is 2022-5-5 
+********************
+
+plz choose the type of ordering scheme:
+0. order of name
+ 1. order of agegroup
+2. order of profession
+plz enter a value between 0 and 2
+The following is the weekly report
+
+Queue Waiting: 
+
+Assigned Waiting: 
+
+Treatment: 
+
+Name: a
+Age group: 3
+Profession: 3
+Risk: 2
+Waiting time: 0
+
+********************
+ Today is 2022-5-6 
+********************
+
+
+********************
+ Today is 2022-5-7 
+********************
+
+The following is the monthly report
+
+
+Total Registered: 1
+Waiting in queue: 0
+Waiting in total: 0
+Treatment appointments: 0
+Withdraw: 0
+
+********************
+ Today is 2022-5-8 
+********************
+
+
+********************
+ Today is 2022-5-9 
+********************
+
+
+********************
+ Today is 2022-5-10 
+********************
+
+
+********************
+ Today is 2022-5-11 
+********************
+
+
+********************
+ Today is 2022-5-12 
+********************
+
+plz choose the type of ordering scheme:
+0. order of name
+ 1. order of agegroup
+2. order of profession
+The following is the weekly report
+
+Queue Waiting: 
+
+Name:b
+Age group:2
+Profession:6
+Risk:2
+Waiting time until now:3
+
+Assigned Waiting: 
+
+Treatment: 
+
+Name: a
+Age group: 3
+Profession: 3
+Risk: 2
+Waiting time: 0
+
+Name: b
+Age group: 3
+Profession: 3
+Risk: 1
+Waiting time: 0
+
+********************
+ Today is 2022-5-13 
+********************
+
+
+********************
+ Today is 2022-5-14 
+********************
+
+
+********************
+ Today is 2022-5-15 
+********************
+
+
+********************
+ Today is 2022-5-16 
+********************
+
+
+********************
+ Today is 2022-5-17 
+********************
+
+
+********************
+ Today is 2022-5-18 
+********************
+
+
+********************
+ Today is 2022-5-19 
+********************
+
+plz choose the type of ordering scheme:
+0. order of name
+ 1. order of agegroup
+2. order of profession
+The following is the weekly report
+
+Queue Waiting: 
+
+Name:b
+Age group:2
+Profession:6
+Risk:2
+Waiting time until now:10
+
+Assigned Waiting: 
+
+Treatment: 
+
+Name: a
+Age group: 3
+Profession: 3
+Risk: 2
+Waiting time: 0
+
+Name: b
+Age group: 3
+Profession: 3
+Risk: 1
+Waiting time: 0
+
+********************
+ Today is 2022-5-20 
+********************
+
+
+********************
+ Today is 2022-5-21 
+********************
+
+
+********************
+ Today is 2022-5-22 
+********************
+
+
+********************
+ Today is 2022-5-23 
+********************
+
+
+********************
+ Today is 2022-5-24 
+********************
+
+
+********************
+ Today is 2022-5-25 
+********************
+
+
+********************
+ Today is 2022-5-26 
+********************
+
+plz choose the type of ordering scheme:
+0. order of name
+ 1. order of agegroup
+2. order of profession
+plz enter a value between 0 and 2
+The following is the weekly report
+
+Queue Waiting: 
+
+Name:b
+Age group:2
+Profession:6
+Risk:2
+Waiting time until now:17
+
+Assigned Waiting: 
+
+Treatment: 
+
+Name: a
+Age group: 3
+Profession: 3
+Risk: 2
+Waiting time: 0
+
+Name: b
+Age group: 3
+Profession: 3
+Risk: 1
+Waiting time: 0
+
+********************
+ Today is 2022-5-27 
+********************
+
+
+********************
+ Today is 2022-5-28 
+********************
+
+
+********************
+ Today is 2022-5-29 
+********************
+
+
+********************
+ Today is 2022-5-30 
+********************
+
+
+********************
+ Today is 2022-6-1 
+********************
+
+
+********************
+ Today is 2022-6-2 
+********************
+
+Invalid birthday. (Not born yet) Today is 2022-6-2 
+Invalid birthday. (Not born yet) Today is 2022-6-2 
+The ID is already in the database.
+The ID is not in the database.
+
+********************
+ Today is 2022-6-3 
+********************
+
+plz choose the type of ordering scheme:
+0. order of name
+ 1. order of agegroup
+2. order of profession
+plz enter a value between 0 and 2
+plz enter a value between 0 and 2
+The following is the weekly report
+
+Queue Waiting: 
+
+Name:b
+Age group:2
+Profession:6
+Risk:2
+Waiting time until now:24
+
+Assigned Waiting: 
+
+Treatment: 
+
+Name: a
+Age group: 3
+Profession: 3
+Risk: 2
+Waiting time: 0
+
+Name: b
+Age group: 3
+Profession: 3
+Risk: 1
+Waiting time: 0
+
+********************
+ Today is 2022-6-4 
+********************
+
+
+********************
+ Today is 2022-6-5 
+********************
+
+
+********************
+ Today is 2022-6-6 
+********************
+
+
+********************
+ Today is 2022-6-7 
+********************
+
+The following is the monthly report
+
+
+Total Registered: 3
+Waiting in queue: 1
+Waiting in total: 1
+Treatment appointments: 0
+Withdraw: 0
+
+********************
+ Today is 2022-6-8 
+********************
+
+
+********************
+ Today is 2022-6-9 
+********************
+
+
+********************
+ Today is 2022-6-10 
+********************
+
+2022-6-10 

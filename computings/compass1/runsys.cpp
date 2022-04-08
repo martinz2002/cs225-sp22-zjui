@@ -1,10 +1,20 @@
+/**
+ * @file runsys.cpp
+ * @author Zhong Tiantian, Li Rong
+ * @brief 
+ * @version 0.2
+ * @date 2022-04-08
+ * 
+ * @copyright Copyright (c) 2022 Zhejiang University
+ * 
+ */
 #include "subroutines.cpp"
 
 using namespace std;
 
 int main()
 {
-    freopen("result.txt", "w", stdout);
+    freopen("result.out", "w", stdout);
 
     cout << "Welcome to the Silly Medical Treatment System (SMTS). Current date: ";
     (*date).print();
