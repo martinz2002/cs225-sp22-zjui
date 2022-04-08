@@ -352,6 +352,11 @@ static void DDL_letter(int64_t ID, string sDDL)
 
 static void change_pro(int64_t ID, int64_t prof)
 {
+    if(prof < 1 || prof > 8)
+    {
+        cout << "Invalid profession." << endl;
+        return;
+    }
     personal_profile *ptr = ID2ptr.retrieve(ID);
     if (ptr == NULL)// if the person is not in the database
     {
@@ -382,6 +387,11 @@ static void change_pro(int64_t ID, int64_t prof)
 
 static void change_risks(int64_t ID, int64_t Risks)
 {
+    if(Risks <0 || Risks > 3)// if the risk is not in the range
+    {
+        cout << "The risk is not in the range." << endl;// print error message
+        return;
+    }
     personal_profile *ptr = ID2ptr.retrieve(ID);
     if (ptr == NULL)// if the person is not in the database
     {
