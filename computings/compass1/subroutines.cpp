@@ -753,3 +753,41 @@ static void next_day()
     cout << "********************" << endl
          << endl;
 }
+static void next_day_for_auto()
+{
+    if (((*date) - (*first_date)) % 7 == 6)
+    {
+        int op;
+        cout << "plz choose the type of ordering scheme:\n";
+        cout << "0. order of name\n ";
+        cout << "1. order of agegroup\n";
+        cout << "2. order of profession\n";
+        cin >> op;
+        while (op < 0 || op > 2)
+        {
+            cout << "plz enter a value between 0 and 2\n";
+            cin >> op;
+        }
+        cout << "The following is the weekly report\n\n";
+        weekly_report(op);
+    }
+    if (((*date) - (*first_date)) % 30 == 29)
+    {
+        cout << "The following is the monthly report\n\n";
+        monthly_report();
+    }
+    int64_t copy_daily[num_ino];// copy the number of remain capacity in each vaccination point
+    int64_t *copy_total = new int64_t;// copy the number of remain capacity today
+    *copy_total = daily_total;// set the number of the total capacity to remain capacity today 
+    memcpy(copy_daily, daily, num_ino * sizeof(int64_t));// copy the daily total number tp remain capacity
+    treat_assigned(copy_daily, copy_total); // treat the people who are assigned
+    treat_queue(copy_daily, copy_total);// treat the people who are in the queueing list
+    treat_delay(copy_daily, copy_total);// treat the people who are in the delay list
+    treat_hrisk(copy_daily, copy_total);// treat the people who are in the high risk queueing list
+    (*date)++;// increase the current date
+    cout << endl
+         << "********************\n Today is ";
+    (*date).print();
+    cout << "********************" << endl
+         << endl;
+}
