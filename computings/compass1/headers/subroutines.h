@@ -257,10 +257,16 @@ void treat_hrisk(int64_t *copy_daily, int64_t *copy_total);
 
 
 /**
- * @brief Go to the next day.
+ * @brief Go to the next day; for use in manual version
  *
  */
 static void next_day();
 
+/**
+ * @brief Go to the next day; for use in auto version
+ * 
+ * @param op 
+ */
+static void next_day_for_auto(int op);
 
 #endif

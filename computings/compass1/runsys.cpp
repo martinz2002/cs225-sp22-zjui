@@ -164,5 +164,14 @@ int main()
     {
         next_day_for_auto(report_op); // go to next day
     }
+    // Print the final report
+    cout << "*****************************************" << endl;
+    cout << "              FINAL REPORT"<< endl;
+    cout << "*****************************************" << endl;
+    monthly_report();
+    cout << "\nSystem quites normally on ";
     (*date).print();
+    cout << "*****************************************" << endl;
+    cout << "           END OF FINAL REPORT"<< endl;
+    cout << "*****************************************" << endl;
 }

@@ -218,7 +218,7 @@ static void weekly_report(int op)
     default:
         return;
     }
-    cout << "Queue Waiting: \n";
+    cout << "|---- Queue Waiting ----|\n";
     for (int _ = 0; _ < queue_waiting; _++) // print the queueing list
     {
         cout << "\nName:" << queueing_personal_file[_]->name << "\n";
@@ -227,7 +227,7 @@ static void weekly_report(int op)
         cout << "Risk:" << queueing_personal_file[_]->risk << "\n";
         cout << "Waiting time until now:" << (*date) - queueing_personal_file[_]->registrationdate << "\n";
     }
-    cout << "\nAssigned Waiting: \n";
+    cout << "\n|---- Assigned Waiting ----|\n";
     for (int _ = 0; _ < assign_waiting; _++) // print the assigned list
     {
         cout << "\nName:" << assigned_personal_file[_]->name << "\n";
@@ -236,7 +236,7 @@ static void weekly_report(int op)
         cout << "Risk:" << assigned_personal_file[_]->risk << "\n";
         cout << "Waiting time until now:" << (*date) - assigned_personal_file[_]->registrationdate << "\n";
     }
-    cout << "\nTreatment: \n";
+    cout << "\n|---- Treatment ----|\n";
     for (int _ = 0; _ < total_treatment; _++) // print the treatment list
     {
         cout << "\nName: " << inoculated_personal_file[_]->name << "\n";
@@ -743,7 +743,7 @@ static void next_day()
     treat_hrisk(copy_daily, copy_total);                  // treat the people who are in the high risk queueing list
     (*date)++;                                            // increase the current date
     cout << endl
-         << "********************\n Today is ";
+         << "********************\n Report date: ";
     (*date).print();
     cout << "********************" << endl
          << endl;
@@ -754,7 +754,7 @@ static void next_day_for_auto(int op)
     if (((*date) - (*first_date)) % 7 == 6 || ((*date) - (*first_date)) % 30 == 29)
     {
         cout << endl
-             << "********************\n Today is ";
+             << "********************\n Report date: ";
         (*date).print();
         cout << "********************" << endl
              << endl;
@@ -763,8 +763,7 @@ static void next_day_for_auto(int op)
     if (((*date) - (*first_date)) % 7 == 6)
     {
         cout << "---------------------------------------------------------------" << endl;
-        cout << "The following is the weekly report for week " << ((*date) - (*first_date)) / 7 + 1 << endl
-             << endl;
+        cout << "The following is the weekly report for week " << ((*date) - (*first_date)) / 7 + 1 << endl;
         cout << "---------------------------------------------------------------" << endl;
         weekly_report(op);
         cout << "---------------------------------------------------------------" << endl;
@@ -774,8 +773,7 @@ static void next_day_for_auto(int op)
     if (((*date) - (*first_date)) % 30 == 29)
     {
         cout << "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*" << endl;
-        cout << "The following is the monthly report for month " << ((*date) - (*first_date)) / 30 + 1 << endl
-             << endl;
+        cout << "The following is the monthly report for month " << ((*date) - (*first_date)) / 30 + 1 << endl;
         cout << "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*" << endl;
         monthly_report();
         cout << "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*" << endl;
@@ -790,7 +788,9 @@ static void next_day_for_auto(int op)
     treat_queue(copy_daily, copy_total);                  // treat the people who are in the queueing list
     treat_delay(copy_daily, copy_total);                  // treat the people who are in the delay list
     treat_hrisk(copy_daily, copy_total);                  // treat the people who are in the high risk queueing list
-    (*date)++;                                            // increase the current date
+    (*date)++;
+
+    // increase the current date
     // cout << endl
     //      << "********************\n Today is ";
     // (*date).print();
