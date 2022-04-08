@@ -255,6 +255,7 @@ static void monthly_report()
     cout << "Waiting in total: " << assign_waiting + queue_waiting << "\n";
     cout << "Treatment appointments: " << assign_waiting << "\n";
     cout << "Withdraw: " << total_reg_person - queue_waiting - assign_waiting - total_treatment << "\n";
+    cout << "Average waiting time: " << aver_waiting << endl;
 }
 
 static void DDL_letter(int64_t ID, string sDDL)

@@ -47,7 +47,7 @@ mingw32-make auto
 
 #### Running the System
 
-Execute `runsys.exe` or `runsys` to start the system. Normally, it will quite in quite a short while.
+Execute `auto.exe` or `auto` to start the system. Normally, it will quite in quite a short while.
 
 #### Getting the Result
 
@@ -248,7 +248,7 @@ mingw32-make manual
 
 #### Running the System
 
-Execute `test.exe` or `test` to start the system. Normally, it will quite in quite a short while.
+Execute `manual.exe` or `manual` to start the system. Normally, it will quite in quite a short while.
 
 #### Interacting with the System
 

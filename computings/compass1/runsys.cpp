@@ -14,11 +14,12 @@ using namespace std;
 
 int main()
 {
-    cout << "Welcome to the Silly Medical Treatment System (SMTS). Current date: ";
+    cout << "Welcome to the Silly Medical Treatment System (SMTS). Current date:\n";
     (*date).print();
 
     int report_op;
     cout << "Please choose the type of ordering scheme for weekly report: ";
+    cout << endl;
     cout << "0. order of name\n";
     cout << "1. order of agegroup\n";
     cout << "2. order of profession\n";
@@ -31,9 +32,9 @@ int main()
 
     freopen("result.out", "w", stdout);
     cout << endl
-         << "********************\n The system starts on";
+         << "****************************************\n The system starts on ";
     (*date).print();
-    cout << "********************" << endl
+    cout << "****************************************" << endl
          << endl;
     // import registration points
     ifstream reg_pts_file;
@@ -107,7 +108,7 @@ int main()
                 // cancel withdraw
                 cancel_withdraw(ID);
             }
-            if (op_withdraw == 1)
+            else if (op_withdraw == 1)
             {
                 // withdraw
                 withdraw(ID);
@@ -140,7 +141,7 @@ int main()
                 modify_profile_stream >> risk;
                 change_risks(ID, risk);
             }
-            if (op_change_profile == 1)
+            else if (op_change_profile == 1)
             {
                 // change profession
                 modify_profile_stream >> ID;
