@@ -167,7 +167,9 @@ The weekly and monthly reports are printed to the console/result file `result.tx
 
 The following contents describe the format of each input files stored in `../data`.
 
-==**<font color="#ff0000">NOTE: All `.entries` files should be ended with a string `EOF`, or the program may not work properly.</font>**==
+==**<font color="#ff0000">NOTE 1: All `.entries` files should be ended with a string `EOF`, or the program may not work properly.</font>**==
+
+==**<font color="#ff0000">NOTE 2: All operations in `.entries` files should be listed in an order from earlier date to later, if it contains date information.</font>** This simulates the reality that operations are always performed obeying the order of time. The date of the happening of an operation is often the beginning date of that entry.==
 
 ##### Profile Modification Information: `data/modify_profiles.entries`
 
