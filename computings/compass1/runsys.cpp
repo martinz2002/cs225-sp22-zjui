@@ -141,11 +141,11 @@ int main()
             modify_profile_stream >> temp_date_modification;
             next_modify_profiles_date->set(temp_date_modification);
         }
-        next_day(); // go to next day
+        next_day_for_auto(); // go to next day
     }
     while (assign_waiting > 0 || queue_waiting > 0)
     {
-        next_day();
+        next_day_for_auto();
     }
     (*date).print();
 }
