@@ -37,10 +37,6 @@ or under Windows,
 mingw32-make auto
 ```
 
-#### Generating Data Sets
-
-还没填坑
-
 #### Running the System
 
 Execute `runsys.exe` or `runsys` to start the system. Normally, it will quite in quite a short while.
@@ -148,4 +144,8 @@ Execute `test.exe` or `test` to start the system. Normally, it will quite in qui
 
 #### Interacting with the System
 
-Waiting to be finished...
+We made a CLI to allow you use it as you want.
+
+## Some pre-assumptions about the profession/risks, and priority
+
+We assume that lower profession / risk number have higher priority, which indicates that they will be earlier treated and be printed before the larger number of profession/risk.

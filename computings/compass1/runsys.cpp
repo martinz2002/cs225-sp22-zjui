@@ -55,13 +55,6 @@ int main()
         {
             profile_stream >> name >> address >> phone >> WeChat >> email >> birthdate >> risk >> profession >> ID >> RegID;
             add_profile(name, address, phone, WeChat, email, risk, ID, profession, birthdate, RegID);
-            // print the added profile
-            //  cout << "Added profile: " << endl;
-            //  cout << "Name: " << name << endl;
-            //  cout << "Address: " << address << endl;
-            //  cout << "Phone: " << phone << endl;
-            //  cout << "WeChat: " << WeChat << endl;
-            //  cout << "Email: " << email << endl;
             profile_stream >> temp_date;
             next_profile_date->set(temp_date);
         }
