@@ -21,7 +21,8 @@ This project aims to realize a medical treatment system under pandemic era, wher
 
 ## Some pre-assumptions about the profession/risks, and priority
 
-We assume that lower profession / risk number have higher priority, which indicates that they will be earlier treated and be printed before the larger number of profession/risk.
+1. We assume that lower profession / risk number have higher priority, which indicates that they will be earlier treated and be printed before the larger number of profession/risk.
+2. We assume that people always find the closest available registration points.
 
 ## How to use the system?
 
@@ -47,7 +48,7 @@ mingw32-make auto
 
 #### Running the System
 
-Execute `runsys.exe` or `runsys` to start the system. Normally, it will quite in quite a short while.
+Execute `auto.exe` or `auto` to start the system. Normally, it will quite in quite a short while.
 
 #### Getting the Result
 
@@ -248,7 +249,7 @@ mingw32-make manual
 
 #### Running the System
 
-Execute `test.exe` or `test` to start the system. Normally, it will quite in quite a short while.
+Execute `manual.exe` or `manual` to start the system. Normally, it will quite in quite a short while.
 
 #### Interacting with the System
 
