@@ -1,12 +1,12 @@
 /**
  * @file runsys.cpp
  * @author Zhong Tiantian, Li Rong
- * @brief 
+ * @brief
  * @version 0.2
  * @date 2022-04-08
- * 
+ *
  * @copyright Copyright (c) 2022 Zhejiang University
- * 
+ *
  */
 #include "subroutines.cpp"
 
@@ -14,15 +14,31 @@ using namespace std;
 
 int main()
 {
-    freopen("result.out", "w", stdout);
-
     cout << "Welcome to the Silly Medical Treatment System (SMTS). Current date: ";
     (*date).print();
 
+    int report_op;
+    cout << "Please choose the type of ordering scheme for weekly report: ";
+    cout << "0. order of name\n";
+    cout << "1. order of agegroup\n";
+    cout << "2. order of profession\n";
+    cin >> report_op;
+    while (report_op < 0 || report_op > 2) // check if the input is valid
+    {
+        cout << "Please enter a value between 0 and 2\n";
+        cin >> report_op;
+    }
+
+    freopen("result.out", "w", stdout);
+    cout << endl
+         << "********************\n The system starts on";
+    (*date).print();
+    cout << "********************" << endl
+         << endl;
     // import registration points
     ifstream reg_pts_file;
     reg_pts_file.open("data/reg_pts.loc"); // open file for locations of registration points
-    int x, y;                         // coordination components
+    int x, y;                              // coordination components
     while (EOF != reg_pts_file.peek())
     {
         reg_pts_file >> x >> y;
@@ -141,11 +157,11 @@ int main()
             modify_profile_stream >> temp_date_modification;
             next_modify_profiles_date->set(temp_date_modification);
         }
-        next_day_for_auto(); // go to next day
+        next_day_for_auto(report_op); // go to next day
     }
     while (assign_waiting > 0 || queue_waiting > 0)
     {
-        next_day_for_auto();
+        next_day_for_auto(report_op); // go to next day
     }
     (*date).print();
 }
