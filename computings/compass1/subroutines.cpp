@@ -762,15 +762,25 @@ static void next_day_for_auto(int op)
 
     if (((*date) - (*first_date)) % 7 == 6)
     {
+        cout << "---------------------------------------------------------------" << endl;
         cout << "The following is the weekly report for week " << ((*date) - (*first_date)) / 7 + 1 << endl
              << endl;
+        cout << "---------------------------------------------------------------" << endl;
         weekly_report(op);
+        cout << "---------------------------------------------------------------" << endl;
+        cout << "                       End of weekly report" << endl;
+        cout << "---------------------------------------------------------------" << endl;
     }
     if (((*date) - (*first_date)) % 30 == 29)
     {
+        cout << "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*" << endl;
         cout << "The following is the monthly report for month " << ((*date) - (*first_date)) / 30 + 1 << endl
              << endl;
+        cout << "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*" << endl;
         monthly_report();
+        cout << "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*" << endl;
+        cout << "                       End of monthly report" << endl;
+        cout << "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*" << endl;
     }
     int64_t copy_daily[num_ino];                          // copy the number of remain capacity in each vaccination point
     int64_t *copy_total = new int64_t;                    // copy the number of remain capacity today
