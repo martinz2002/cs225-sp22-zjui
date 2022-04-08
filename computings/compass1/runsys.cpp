@@ -11,20 +11,22 @@ int main()
 
     // import registration points
     ifstream reg_pts_file;
-    reg_pts_file.open("reg_pts.loc"); // open file for locations of registration points
+    reg_pts_file.open("data/reg_pts.loc"); // open file for locations of registration points
     int x, y;                         // coordination components
     while (EOF != reg_pts_file.peek())
     {
         reg_pts_file >> x >> y;
+        reg_reg(x, y);
     }
 
     // import inoculation points
     ifstream inoc_pts_file;
-    inoc_pts_file.open("inoc_pts.loc"); // open file for locations of inoculation points
+    inoc_pts_file.open("data/ino_pts.loc"); // open file for locations of inoculation points
     int x_, y_, c_;
     while (EOF != inoc_pts_file.peek())
     {
         inoc_pts_file >> x_ >> y_ >> c_;
+        reg_ino(x_, y_, c_);
     }
     calc_reg_dist(); // Calculate the distance between registration points and inoculation points
 
@@ -46,8 +48,8 @@ int main()
     ifstream profile_stream, withdraw_stream, priority_letter_stream, modify_profile_stream;
     profile_stream.open("data/profiles.entries", ios::in);
     withdraw_stream.open("data/withdraw.entries", ios::in);
-    priority_letter_stream.open("data/priority_letter.entries", ios::in);
-    modify_profile_stream.open("data/modify_profile.entries", ios::in);
+    priority_letter_stream.open("data/priority_letters.entries", ios::in);
+    modify_profile_stream.open("data/modify_profiles.entries", ios::in);
 
     // Get the first date of entry of profiles and withdrawals
     profile_stream >> temp_date;
@@ -96,8 +98,8 @@ int main()
         }
         while ((*next_priority_date) <= (*date) && temp_date_priority_letter != "EOF") // if today we have to import a priority letter
         {
-            priority_letter_stream >> temp_date_priority_letter;
             priority_letter_stream >> ID;
+            priority_letter_stream >> temp_date_priority_letter;
             DDL_letter(ID, temp_date_priority_letter);
             priority_letter_stream >> temp_date_priority_letter;
             next_priority_date->set(temp_date_priority_letter);
