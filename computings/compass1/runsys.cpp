@@ -41,7 +41,7 @@ int main()
     string temp_date_modification;    // input temp when reading profile modification date
     int risk, profession;
     int64_t ID, RegID;
-    int op_withdraw; // 0 = cancel withdraw; 1 = withdraw
+    int op_withdraw, op_change_profile; // 0 = cancel withdraw; 1 = withdraw; 0 = change risk; 1 = change profession
 
     ifstream profile_stream, withdraw_stream, priority_letter_stream, modify_profile_stream;
     profile_stream.open("data/profiles.entries", ios::in);
@@ -54,6 +54,10 @@ int main()
     next_profile_date->set(temp_date);
     withdraw_stream >> temp_date_for_withdraw;
     next_withdraw_date->set(temp_date_for_withdraw);
+    priority_letter_stream >> temp_date_priority_letter;
+    next_priority_date->set(temp_date_priority_letter);
+    modify_profile_stream >> temp_date_modification;
+    next_modify_profiles_date->set(temp_date_modification);
     // Iterate through profile entries and withdrawals and record them
     while (temp_date != "EOF" || temp_date_for_withdraw != "EOF")
     // "EOF" is a random string to help checking if the file is ended
@@ -68,11 +72,8 @@ int main()
         }
         while ((*next_withdraw_date) <= (*date) && temp_date_for_withdraw != "EOF") // if today we have to perform a withdrawal/cancellation
         {
-            withdraw_stream >> ID;
-            withdraw(ID);
             withdraw_stream >> op_withdraw;
-            withdraw_stream >> temp_date_for_withdraw;
-            next_withdraw_date->set(temp_date_for_withdraw);
+            withdraw_stream >> ID;
             if (op_withdraw == 0)
             {
                 // cancel withdraw
@@ -90,9 +91,49 @@ int main()
                 (*date).print();
                 cout << "    ID: " << ID << endl;
             }
+            withdraw_stream >> temp_date_for_withdraw;
+            next_withdraw_date->set(temp_date_for_withdraw);
         }
-        while ()
-
-            next_day(); // go to next day
+        while ((*next_priority_date) <= (*date) && temp_date_priority_letter != "EOF") // if today we have to import a priority letter
+        {
+            priority_letter_stream >> temp_date_priority_letter;
+            priority_letter_stream >> ID;
+            DDL_letter(ID, temp_date_priority_letter);
+            priority_letter_stream >> temp_date_priority_letter;
+            next_priority_date->set(temp_date_priority_letter);
+        }
+        while ((*next_modify_profiles_date) <= (*date) && temp_date_modification != "EOF") // if today we have to modify profiles
+        {
+            modify_profile_stream >> op_change_profile;
+            if (op_change_profile == 0)
+            {
+                // change risk
+                modify_profile_stream >> ID;
+                modify_profile_stream >> risk;
+                change_risks(ID, risk);
+            }
+            if (op_change_profile == 1)
+            {
+                // change profession
+                modify_profile_stream >> ID;
+                modify_profile_stream >> profession;
+                change_pro(ID, profession);
+            }
+            else
+            {
+                // illegal modify profile operation code
+                cout << "[Error] Illegal entry at date:";
+                (*date).print();
+                cout << "    ID: " << ID << endl;
+            }
+            modify_profile_stream >> temp_date_modification;
+            next_modify_profiles_date->set(temp_date_modification);
+        }
+        next_day(); // go to next day
     }
+    while (assign_waiting > 0 || queue_waiting > 0)
+    {
+        next_day();
+    }
+    (*date).print();
 }
