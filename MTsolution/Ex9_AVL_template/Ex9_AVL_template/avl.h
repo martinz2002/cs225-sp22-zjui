@@ -41,6 +41,10 @@ public:
     void remove(T item);
     bool find(T item);
     void display(void);
+    int _left_children_num(avlnode<T> *pt);
+    int _right_children_num(avlnode<T> *pt);
+    int _total_children_num(avlnode<T> *pt);
+    T n_st_item(avlnode<T> *pt,int n);// get the n st largest item in the tree
     T median (void);
 private:
     /* some extensions may become necessary */

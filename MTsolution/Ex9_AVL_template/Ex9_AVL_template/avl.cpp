@@ -1,6 +1,6 @@
 //
 //  avl.cpp
-//  
+//
 //
 //  Created by KD on 18.03.21.
 //
@@ -9,13 +9,14 @@
 #include <iostream>
 #include <cstdlib>
 #include "avl.h"
-using std::cout;
 using std::cin;
+using std::cout;
 
 /* If you decide to modify the basic AVL tree data structure, you may want to makes changes to the avlnode<T> class. */
 
 /* The constructor for nodes in AVL trees */
-template<class T> avlnode<T>::avlnode(T item, int bal, avlnode<T> *left, avlnode<T> *right)
+template <class T>
+avlnode<T>::avlnode(T item, int bal, avlnode<T> *left, avlnode<T> *right)
 {
     data = item;
     balance = bal;
@@ -24,83 +25,96 @@ template<class T> avlnode<T>::avlnode(T item, int bal, avlnode<T> *left, avlnode
 }
 
 /* get functions on AVL tree nodes */
-template<class T> T avlnode<T>::getdata(void)
+template <class T>
+T avlnode<T>::getdata(void)
 {
     return data;
 }
 
-template<class T> int avlnode<T>::getbalance(void)
+template <class T>
+int avlnode<T>::getbalance(void)
 {
     return balance;
 }
 
-template<class T> avlnode<T> *avlnode<T>::getleft(void)
+template <class T>
+avlnode<T> *avlnode<T>::getleft(void)
 {
     return pt_left;
 }
 
-template<class T> avlnode<T> *avlnode<T>::getright(void)
+template <class T>
+avlnode<T> *avlnode<T>::getright(void)
 {
     return pt_right;
 }
 
 /* set functions on AVL tree nodes */
-template<class T> void avlnode<T>::setdata(T item)
+template <class T>
+void avlnode<T>::setdata(T item)
 {
     data = item;
     return;
 }
 
-template<class T> void avlnode<T>::setbalance(int bal)
+template <class T>
+void avlnode<T>::setbalance(int bal)
 {
     balance = bal;
     return;
 }
 
-template<class T> void avlnode<T>::setleft(avlnode<T> *pt)
+template <class T>
+void avlnode<T>::setleft(avlnode<T> *pt)
 {
     pt_left = pt;
     return;
 }
 
-template<class T> void avlnode<T>::setright(avlnode<T> *pt)
+template <class T>
+void avlnode<T>::setright(avlnode<T> *pt)
 {
     pt_right = pt;
     return;
 }
 
 /* the constructor for an AVL tree simply creates an empty tree, sio root is just a null pointer */
-template<class T> AVL<T>::AVL(void)
+template <class T>
+AVL<T>::AVL(void)
 {
     root = 0;
 }
 
 /* insert, remove and find are implemented recursively using the auxiliary functions _insert, _delete and _find; the first argument poits to the root of the tree of interest */
-template<class T> void AVL<T>::insert(T item)
+template <class T>
+void AVL<T>::insert(T item)
 {
     root = _insert(root, item);
     return;
 }
 
-template<class T> void AVL<T>::remove(T item)
+template <class T>
+void AVL<T>::remove(T item)
 {
     root = _delete(root, item);
     return;
 }
 
-template<class T> bool AVL<T>::find(T item)
+template <class T>
+bool AVL<T>::find(T item)
 {
     return _find(root, item);
 }
 
 /* the recurse insertion function */
-template<class T> avlnode<T> *AVL<T>::_insert(avlnode<T> *pt, T val)
+template <class T>
+avlnode<T> *AVL<T>::_insert(avlnode<T> *pt, T val)
 {
-    if (pt == 0)  // if the tree is empty, we have to create a root node
+    if (pt == 0) // if the tree is empty, we have to create a root node
     {
         avlnode<T> *newnode = new avlnode<T>;
         (*newnode).setdata(val);  // the stored value is the one given as argument
-        (*newnode).setbalance(0);  // the balance must be 0
+        (*newnode).setbalance(0); // the balance must be 0
         // note that left and right pointer are 0 by default
         /* for the upward propagation of balance changes (and rotations, if necessary) we initialise the bad child and bad grandchild */
         bchild = newnode;
@@ -171,7 +185,7 @@ template<class T> avlnode<T> *AVL<T>::_insert(avlnode<T> *pt, T val)
         }
     }
     else // if (val > (*pt).getdata())
-        // the dual case for insertion into the right successor tree
+         // the dual case for insertion into the right successor tree
     {
         avlnode<T> *pt_new;
         /* the recursive call returns a pointer to an updated right successor tree; it remains to adjust the balance */
@@ -229,7 +243,8 @@ template<class T> avlnode<T> *AVL<T>::_insert(avlnode<T> *pt, T val)
 }
 
 /* the recursive delete function */
-template<class T> avlnode<T> *AVL<T>::_delete(avlnode<T> *pt, T val)
+template <class T>
+avlnode<T> *AVL<T>::_delete(avlnode<T> *pt, T val)
 {
     // nothing needs to be done for an empty tree
     if (pt == 0)
@@ -254,7 +269,7 @@ template<class T> avlnode<T> *AVL<T>::_delete(avlnode<T> *pt, T val)
         newnode = findswapleft(pt, (*pt).getleft());
         (*pt).setleft(newnode);
         /* still the balance needs to be adjusted; this is done in the same as below in the recursive case covering a deletion in the left successor tree */
-        if (mode == false)  // no change of height, no action required
+        if (mode == false) // no change of height, no action required
             return pt;
         else
         {
@@ -429,7 +444,8 @@ template<class T> avlnode<T> *AVL<T>::_delete(avlnode<T> *pt, T val)
 }
 
 /* auxiliary recursive function searching for the maximum in the (non-empty) left successor tree with follow-on swap, deletion of the found node and reorganisation of the tree; pt_swap points to the node to which the maximum neds to be moved; here points to the root of the tree, in which the search is conducted */
-template<class T> avlnode<T> *AVL<T>::findswapleft(avlnode<T> *pt_swap, avlnode<T> *here)
+template <class T>
+avlnode<T> *AVL<T>::findswapleft(avlnode<T> *pt_swap, avlnode<T> *here)
 {
     /* if there is no right successor tree, the node with the maximum value has been found */
     if ((*here).getright() == 0)
@@ -449,7 +465,7 @@ template<class T> avlnode<T> *AVL<T>::findswapleft(avlnode<T> *pt_swap, avlnode<
     if (mode == false)
         return here;
     else
-        /* for balance adjustment we proceed as in the _delete function for the case of a delete in the left successor tree */
+    /* for balance adjustment we proceed as in the _delete function for the case of a delete in the left successor tree */
     {
         /* get the new balance (decrement) */
         int newbal = (*here).getbalance() - 1;
@@ -498,7 +514,8 @@ template<class T> avlnode<T> *AVL<T>::findswapleft(avlnode<T> *pt_swap, avlnode<
 }
 
 /* the auxiliary recursive _find function is the same as for BST */
-template<class T> bool AVL<T>::_find(avlnode<T> *pt, T val)
+template <class T>
+bool AVL<T>::_find(avlnode<T> *pt, T val)
 {
     /* search in an empty tree leads to false */
     if (pt == 0)
@@ -514,7 +531,8 @@ template<class T> bool AVL<T>::_find(avlnode<T> *pt, T val)
 }
 
 /* single left rotation */
-template<class T> avlnode<T> *AVL<T>::rotateleft(avlnode<T> *parent, avlnode<T> *child, int pbal, int cbal)
+template <class T>
+avlnode<T> *AVL<T>::rotateleft(avlnode<T> *parent, avlnode<T> *child, int pbal, int cbal)
 {
     (*parent).setright((*child).getleft());
     (*parent).setbalance(pbal);
@@ -524,7 +542,8 @@ template<class T> avlnode<T> *AVL<T>::rotateleft(avlnode<T> *parent, avlnode<T> 
 }
 
 /* single right rotation */
-template<class T> avlnode<T> *AVL<T>::rotateright(avlnode<T> *parent, avlnode<T> *child, int pbal, int cbal)
+template <class T>
+avlnode<T> *AVL<T>::rotateright(avlnode<T> *parent, avlnode<T> *child, int pbal, int cbal)
 {
     (*parent).setleft((*child).getright());
     (*parent).setbalance(pbal);
@@ -533,7 +552,8 @@ template<class T> avlnode<T> *AVL<T>::rotateright(avlnode<T> *parent, avlnode<T>
     return child;
 }
 
-template<class T> void AVL<T>::display(void)
+template <class T>
+void AVL<T>::display(void)
 {
     cout << "\nAVL Tree\n\n";
     _display(root);
@@ -541,7 +561,8 @@ template<class T> void AVL<T>::display(void)
 }
 
 /* Iterate through the tree in order of the order < on T, i.e. first the left subtree, then the root, then the right subtree. */
-template<class T> void AVL<T>::_display(avlnode<T> * pt)
+template <class T>
+void AVL<T>::_display(avlnode<T> *pt)
 {
     if (pt != 0)
     {
@@ -553,19 +574,80 @@ template<class T> void AVL<T>::_display(avlnode<T> * pt)
         pt_l = (*pt).getleft();
         if (pt_l != 0)
             cout << "Left: " << pt_l << " with value " << (*pt_l).getdata() << "\n";
-        else cout << "Left: Null\n";
+        else
+            cout << "Left: Null\n";
         avlnode<T> *pt_r;
         pt_r = (*pt).getright();
         if (pt_r != 0)
             cout << "Right: " << pt_r << " with value " << (*pt_r).getdata() << "\n";
-        else cout << "Right: Null\n";
+        else
+            cout << "Right: Null\n";
         cout << "----\n";
         _display((*pt).getright());
     }
     return;
 }
 
-template<class T> T AVL<T>::median(void)
+// find the left children number of a node
+template <class T>
+int AVL<T>::_left_children_num(avlnode<T> *pt)
 {
-    /* This function needs to be implemented */
+    int num = 0;
+    if (pt != 0)
+    {
+        num += _total_children_num((*pt).getleft());
+    }
+    return num;
+}
+// find the right children number of a node
+template <class T>
+int AVL<T>::_right_children_num(avlnode<T> *pt)
+{
+    int num = 0;
+    if (pt != 0)
+    {
+        num += _total_children_num((*pt).getright());
+    }
+    return num;
+}
+
+template <class T>
+int AVL<T>::_total_children_num(avlnode<T> *pt)
+{
+    int num = 0;
+    if (pt != 0)
+    {
+        num += _total_children_num((*pt).getleft());
+        num += _total_children_num((*pt).getright());
+        num += 1;
+    }
+    return num;
+}
+
+// get the n st largest element in the tree
+template <class T>
+T AVL<T>::n_st_item(avlnode<T> *pt, int n)
+{
+    if (pt == 0)
+        return 0;
+    int left_num = _left_children_num(pt);
+    if (n == left_num + 1)
+        return (*pt).getdata();
+    if (n <= left_num)
+        return n_st_item((*pt).getleft(), n);
+    else
+        return n_st_item((*pt).getright(), n - left_num - 1);
+}
+
+template <class T>
+T AVL<T>::median(void)
+{
+    if (root == 0)
+        return 0;
+    else
+    {
+        int left_num = _left_children_num(root);
+        int right_num = _right_children_num(root);
+        return ((left_num + right_num + 1 % 2) == 0) ? n_st_item(root, (left_num + right_num + 1) / 2) : (n_st_item(root, (left_num + right_num + 1) / 2 + 1) + n_st_item(root, (left_num + right_num + 1) / 2)) / 2;
+    }
 }

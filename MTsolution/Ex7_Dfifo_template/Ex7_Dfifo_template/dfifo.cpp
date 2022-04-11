@@ -1,6 +1,6 @@
 //
 //  dfifo.cpp
-//  
+//
 //
 //  Created by KD on 16.01.21.
 //
@@ -9,50 +9,58 @@
 #include <iostream>
 #include <cstdlib>
 #include "dfifo.h"
-using std::cout;
 using std::cin;
+using std::cout;
 
-template<class T> node<T>::node(T item, node<T> *pt_n, node<T> *pt_p)
+template <class T>
+node<T>::node(T item, node<T> *pt_n, node<T> *pt_p)
 {
     dataitem = item;
     pt_next = pt_n;
     pt_previous = pt_p;
 }
 
-template<class T> T node<T>::getdata(void)
+template <class T>
+T node<T>::getdata(void)
 {
     return dataitem;
 }
 
-template<class T> node<T> *node<T>::getnext(void)
+template <class T>
+node<T> *node<T>::getnext(void)
 {
     return pt_next;
 }
 
-template<class T> node<T> *node<T>::getprevious(void)
+template <class T>
+node<T> *node<T>::getprevious(void)
 {
     return pt_previous;
 }
 
-template<class T> void node<T>::setdata(T item)
+template <class T>
+void node<T>::setdata(T item)
 {
     dataitem = item;
     return;
 }
 
-template<class T> void node<T>::setnext(node<T> *pt)
+template <class T>
+void node<T>::setnext(node<T> *pt)
 {
     pt_next = pt;
     return;
 }
 
-template<class T> void node<T>::setprevious(node<T> *pt)
+template <class T>
+void node<T>::setprevious(node<T> *pt)
 {
     pt_previous = pt;
     return;
 }
 
-template<class T> Dfifo<T>::Dfifo(void)
+template <class T>
+Dfifo<T>::Dfifo(void)
 {
     dummy = new node<T>;
     (*dummy).setnext(dummy);
@@ -60,12 +68,14 @@ template<class T> Dfifo<T>::Dfifo(void)
     numitems = 0;
 }
 
-template<class T> int Dfifo<T>::getlength(void)
+template <class T>
+int Dfifo<T>::getlength(void)
 {
     return numitems;
 }
 
-template<class T> void Dfifo<T>::pushback(T value)
+template <class T>
+void Dfifo<T>::pushback(T value)
 {
     node<T> *lpt;
     lpt = (*dummy).getprevious();
@@ -79,7 +89,8 @@ template<class T> void Dfifo<T>::pushback(T value)
     return;
 }
 
-template<class T> T Dfifo<T>::popfront(void)
+template <class T>
+T Dfifo<T>::popfront(void)
 {
     node<T> *pt;
     pt = (*dummy).getnext();
@@ -91,24 +102,41 @@ template<class T> T Dfifo<T>::popfront(void)
     return (*pt).getdata();
 }
 
-template<class T> T Dfifo<T>::front(void)
+template <class T>
+T Dfifo<T>::front(void)
 {
     node<T> *pt;
     pt = (*dummy).getnext();
     return (*pt).getdata();
 }
 
-template<class T> bool Dfifo<T>::isempty(void)
+template <class T>
+bool Dfifo<T>::isempty(void)
 {
     return (numitems == 0);
 }
 
-template<class T> void Dfifo<T>::reverse(void)
+template <class T>
+void Dfifo<T>::reverse(void)
 {
-    // This function needs to be implemented.
+    node<T> *pt_i1;
+    node<T> *pt_i2;
+    pt_i1 = dummy->getprevious();
+    int count = 0;
+    while (pt_i1 != dummy)
+    {
+        pushback((*pt_i1).getdata());
+        pt_i1 = (*pt_i1).getprevious();
+        count++;
+    }
+    for (count; count > 0; count--)
+    {
+        popfront();
+    }
 }
 
-template<class T> void Dfifo<T>::display(void)
+template <class T>
+void Dfifo<T>::display(void)
 {
     cout << "The queue elements from front to back are:\n";
     node<T> *pt;
