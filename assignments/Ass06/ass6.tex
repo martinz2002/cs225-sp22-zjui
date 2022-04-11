@@ -33,7 +33,7 @@ Exercise 4 is written by Li Rong \& Jiang Wenhan.
         \item $e_n$ belongs to an empty bucket. The probability that such case happens is $1-P(X=n-1)$. The probability of choosing a bucket from all non-empty bucket and one (randomly chosen) empty bucket in this case is $P(X=n-1) + 1/m$. Therefore, the total probability contribution of this case is \[P_\text{empty}(X=n)=\left[ 1-P(X=n-1) \right]\times \left[P(X=n-1) + \frac{1}{m}\right]\]
     \end{enumerate}
 
-    Therefore, the probability that each bucket to be non-empty after inserting $n$ elements is \[ P(X=n) = P^2(X=n-1) + (1-P(X=n-1))\times \left[ \frac{1}{m}\cdot P(X=n-1)\right]\]
+    Therefore, the probability that each bucket to be non-empty after inserting $n$ elements is \[ P(X=n) = P^2(X=n-1) + (1-P(X=n-1))\times \left[ \frac{1}{m} + P(X=n-1)\right]\]
 
     Solve this induction equation and we obtain \[P(X=n)=1-\left(1-\frac{1}{m}\right) ^n\]
     
