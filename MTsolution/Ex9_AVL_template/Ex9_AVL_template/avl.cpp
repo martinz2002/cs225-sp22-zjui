@@ -648,6 +648,6 @@ T AVL<T>::median(void)
     {
         int left_num = _left_children_num(root);
         int right_num = _right_children_num(root);
-        return ((left_num + right_num + 1 % 2) == 0) ? n_st_item(root, (left_num + right_num + 1) / 2) : (n_st_item(root, (left_num + right_num + 1) / 2 + 1) + n_st_item(root, (left_num + right_num + 1) / 2)) / 2;
+        return ((left_num + right_num + 1 % 2) == 1) ? n_st_item(root, (left_num + right_num + 1) / 2 + 1) : (n_st_item(root, (left_num + right_num + 1) / 2 + 1) + n_st_item(root, (left_num + right_num + 1) / 2)) / 2;
     }
 }
