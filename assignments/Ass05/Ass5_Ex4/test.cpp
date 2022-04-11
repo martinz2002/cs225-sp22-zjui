@@ -9,11 +9,13 @@
 #include <iostream>
 #include <cstdlib>
 #include "listkmp.h"
+#include "listkmp.cpp"
 using std::cout;
 using std::cin;
 
 int main()
 {
+    freopen("output.txt", "w", stdout);
     KMPlist<char> *plist = new KMPlist<char>();
     (*plist).append('a');
     (*plist).append('b');

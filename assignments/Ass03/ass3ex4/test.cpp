@@ -24,23 +24,32 @@ int main()
         srand(time(0));
         int j;
         cout << std::endl << "Original Data:" << std::endl;
-        for (int i = 0; i < 50; i++)
+        int data[15] = {13,21,7,8,5,1,3,2,6,11,10,9,4,17,18};
+        for (j = 0; j < 15; j++)
         {
-            j = (rand() % 2000) - 1000;
-            (*mylist).append(j);
-            cout << "ID=" << i << ": " << j << std::endl;
+            mylist->append(data[j]);
+            cout << data[j] << " ";
         }
-        int result;
-        for (int k = 1; k < 45; k++)
-        {
-            result = (*mylist).select(k);
-            cout << k << "'th element: " << result << "\n";
-        }
-        for (int i = 1; i < 7; i++)
-        {
-            (*mylist).rotate(3 * i);
-            cout << "Rotation by " << 3 * i << " positions:\n";
-            (*mylist).prettyprint();
-        }
+        // for (int i = 0; i < 50; i++)
+        // {
+        //     j = (rand() % 2000) - 1000;
+        //     (*mylist).append(j);
+        //     cout << "ID=" << i << ": " << j << std::endl;
+        // }
+        // int result;
+        // for (int k = 1; k < 45; k++)
+        // {
+        //     result = (*mylist).select(k);
+        //     cout << k << "'th element: " << result << "\n";
+        // }
+
+        (*mylist).rotate(4);
+        mylist->prettyprint();
+        // for (int i = 1; i < 7; i++)
+        // {
+        //     (*mylist).rotate(3 * i);
+        //     cout << "Rotation by " << 3 * i << " positions:\n";
+        //     (*mylist).prettyprint();
+        // }
     }
 }

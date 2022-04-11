@@ -234,12 +234,14 @@ void Listext<T>::prettyprint(void)
 template <class T>
 void Listext<T>::exchange(int i, int j, int m) // Exchage the sublists of [i..i+m-1] and [j..j+m-1]
 {
+    cout << "Exchange " << i << " " << j << " " << m << std::endl;
     for (int a = 0; a < m; a++)
     {
         T temp = this->getitem(i + a);
         this->setitem(i + a, this->getitem(j + a));
         this->setitem(j + a, temp);
     }
+    this->prettyprint();
     return;
 }
 
@@ -253,6 +255,7 @@ void Listext<T>::rotate(int m)
     {
         if (i > j)
         {
+            
             this->exchange(k, k + i, j);
             i -= j;
             k += j;
