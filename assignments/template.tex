@@ -26,13 +26,14 @@
 \usepackage{booktabs}
 \usepackage{tikz}
 \usepackage{kpfonts-otf}
+\usepackage{cleveref}
 
-% \usetikzlibrary {graphs, graphdrawing}
-% \usegdlibrary {trees}
+\usetikzlibrary {graphs, graphdrawing}
+\usegdlibrary {trees}
 
 % \everymath{\displaystyle}
 % \setmainfont{Times New Roman}
-\setmonofont{TlwgTypewriter}
+\setmonofont{Consolas}
 % \setsansfont{Arial}
 \lstset{                  %设置代码块
     basicstyle=\small\ttfamily,% 基本风格
@@ -80,3 +81,9 @@
 
 \renewcommand{\baselinestretch}{1.2}
 % \setlength{\parskip}{0ex}
+
+\newcommand{\forcond}{$i=0$ \KwTo $n$}
+\SetKwProg{Fn}{Function}{}{}
+\SetKwProg{Proc}{Procedure}{}{}
+\SetKw{Exit}{exit subroutine}
+\SetKw{Call}{call}

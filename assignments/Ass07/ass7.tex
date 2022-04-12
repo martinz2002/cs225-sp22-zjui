@@ -9,52 +9,261 @@
 \begin{document}
 \makeMyTitle
 
+Exercise 4 is written by LI Rong.
+
+
 \thispagestyle{firstPage}
 
 \begin{questions}
-    \question{Writer}
+    \question{ZHONG Tiantian} % ex.1
     \begin{parts}
-        \part (i)
-        \part (ii)
+        \part
+        Since in an AVL tree the left child is always smaller than its parent, and the right bigger, we can perform a DFS to do this job. Our algorithm is described in Function \ref*{proc-min} and \ref*{proc-max}.
+
+        \begin{function}
+            \caption{MINIMUM(node)}
+            \label{proc-min}
+            \SetKwData{Node}{node}
+            \SetKwData{Left}{leftChild}
+            \SetKwData{Right}{rightChild}
+            \SetKwData{Null}{Null}
+            \SetKw{Call}{call}
+
+            \If{$\Left = \Null$}{
+                \Return{\Node}
+            }
+
+            \Return{\MINIMUM{\Left}}
+        \end{function}
+
+        \begin{function}
+            \caption{MAXIMUM(node)}
+            \label{proc-max}
+            \SetKwData{Node}{node}
+            \SetKwData{Left}{leftChild}
+            \SetKwData{Right}{rightChild}
+            \SetKwData{Null}{Null}
+            \SetKw{Call}{call}
+
+            \If{$\Right = \Null$}{
+                \Return{\Node}
+            }
+
+            \Return{\MAXIMUM{\Right}}
+        \end{function}
+
+        \part
+        Define a function CheckAVL, which computes the depth of the tree with root \texttt{node}. See Function \ref*{fun-depth}.
+
+        \begin{function}[h]
+            \caption{CheckAVL(node,depthOfParent,maxDepth)}
+            \label{fun-depth}
+            \SetKwData{ParentDepth}{depthOfParent}
+            \SetKwData{MaxDepth}{maxDepth}
+            \SetKwData{Node}{node}
+            \SetKwData{Left}{leftChild}
+            \SetKwData{Right}{rightChild}
+            \SetKwData{Null}{Null}
+            \SetKwData{Depth}{depth}
+            \SetKwData{IsAVL}{isAVL}
+            \SetKw{Call}{call}
+
+
+        \end{function}
     \end{parts}
 
-    \question{Writer}
+    \question{JIANG Wenhan, ZHONG Tiantian}
     \begin{parts}
-        \part (i)
-        \part (ii)
-        \part (iii)
-        \part (iv)
+        \part % 2.i
+        Applying a search sequence from root to one leaf node (fixed directoin), then we return to the root and begin another search from root to another leaf node. Repeat such operation until all leaf nodes are traversed.
+
+        A structured description is provided in Algorithm \ref*{algo-dfs}.
+
+        \begin{algorithm}
+            % \SetKwFunction{FRecurs}{FnRecursive}
+            % \Fn(\tcc*[h]{algorithm as a recursive function}){\FRecurs{some args}}{
+            %     \KwData{Some input data\\these inputs can be displayed on several lines and one
+            %         input can be wider than line's width.}
+            %     \KwResult{Same for output data}
+            %     \tcc{this is a comment to tell you that we will now really start code}
+            %     \If(\tcc*[h]{a simple if but with a comment on the same line}){this is true}{
+            %         we do that, else nothing\;
+            %         \tcc{we will include other if so you can see this is possible}
+            %         \eIf{we agree that}{
+            %             we do that\;
+            %         }{
+            %             else we will do a more complicated if using else if\;
+            %             \uIf{this first condition is true}{
+            %                 we do that\;
+            %             }
+            %             \uElseIf{this other condition is true}{
+            %                 this is done\tcc*[r]{else if}
+            %             }
+            %             \Else{
+            %                 in other case, we do this\tcc*[r]{else}
+            %             }
+            %         }
+            %     }
+            %     \tcc{now loops}
+            %     \For{\forcond}{
+            %         a for loop\;
+            %     }
+            %     \While{$i<n$}{
+            %         a while loop including a repeat--until loop\;
+            %         \Repeat{this end condition}{
+            %             do this things\;
+            %         }
+            %     }
+            %     They are many other possibilities and customization possible that you have to
+            %     discover by reading the documentation.
+            % }
+            \caption{Depth-Frist Search}
+            \label{algo-dfs}
+            \SetKwData{Node}{node}
+            \SetKwData{Left}{leftChild}
+            \SetKwData{Right}{rightChild}
+            \SetKwData{Key}{key}
+            \SetKwData{Null}{null}
+            \SetKwData{List}{ListOfElements}
+            \SetKwData{Root}{root}
+            \SetKwFunction{DFS}{DepthFirstSearch}
+
+
+            $\List\gets []$ \tcc{Initialize an empty list}
+
+            \Proc{\DFS{\Node}}{
+                \If{\Node is a leaf child}
+                {
+                    append \Key to \List
+
+                    \Exit
+                }
+
+                \If{\Node has a left child}{
+                    append \Key to \List
+
+                    \DFS{\Left}
+                }
+
+                \If{\Node has a right child}{
+                    append \Key to \List
+
+                    \DFS{\Left}
+                }
+            }
+
+            \tcc{Main}
+            \Begin{
+                \Call \DFS{\Root}
+
+                \Return{\List}
+            }
+
+        \end{algorithm}
+
+        \part % 2.2
+        Applying a search sequence firstly among all child nodes of root node and add the children to the queue. The queue records the nodes to visit in the following steps.
+
+        Retrieve the top element (denoting it with $e$) in the queue, and \textbf{append} all the child nodes of $e$ to the queue. Popping $e$, and repeat the operation until the queue is empty.
+
+        A structured description is provided in Algorithm \ref*{algo-bfs}.
+
+        \begin{algorithm}
+            \caption{Breath-First Search}
+            \label{algo-bfs}
+            \SetKwData{Queue}{visit\_queue}
+            \SetKwData{Root}{root}
+            \SetKwData{Node}{node}
+            \SetKwData{Result}{result\_list}
+
+            append \Root to \Queue
+
+            \While{$\Queue\neq\emptyset$}{
+                $\Node \gets$ the front element in \Queue
+
+                pop \Queue's front element
+
+                append \Node's children (if any) to \Queue
+            }
+
+            \Return{\Result}
+        \end{algorithm}
+
+        \part % 2.3
+        Create a queue recording the element in AVL tree in an ascending sequence. We can achieve such recording through following method: ------------------------.Then we seek for the median value in the sequence and return it.
+
+        \begin{algorithm}
+            \caption{Find Median}
+            \label{algo-median}
+        \end{algorithm}
+
+        \part
+        hello world
+        % \begin{figure}[h]
+        %     \centering
+
+        %     \label{fig-FakeTree}
+        %     \tikz [tree layout, sibling distance=8mm, mark/.style={fill=violet, text=white}, mark/.default=, markmin/.style={fill=red, text=white}, markmin/.default=]
+        %     \graph [nodes={circle, draw, inner sep=1.5pt}]{ [fresh nodes]
+
+        %     1[markmin] <- {{2 [mark]} <- {2 <- {2, 5}, 3 <- {3, 8}}, 1 <- {4[mark] <- {4, 6}, 1 <- {3[mark], 1}}}
+
+        %     };
+        %     \caption{An example structure for the algorithm.}
+        % \end{figure}
+
+        hello
+
+
     \end{parts}
 
-    \question{Writer}
+    \question{ZHOU Ruidi}
     \begin{parts}
-        \part (i)
-        \part (ii)
+        \part\label{part}
+        We consider the case for a single layer and the depth of a tree.\
+
+        \paragraph{A Single Layer.} For each level, we use binary search with $(b-1)$ nodes (since a root/vertex has at most $b$ children); thus the comparison times for a single level is
+        \[ \log(b-1) < \log b\]
+
+        \paragraph{Depth of the Tree.} Because the minimum number of child nodes of a vertex is $a$, and all the leaf nodes lies in the same layer, the depth of the tree, $H$, is\[ H\leq \log_a(n-1) \leq \log_a(n-1)+(2-\log_a 2)\]
+
+        Thus the total times is at most
+        \begin{align*}
+            T & \leq \log(b-1) \times H                                                    \\
+              & \leq \log(b-1) \times \log_a(n-1)                                          \\
+              & \leq \left\lceil \log b\right\rceil \left((\log_a(n-1)+(2-\log_a 2)\right)
+        \end{align*}
+        Hence proved.
+
+        \part
+        From Ex. \ref{part} we have the total number of comparison is
+        \[
+            T=\left\lceil \log b\right\rceil \left((\log_a(n-1)+(2-\log_a 2)\right)
+        \]
+
+        By the $O$-notation,
+        \begin{equation}
+            \label{eq1}
+            2\log b \in O(\log b)
+        \end{equation}
+
+        At the same time, we know that because $a$ is a constant,
+        \begin{equation}
+            \label{eq2}
+            \log_a \frac{n-1}{2} \in O(\log n)
+        \end{equation}
+
+        Plus $b$ is a constant, it's obvious that
+        \begin{equation*}
+            \log b \cdot \log_a \frac{n-1}{2} \in O(\log n)
+        \end{equation*}
+
+        Hence adding equation (\ref*{eq1}) and (\ref*{eq2}) will produce the result
+        \begin{equation*}
+            O(\log b) + O(\log n)
+        \end{equation*}
 
     \end{parts}
 \end{questions}
-
-\begin{lstlisting}[language=C]
-#include <string>
-#include <iostream>
-#include <vector>   
-#include <algorithm>
-#include <cstdlib>
-#include <ctime>
-#include <cmath>
-#include <cstring>
-#include <cstdio>
-#include <cctype>
-#include <climits>
-#include <cassert>
-
-int main()
-{
-    print("Hello World!");
-}
-
-\end{lstlisting}
-
-This is a \texttt{Test for the font !0123456789}
 
 \end{document}
