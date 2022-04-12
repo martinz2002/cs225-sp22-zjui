@@ -52,117 +52,7 @@ Execute `auto.exe` or `auto` to start the system. Normally, it will quite in qui
 
 #### Getting the Result
 
-The program will write the result in `result.txt`. It should look like this:
-
-```
-Welcome to the Silly Medical Treatment System (SMTS). Current date: 2022-4-7 
-
-********************
- Today is 2022-4-8 
-********************
-
-
-...
-
-
-********************
- Today is 2022-4-13 
-********************
-
-plz choose the type of ordering scheme:
-0. order of name
- 1. order of agegroup
-2. order of profession
-The following is the weekly report
-
-Queue Waiting: 
-
-Name:a
-Age group:3
-Profession:3
-Risk:1
-Waiting time until now:5
-
-Assigned Waiting: 
-
-Treatment: 
-
-********************
- Today is 2022-4-14 
-********************
-
-
-...
-
-
-********************
- Today is 2022-4-20 
-********************
-
-plz choose the type of ordering scheme:
-0. order of name
- 1. order of agegroup
-2. order of profession
-The following is the weekly report
-
-Queue Waiting: 
-
-Name:a
-Age group:3
-Profession:3
-Risk:1
-Waiting time until now:12
-
-Assigned Waiting: 
-
-Treatment: 
-
-********************
- Today is 2022-4-21 
-********************
-
-
-********************
- Today is 2022-4-22 
-********************
-
-...
-```
-
-#### Weekly / Monthly reports
-
-The weekly and monthly reports are printed to the console/result file `result.txt`, and
-
-- Before printing, it will ask you through the console terminal the standard for sorting:
-
-  ```
-  plz choose the type of ordering scheme:
-  0. order of name
-   1. order of agegroup
-  2. order of profession
-  ```
-
-- Then it tells whether this is a monthly report or weekly report:
-
-  ````
-  plz choose the type of ordering scheme:
-  0. order of name
-   1. order of agegroup
-  2. order of profession
-  The following is the weekly report
-  
-  Queue Waiting: 
-  
-  Name:a
-  Age group:3
-  Profession:3
-  Risk:1
-  Waiting time until now:12
-  
-  Assigned Waiting: 
-  
-  Treatment: 
-  ````
+The program will write the result in `result.txt`. It contains all reports.
 
 #### Input files format
 
@@ -249,7 +139,7 @@ mingw32-make manual
 
 #### Running the System
 
-Execute `manual.exe` or `manual` to start the system. Normally, it will quite in quite a short while.
+Execute `manual.exe` or `manual` to start the system.
 
 #### Interacting with the System
 
