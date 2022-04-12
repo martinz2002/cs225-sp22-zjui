@@ -1,6 +1,6 @@
 //
 //  trie.h
-//  
+//
 //
 //  Created by KD on 20.03.21.
 //  Modified on 04.04.22.
@@ -9,7 +9,8 @@
 #ifndef trie_h
 #define trie_h
 
-template<class T> class AList
+template <class T>
+class AList
 {
 public:
     AList(int size = 20);
@@ -20,6 +21,7 @@ public:
     void append(T value);
     void insert(int index, T value);
     void remove(int index);
+
 private:
     int numitems;
     T *reprarray;
@@ -28,11 +30,14 @@ private:
     void deallocate(void);
 };
 
-template<class T> class trie;
+template <class T>
+class trie;
 
-template<class T> class trienode
+template <class T>
+class trienode
 {
     friend class trie<T>;
+
 public:
     trienode(T item = 0, bool l = false, trienode<T> *pt_next = 0, trienode<T> *pt_follow = 0);
     T getdata(void);
@@ -43,6 +48,7 @@ public:
     void setlast(bool l);
     void setnext(trienode<T> *pt_next);
     void setfollow(trienode<T> *pt_follow);
+
 private:
     T data;
     bool last;
@@ -50,22 +56,27 @@ private:
     trienode<T> *follow;
 };
 
-template<class T> class trie
+template <class T>
+class trie
 {
 public:
     trie(void);
     void insert(AList<T> list);
     bool intrie(AList<T> list);
-    void display(void);   // only for testing
+    void display(void); // only for testing
     void correct1(AList<T> list);
     void correct2(AList<T> list);
     void correct3(AList<T> list);
+
 private:
     trienode<T> *start;
     /* _insert and contains are auxiliary functions to navigate recursively through the TRIE for insert and find */
     trienode<T> *_insert(trienode<T> *pt, AList<T> list);
     bool contains(trienode<T> *pt, AList<T> list);
-    void _display(trienode<T> * pt, AList<T> list);   // only for testing
+    bool _correct1(trienode<T> *pt, AList<T> list, AList<T> *change_char);
+    // bool _correct2(trienode<T> *pt, AList<T> list, int chance, AList<T> *prefix_list);
+    bool _correct3(trienode<T> *pt, AList<T> list, AList<T> *change_char, int* change_char_index);
+    void _display(trienode<T> *pt, AList<T> list); // only for testing
 };
 
 #endif /* trie_h */
