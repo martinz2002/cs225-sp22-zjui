@@ -12,13 +12,15 @@
 Exercise 4 is written by LI Rong.
 
 
-\thispagestyle{firstPage}
+\thispagestyle{empty}
 
 \begin{questions}
     \question{ZHONG Tiantian} % ex.1
     \begin{parts}
         \part
-        Since in an AVL tree the left child is always smaller than its parent, and the right bigger, we can perform a DFS to do this job. Our algorithm is described in Function \ref*{proc-min} and \ref*{proc-max}.
+        Since in an AVL tree the left child is always smaller than its parent, and the right bigger, we can perform a recursive traverse to do this job. Note that the minimum should always exist as a left child of a node, and the maximum as a right child.
+
+        Our algorithm is described in Function \ref*{proc-min} and Function \ref*{proc-max}.
 
         \begin{function}
             \caption{MINIMUM(node)}
@@ -53,23 +55,92 @@ Exercise 4 is written by LI Rong.
         \end{function}
 
         \part
-        Define a function CheckAVL, which computes the depth of the tree with root \texttt{node}. See Function \ref*{fun-depth}.
+        Define a function CheckAVL, which computes the depth of the tree with root \texttt{node} and returns \texttt{True} if the tree rooted with \texttt{node} is an AVL tree.
 
-        \begin{function}[h]
-            \caption{CheckAVL(node,depthOfParent,maxDepth)}
-            \label{fun-depth}
-            \SetKwData{ParentDepth}{depthOfParent}
-            \SetKwData{MaxDepth}{maxDepth}
+        \paragraph{Labelling the depth.} By running function FindDepth, we label each node with their depth, assuming the root node has depth 0. Then iterating each node recursively by Depth-First Search and find the depth for all the nodes.
+
+        \begin{procedure}
+            \caption{FindDepth(node, parentDepth)}
+            \label{func-finddepth}
             \SetKwData{Node}{node}
-            \SetKwData{Left}{leftChild}
-            \SetKwData{Right}{rightChild}
+            \SetKwData{Root}{root}
+            \SetKwData{Queue}{queue}
+            \SetKwArray{Left}{leftChild}
+            \SetKwArray{Right}{rightChild}
+            \SetKwArray{ParentDepth}{parentDepth}
+            \SetKwData{MaxDepth}{maxDepth}
             \SetKwData{Null}{Null}
-            \SetKwData{Depth}{depth}
-            \SetKwData{IsAVL}{isAVL}
-            \SetKw{Call}{call}
+            \SetKwArray{Depth}{depth}
+            \SetKwFunction{ChkAVL}{CheckAVL}
+            \SetKwFunction{DFS}{FindDepth}
+
+            \tcc{Find depth of each node using Depth-Frist Search}
+
+            $\Depth{\Node}\gets \ParentDepth + 1$
+
+            \If{$\Depth{\Node} > \MaxDepth$}{$\MaxDepth\gets \Depth{\Node}$}
+
+            \If{\Node is a leaf child}
+            {
+                \Exit
+            }
+
+            \If{\Node has a left child}{
+                \Call \DFS{\Left{\Node},\Depth{\Node}}
+            }
+
+            \If{\Node has a right child}{
+                \Call \DFS{\Right{\Node},\Depth{\Node}}
+            }
+
+        \end{procedure}
+
+        \paragraph{Compare the depth.} By running function CompareDepth, we use Breadth-First Search to traverse the tree. When encountered with a leaf node, the function compares its depth with the maximum depth, i.e. the height of the tree. If the difference is larger than 1, the tree then can be determined not satisfying AVL tree properties.
+
+        See Algorithm \ref*{algo-depth}.
+
+        \begin{algorithm}
+            \caption{AVL-Check}
+            \label{algo-depth}
+            \SetKwData{Node}{node}
+            \SetKwData{Root}{root}
+            \SetKwData{Queue}{queue}
+            \SetKwArray{Left}{leftChild}
+            \SetKwArray{Right}{rightChild}
+            \SetKwArray{ParentDepth}{parentDepth}
+            \SetKwData{MaxDepth}{maxDepth}
+            \SetKwData{Null}{Null}
+            \SetKwArray{Depth}{depth}
+            \SetKwFunction{ChkAVL}{CheckAVL}
+            \SetKwFunction{DFS}{FindDepth}
+
+            \If{\Root does not exist, i.e. an empty tree}{
+                \Return{False}
+            }
+
+            $\Depth{\Root}\gets 1$
+
+            \Call{\DFS{\Root,\Depth{\Root}}}
+
+            append \Root to \Queue
+
+            \While{$\Queue\neq\emptyset$}{
+                $\Node \gets$ the front element in \Queue
+
+                pop \Queue's front element
+
+                \If{\Node is a leaf node}{
+                    \If{$\Depth{\Node} - \MaxDepth \geq 2$}{\Return{\False}}
+                }
+                \Else{append \Node's children to \Queue}
+
+            }
+
+            \Return{\True}
+
+        \end{algorithm}
 
 
-        \end{function}
     \end{parts}
 
     \question{JIANG Wenhan, ZHONG Tiantian}
@@ -80,84 +151,54 @@ Exercise 4 is written by LI Rong.
         A structured description is provided in Algorithm \ref*{algo-dfs}.
 
         \begin{algorithm}
-            % \SetKwFunction{FRecurs}{FnRecursive}
-            % \Fn(\tcc*[h]{algorithm as a recursive function}){\FRecurs{some args}}{
-            %     \KwData{Some input data\\these inputs can be displayed on several lines and one
-            %         input can be wider than line's width.}
-            %     \KwResult{Same for output data}
-            %     \tcc{this is a comment to tell you that we will now really start code}
-            %     \If(\tcc*[h]{a simple if but with a comment on the same line}){this is true}{
-            %         we do that, else nothing\;
-            %         \tcc{we will include other if so you can see this is possible}
-            %         \eIf{we agree that}{
-            %             we do that\;
-            %         }{
-            %             else we will do a more complicated if using else if\;
-            %             \uIf{this first condition is true}{
-            %                 we do that\;
-            %             }
-            %             \uElseIf{this other condition is true}{
-            %                 this is done\tcc*[r]{else if}
-            %             }
-            %             \Else{
-            %                 in other case, we do this\tcc*[r]{else}
-            %             }
-            %         }
-            %     }
-            %     \tcc{now loops}
-            %     \For{\forcond}{
-            %         a for loop\;
-            %     }
-            %     \While{$i<n$}{
-            %         a while loop including a repeat--until loop\;
-            %         \Repeat{this end condition}{
-            %             do this things\;
-            %         }
-            %     }
-            %     They are many other possibilities and customization possible that you have to
-            %     discover by reading the documentation.
-            % }
             \caption{Depth-Frist Search}
             \label{algo-dfs}
             \SetKwData{Node}{node}
-            \SetKwData{Left}{leftChild}
-            \SetKwData{Right}{rightChild}
-            \SetKwData{Key}{key}
-            \SetKwData{Null}{null}
-            \SetKwData{List}{ListOfElements}
+            \SetKwArray{Left}{left\_child}
+            \SetKwArray{Right}{right\_child}
+            \SetKwArray{Key}{key}
+
+            \SetKwData{List}{list\_of\_elements}
             \SetKwData{Root}{root}
             \SetKwFunction{DFS}{DepthFirstSearch}
 
+            \tcp{Initialize an empty list}
 
-            $\List\gets []$ \tcc{Initialize an empty list}
+            $\List\gets []$
+
+            \BlankLine
 
             \Proc{\DFS{\Node}}{
+
+                append \Node to \List
+
                 \If{\Node is a leaf child}
                 {
-                    append \Key to \List
-
                     \Exit
                 }
 
                 \If{\Node has a left child}{
-                    append \Key to \List
+                    append \Key{\Node} to \List
 
-                    \DFS{\Left}
+                    \Call \DFS{\Left{\Node}}
                 }
 
                 \If{\Node has a right child}{
-                    append \Key to \List
+                    append \Key{\Node} to \List
 
-                    \DFS{\Left}
+                    \Call \DFS{\Right{\Node}}
                 }
             }
 
             \tcc{Main}
+
             \Begin{
+
                 \Call \DFS{\Root}
 
                 \Return{\List}
             }
+
 
         \end{algorithm}
 
@@ -168,8 +209,8 @@ Exercise 4 is written by LI Rong.
 
         A structured description is provided in Algorithm \ref*{algo-bfs}.
 
-        \begin{algorithm}
-            \caption{Breath-First Search}
+        \begin{algorithm}[h]
+            \caption{Breadth-First Search}
             \label{algo-bfs}
             \SetKwData{Queue}{visit\_queue}
             \SetKwData{Root}{root}
@@ -187,35 +228,100 @@ Exercise 4 is written by LI Rong.
             }
 
             \Return{\Result}
+
+
         \end{algorithm}
-
+        \pagebreak
         \part % 2.3
-        Create a queue recording the element in AVL tree in an ascending sequence. We can achieve such recording through following method: ------------------------.Then we seek for the median value in the sequence and return it.
+        Create a queue recording the element in AVL tree in an ascending sequence. To get such a queue, we can simply call a BFS or a DFS. After this step the length of queue can be used to determine the median of the tree.
 
-        \begin{algorithm}
+        Note that since we are performing an inorder transversal, the elements in result list must be ordered ascending.
+
+
+
+        \begin{algorithm}[h]
             \caption{Find Median}
             \label{algo-median}
+            \SetKwArray{Queue}{visit\_queue}
+            \SetKwData{Len}{length}
+            \SetKwData{Root}{root}
+            \SetKwData{Node}{node}
+            \SetKwData{Result}{result\_list}
+            \SetKwData{MedIndex}{median\_index}
+            \SetKwFunction{Search}{Search}
+            $\Queue\gets$ []
+
+            \Call\Search{\Root} \tcp{whatever BreadthFirstSearch() or DepthFirstSearch()}
+
+            \If{\Len is an odd number}{
+                \Return{$\Queue{\Len / 2 + 1}$}
+            }
+            \Else{
+                \Return{$1/2 \cdot \left( \Queue{\Len / 2} + \Queue{\Len / 2 + 1} \right)$}
+            }
         \end{algorithm}
 
-        \part
-        hello world
-        % \begin{figure}[h]
-        %     \centering
+        \part %iv
+        Still insist on Depth-First Search. But we will make the ``digging'' process stop when reaching the boundaries.
 
-        %     \label{fig-FakeTree}
-        %     \tikz [tree layout, sibling distance=8mm, mark/.style={fill=violet, text=white}, mark/.default=, markmin/.style={fill=red, text=white}, markmin/.default=]
-        %     \graph [nodes={circle, draw, inner sep=1.5pt}]{ [fresh nodes]
+        You may refer to Algorithm \ref*{algo-range}.
 
-        %     1[markmin] <- {{2 [mark]} <- {2 <- {2, 5}, 3 <- {3, 8}}, 1 <- {4[mark] <- {4, 6}, 1 <- {3[mark], 1}}}
-
-        %     };
-        %     \caption{An example structure for the algorithm.}
-        % \end{figure}
-
-        hello
 
 
     \end{parts}
+
+    \begin{algorithm}
+        \caption{Range}
+        \label{algo-range}
+        \SetKwData{Node}{node}
+        \SetKwArray{Left}{left\_child}
+        \SetKwArray{Right}{right\_child}
+        \SetKwArray{Key}{key}
+        \SetKwData{ShouldAppend}{shouldAppend}
+        \SetKwData{List}{list\_of\_elements}
+        \SetKwData{Root}{root}
+        \SetKwFunction{DFS}{DepthFirstSearch}
+
+        \tcp{Initialize an empty list}
+
+        $\List\gets []$
+
+        \BlankLine
+
+        \Proc{\DFS{\Node, \ShouldAppend}}{
+
+            \If{\Node does not exist}
+            {
+                \Exit
+            }
+
+            \If{$\ShouldAppend = \False \wedge \Key{\Node} > x$}{
+                $\ShouldAppend \gets \True$
+            }
+
+            \If{$\ShouldAppend = \True \wedge \Key{\Node} < x$}{
+                \Exit
+            }
+
+            \Call \DFS{\Left{\Node},\ShouldAppend}
+
+            \If{$\ShouldAppend = \True$}{
+                append \Key{\Node} to \List
+            }
+
+            \Call \DFS{\Right{\Node},\ShouldAppend}
+        }
+
+        \tcc{Main}
+
+        \Begin{
+
+            \Call \DFS{\Root, \False}
+
+            \Return{\List}
+        }
+
+    \end{algorithm}
 
     \question{ZHOU Ruidi}
     \begin{parts}

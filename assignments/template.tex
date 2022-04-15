@@ -20,11 +20,12 @@
 \usepackage{enumerate}
 % \usepackage{bm}
 % \usepackage{mathptmx}
-\usepackage[nofillcomment, linesnumbered,ruled,lined,boxed]{algorithm2e}% 支持伪代码
+\usepackage[ruled,hangingcomment,nofillcomment,shortend]{algorithm2e}% 支持伪代码
 \usepackage{listings}
 \usepackage{fontspec}
 \usepackage{booktabs}
 \usepackage{tikz}
+\usepackage{fontenc}
 \usepackage{kpfonts-otf}
 \usepackage{cleveref}
 
@@ -33,7 +34,7 @@
 
 % \everymath{\displaystyle}
 % \setmainfont{Times New Roman}
-\setmonofont{Consolas}
+% \setmonofont{Courier New}
 % \setsansfont{Arial}
 \lstset{                  %设置代码块
     basicstyle=\small\ttfamily,% 基本风格
@@ -54,7 +55,7 @@
 \fancyhead[L]{\textsc\COURSECODE \\ \textbf\HWTITLE}
 \fancyhead[C]{}
 \fancyhead[R]{Last Modified on \\ \today}
-\fancyfoot[L]{\AUTHOR}
+\fancyfoot[L]{\copyright \AUTHOR}
 \fancyfoot[C]{}
 \fancyfoot[R]{--\thepage--}
 
@@ -75,7 +76,7 @@
 \newcommand{\question}[1]{\newpage \item \textsc{\textbf{Our Answer.}} (This part is written by #1)\newline}
 \renewcommand\part{\item}
 \newcommand\makeMyTitle{\maketitle
-                        \input{../memberInfo.tex} 
+                        \input{../memberInfo.tex}
                         \vspace{5cm}
                         \centering\textsc{\Large{Please turn over for our answers.}}\normalsize}
 
@@ -83,7 +84,12 @@
 % \setlength{\parskip}{0ex}
 
 \newcommand{\forcond}{$i=0$ \KwTo $n$}
+\SetKwData{Null}{null}
 \SetKwProg{Fn}{Function}{}{}
 \SetKwProg{Proc}{Procedure}{}{}
-\SetKw{Exit}{exit subroutine}
+\SetKw{Exit}{exit}
 \SetKw{Call}{call}
+\SetKwInOut{In}{input}
+\SetKwInOut{Out}{output}
+\SetKwData{True}{true}
+\SetKwData{False}{false}
