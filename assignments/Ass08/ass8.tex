@@ -12,11 +12,7 @@
 \thispagestyle{empty}
 \begin{questions}
     \question{Zhou Ruidi}
-    If we want to check if the tree is the AVL tree, we just need to know if the right and left tree is AVL tree. So we just need to check if the difference of the height (left and right) is 1.
-
-    We get the left child or the right child of the tree and then check if it is the leaf node. If not, continue and increase the counter; If it is the leaf node, stop and get the depth.
-
-    At last, compare the depth and check if the difference is 1. If yes, it is AVL tree; if not, it is not AVL tree.
+    We just need to compare the numbers (keys) in one node and find the point between two numbers and go to the next level. We will repeat this step until we find the ``NULL'' node which is in the last level before the leaf nodes (they are also empty and there is no point to these nodes). Then we will create a new pointer to the leaf node and use the leaf node space. (In short, we should “new” a pointer to find the location of the leaf node and then we can use the space). ``insert'' and ``delete'' operation should find the corresponding location at first and then we can ``insert'' or ``delete''. We can use this approach to reach the goal of handling the variation in the question.
 
     \question{Zhong Tiantian}
     Generally speaking, I/O operations only happen when a new sub-tree is loaded from the external disk into the memory.
