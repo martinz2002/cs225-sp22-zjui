@@ -1,0 +1,177 @@
+\input{../template.tex}
+
+
+\def\HWTITLE{Assignment 8}
+\def\COURSECODE{CS 225: Data Structures}
+\def\AUTHOR{Group D1}
+
+
+\begin{document}
+\makeMyTitle
+
+\thispagestyle{empty}
+\begin{questions}
+    \question{Zhou Ruidi}
+    If we want to check if the tree is the AVL tree, we just need to know if the right and left tree is AVL tree. So we just need to check if the difference of the height (left and right) is 1.
+
+    We get the left child or the right child of the tree and then check if it is the leaf node. If not, continue and increase the counter; If it is the leaf node, stop and get the depth.
+
+    At last, compare the depth and check if the difference is 1. If yes, it is AVL tree; if not, it is not AVL tree.
+
+    \question{Zhong Tiantian}
+    Generally speaking, I/O operations only happen when a new sub-tree is loaded from the external disk into the memory.
+
+    \begin{parts}
+        \part Assume each page operation costs $O(1)$.
+
+        \paragraph{Insert.} The algorithm will try to find the correct place in a single pass down, at each ``layer'' I/O will cost $O(1)$ operation. In total, \texttt{insert} requires $O(H)$ page operations.
+
+        Oviously the height of a tree is at most
+        \begin{equation*}
+            H = \log_t N.
+        \end{equation*}
+
+        Therefore, the total number of page operations should be
+        \begin{equation*}
+            H\cdot O(1) = O(\log_t N).
+        \end{equation*}
+
+        \paragraph{Find.}
+        For B and B+ trees, the algorithm compares the given index with all index in a subtree, before which an I/O operation will happen, which costs $O(1)$. Such comparing process will continue until reaching the leaf nodes. Oviously the height of a tree is at most
+        \begin{equation*}
+            H = \log_t N.
+        \end{equation*}
+
+        Therefore, the total number of page operations should be
+        \begin{equation*}
+            H\cdot O(1) = O(\log_t N).
+        \end{equation*}
+
+        \paragraph{Delete.}
+        First the algorithm will try to locate the block of data to delete, which will cost at most $O(\log_t N)$ page operations as is mentioned above.
+
+        For a simple delete, just remove the block and this costs $O(1)$ page operation.
+
+        Although in other cases it costs more operations, they can be amortised into simple delete case. Therefore, the number of page operations is still
+        \begin{equation*}
+            O(H)=O(\log_t N).
+        \end{equation*}
+
+        \part The algorithm will try to search all way with the left-most subtrees and find the lower bound; and with right-most subtrees to find the upper bound. In the worst case, the search process will go through all ``layers'' of the tree thus requires $O(2\log_t N)$ since we are searching for two boundaries.
+
+        \part Each page operation will put exactly 1 block into the buffer. Since the B/B+ tree operations require at most $O(\log_t N)$ page operations, which means each time it puts
+        \begin{equation*}
+            1\cdot O(\log_t N)
+        \end{equation*}
+        blocks into the buffer. Thus we have
+        \begin{equation*}
+            O(\log_t N)\leq k
+        \end{equation*}
+        and the solution for $t$ will be
+        \begin{equation*}
+            t > \sqrt[k]{N}.
+        \end{equation*}
+
+        The actual value of $t$ will be actually smaller, since when performing one operation we may require other certain operation to be running at the same time and thus cost more page operations.
+
+        Note that although \texttt{range} operation requires $O(2\log_t N)$ page operations, it can be splitted into two independent operations \texttt{find\_max} and \texttt{find\_min}, each requiring $O(\log_t N)$ and buffer space can be disposed after each operatoin, thus we only need at most $O(\log_t N)$ operations.
+    \end{parts}
+
+
+    \question{Jiang Wenhan}
+    Firstly we select a node as root node, then we start at this node.
+    \begin{enumerate}
+        \item we mark this node as searched node, put into the set $T$ which records all the connected components of the given graph, and select one of its unmarked neighbor node.
+        \item If its neighbor node has no unmarked neighbor, we mark this node and repeat step 1 until all neighbors are marked.
+        \item If the neighbor node we select has unmarked neighbor node, then we mark this node and repeat step 1, 2 and 3 at this node.
+    \end{enumerate}
+
+    All nodes marked (i.e. in the set $T$) are connected components of the given starting node undirected graph.
+
+    The following algorithm will state the above process more clearly.
+
+    \begin{algorithm}
+        \caption{Depth-Frist Search}
+        \label{algo-dfs}
+        \SetKwData{Node}{vertex}
+        \SetKwArray{Left}{left\_child}
+        \SetKwArray{Right}{right\_child}
+        \SetKwArray{Key}{key}
+        \SetKwData{Edge}{edge}
+        \SetKwData{Visited}{visited}
+
+        \SetKwData{List}{list\_of\_elements}
+        \SetKwData{Root}{starting\_vertex}
+        \SetKwFunction{DFS}{DepthFirstSearch}
+
+        \In{$v,T$}
+        \Out{$T$ with all vertices connected to $v$}
+
+        \Proc{\DFS{$v,T$}}{
+
+            $T\gets T\cup\left\{v\right\}$
+
+            $v.\Visited\gets\True$
+
+            \ForEach{\Edge connected to \Node}{
+
+                $v'\gets$ the vertex at the other end of \Edge
+
+                \If{$v'.\Visited=\False$}{\Call{\DFS{$v'$}}}
+
+            }
+            
+            \Return{$T$}
+        }
+
+    \end{algorithm}
+
+    \question{Jiang Wenhan}
+    Firstly we select a node as root node, and pushback it to the queue. Then we mark the nodes in the queue as examined and pushback all unmarked neighbors of the nodes in the queue. Then we popfront all marked nodes in the queue and repeat this procedure until no unmarked neighbors can be found.
+
+    The following algorithm will state the above process more clearly.
+
+    \begin{algorithm}[h]
+        \caption{Breadth-First Search}
+        \label{algo-bfs}
+        \SetKwData{Queue}{fifo\_queue}
+        \SetKwData{Root}{starting\_vertex}
+        \SetKwData{Node}{vertex}
+        \SetKwData{Edge}{edge}
+        \SetKwData{Visited}{visited}
+        \SetKwData{Result}{result\_list}
+
+        append \Root to \Queue
+
+        T$\gets$ T$\cup\left\{\Root\right\}$
+
+        \Root.\Visited$\gets$\True
+
+        \While{$\Queue\neq\emptyset$}{
+            $\Node \gets$ the front element in \Queue
+
+            $\Node.\Visited\gets\True$
+
+            $T\gets T\cup\left\{ \Node \right\}$
+
+            pop \Queue's front element
+
+            \ForEach{\Edge connected with \Node}{
+                append vertex at the other end of \Edge (if any) to \Queue
+
+            }
+
+
+        }
+
+        \Return{$T$}
+
+
+    \end{algorithm}
+
+
+\end{questions}
+
+
+
+\end{document}
