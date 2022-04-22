@@ -139,9 +139,7 @@
 
         append \Root to \Queue
 
-        T$\gets$ T$\cup\left\{\Root\right\}$
-
-        \Root.\Visited$\gets$\True
+        $T\gets T\cup\left\{\Root\right\}$
 
         \While{$\Queue\neq\emptyset$}{
             $\Node \gets$ the front element in \Queue
@@ -153,7 +151,10 @@
             pop \Queue's front element
 
             \ForEach{\Edge connected with \Node}{
-                append vertex at the other end of \Edge (if any) to \Queue
+                $v'\gets $vertex at the other end of \Edge
+
+                \If{$v'.\Visited=\False$}{append $v'$ to \Queue}
+                
 
             }
 
