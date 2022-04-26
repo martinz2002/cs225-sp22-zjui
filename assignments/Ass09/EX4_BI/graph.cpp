@@ -9,6 +9,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "graph.h"
+#include "id_hash.cpp"
 using std::cout;
 
 /* The structure of a vertex is analogous to a node in a doubly linked list. In addition we keep an "edgelist" with each vertex, i.e. the list of neighbour vertices. */
@@ -109,7 +110,7 @@ int vertexlist<T>::getlength(void)
 template <class T>
 bool vertexlist<T>::is_balance(void)
 {
-    return falsevertices==truevertices;
+    return falsevertices == truevertices;
 }
 /* For counting edges we must add up the counts of outgoing edges for each vertex */
 template <class T>
@@ -141,6 +142,7 @@ void vertexlist<T>::append(T item, bool gender)
         ++truevertices;
     else
         ++falsevertices;
+    item2ptr->add(item, pt_new);
     return;
 }
 
@@ -214,6 +216,7 @@ bool vertexlist<T>::remove(T item, bool gender)
             --truevertices;
         else
             --falsevertices;
+        item2ptr->remove(location->getitem());
     }
     /* The returned Boolean result indicates, if the vertex was deleted or not. */
     return result;
@@ -281,6 +284,58 @@ void vertexlist<T>::removeedge(T first, bool first_gender, T second, bool second
     return;
 }
 
+template <class T>
+bool vertexlist<T>::find_pair(vertex<T> *pt, edgelist<T> *edges)
+{
+    bool result = false;
+    elist<T> *pt_edges = (*pt).getedges();
+    int length = (*pt_edges).getlength();
+    neighbour<T> *pt_neighbour = (*pt_edges).get_first();
+    for (int i = 0; i < length; i++)
+    {
+        if (!vertexmap->retrieve(pt_neighbour->getitem()))
+        {
+            vertexmap->modify(pt_neighbour->getitem(), true);
+            T *item = edges->contain(pt_neighbour->getitem(), pt_neighbour->getgender());
+            if (!item || find_pair(item2ptr->retrieve(*item), edges))
+            {
+                result = true;
+                edges->add(pt->getitem(),pt->getgender(),pt_neighbour->getitem(), pt_neighbour->getgender());
+                return result;
+            }
+        }
+    }
+    return result;
+}
+
+template <class T>
+edgelist<T> *vertexlist<T>::perfectly_match()
+{
+    vertex<T> *pt1 = (*dummy).getnext();
+
+    vertexmap = new hashmap<T, bool>;
+    for (int i = 0; i < numvertices; ++i)
+    {
+        vertexmap->add(pt1->getitem(), false);
+        pt1=pt1->getnext();
+    }
+    pt1=dummy->getnext();
+    edgelist<T> *result = new edgelist<T>();
+    for (int i1 = 0; i1 < numvertices; i1++)
+    {
+        if (!find_pair(pt1, result))
+            return 0;
+        vertex<T> *pt2 = (*dummy).getnext();
+        for (int i2 = 0; i2 < numvertices; ++i2)
+        {
+            vertexmap->modify(pt2->getitem(), false);
+            pt2=pt2->getnext();
+        }
+        pt1=pt1->getnext();
+    }
+    return result;
+}
+
 /* To build list of outgoing edges for a given vertex, a new edge sequence is created for the output, then by scanning the associated edgelist edges (pairs of vertices) are added one by one. */
 template <class T>
 edgelist<T> *vertexlist<T>::outgoingedges(T item, bool gender)
@@ -308,11 +363,16 @@ void vertexlist<T>::prettyprint(void)
     vertex<T> *ptv = (*dummy).getnext();
     for (int i = 0; i < numvertices; i++)
     {
+        if (ptv->getgender())
+            cout << "True: \n";
+        else
+            cout << "False: \n";
         cout << "Edges with origin " << (*ptv).getitem() << " :\n";
         edgelist<T> *pte = outgoingedges((*ptv).getitem(), ptv->getgender());
         (*pte).prettyprint();
         ptv = (*ptv).getnext();
     }
+
     return;
 }
 
@@ -404,6 +464,12 @@ void elist<T>::append(T item, bool gender)
     (*pt_last).setnext(pt_new);
     ++length;
     return;
+}
+
+template <class T>
+neighbour<T> *elist<T>::get_first()
+{
+    return first;
 }
 
 template <class T>
@@ -521,6 +587,27 @@ edgelist<T>::edgelist(void)
 }
 
 template <class T>
+T *edgelist<T>::contain(T item, bool gender)
+{
+    T *result = new T;
+    for (int i = 0; i < numedges; i++)
+    {
+        if (reprarray[i]->origin() == item)
+        {
+            *result = reprarray[i]->destination();
+            return result;
+        }
+        if (reprarray[i]->destination() == item)
+        {
+            *result = reprarray[i]->origin();
+            return result;
+        }
+    }
+    delete result;
+    return NULL;
+}
+
+template <class T>
 int edgelist<T>::getnumedges(void)
 {
     return numedges;
@@ -549,25 +636,25 @@ void edgelist<T>::prettyprint(void)
 
 /* A graph object just contains a pointer to a vertexlist. */
 template <class T>
-graph<T>::graph(void)
+BiPartite<T>::BiPartite(void)
 {
     vertices = new vertexlist<T>;
 }
 
 template <class T>
-int graph<T>::numvertices(void)
+int BiPartite<T>::numvertices(void)
 {
     return (*vertices).getlength();
 }
 
 template <class T>
-int graph<T>::numedges(void)
+int BiPartite<T>::numedges(void)
 {
     return (*vertices).countedges();
 }
 
 template <class T>
-void graph<T>::addedge(T origin, T destination, bool o_gender, bool d_gender)
+void BiPartite<T>::addedge(T origin, T destination, bool o_gender, bool d_gender)
 {
     if (o_gender == d_gender)
     {
@@ -580,14 +667,14 @@ void graph<T>::addedge(T origin, T destination, bool o_gender, bool d_gender)
 }
 
 template <class T>
-void graph<T>::addvertex(T item, bool gender)
+void BiPartite<T>::addvertex(T item, bool gender)
 {
     (*vertices).addvertex(item, gender);
     return;
 }
 
 template <class T>
-void graph<T>::deleteedge(T origin, T destination, bool o_gender, bool d_gender)
+void BiPartite<T>::deleteedge(T origin, T destination, bool o_gender, bool d_gender)
 {
     if (o_gender == d_gender)
     {
@@ -600,23 +687,35 @@ void graph<T>::deleteedge(T origin, T destination, bool o_gender, bool d_gender)
 }
 
 template <class T>
-void graph<T>::deletevertex(T item, bool gender)
+void BiPartite<T>::deletevertex(T item, bool gender)
 {
     (*vertices).remove(item, gender);
     return;
 }
 
 template <class T>
-edgelist<T> *graph<T>::outgoingedges(T item, bool gender)
+edgelist<T> *BiPartite<T>::outgoingedges(T item, bool gender)
 {
     return (*vertices).outgoingedges(item, gender);
 }
 
 template <class T>
-void graph<T>::prettyprint(void)
+void BiPartite<T>::prettyprint(void)
 {
     cout << "\n\n====== Graph ======\n\n";
     (*vertices).prettyprint();
     cout << "=================\n\n";
     return;
+}
+
+template <class T>
+edgelist<T> *BiPartite<T>::perfectly_match()
+{
+    if (!vertices->is_balance())
+        return 0;
+    edgelist<T> *result = vertices->perfectly_match();
+    if (result != 0)
+        return result;
+    result = new edgelist<T>;
+    return result;
 }
