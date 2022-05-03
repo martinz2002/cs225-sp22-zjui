@@ -22,6 +22,10 @@ int main()
     (*mygraph).addedge(2,4);
     (*mygraph).addedge(7,3);
     (*mygraph).addedge(1,5);
+    mygraph->addedge(6,4);
+    mygraph->addedge(6,5);
+    mygraph->addedge(6,8);
+
 
     edgelist<int> * myedgelist6 = (*mygraph).perfectly_match();
     (*myedgelist6).prettyprint();
