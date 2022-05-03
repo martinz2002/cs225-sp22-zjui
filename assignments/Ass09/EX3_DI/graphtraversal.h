@@ -344,7 +344,7 @@ private:
     // first argument not used
     void _backtrack(T node1, T node2, deepsearchtree<T> *output, int &dfspos, int &finishingtime);
 
-    bool _is_acyclic(T node1, T node2, vertexlist<T> *vertices, deepsearchtree<T> *output, markerlist<T> *markedvertices, markerlist<T> *par_vertices);
+    bool _is_acyclic(T node1, T node2, vertexlist<T> *vertices, markerlist<T> *markedvertices, markerlist<T> *par_vertices);
 };
 
 #endif /* graphtraversal_h */

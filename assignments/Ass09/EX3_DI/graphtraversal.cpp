@@ -1542,15 +1542,14 @@ bool DI_graphtraversal<T>::is_acyclic(T startnode)
         cout << "There is no vertex " << startnode << " in the DIgraph.\n";
         return false;
     }
-    deepsearchtree<T> *output = new deepsearchtree<T>;
     markerlist<T> *markedvertices = new markerlist<T>;
     markerlist<T> *parents_vertices = new markerlist<T>;
     (*markedvertices).mark(startnode);
     (*parents_vertices).mark(startnode);
-    return _is_acyclic(startnode, startnode, vertices, output, markedvertices, parents_vertices);
+    return _is_acyclic(startnode, startnode, vertices, markedvertices, parents_vertices);
 }
 template <class T>
-bool DI_graphtraversal<T>::_is_acyclic(T node1, T node2, vertexlist<T> *vertices, deepsearchtree<T> *output, markerlist<T> *markedvertices, markerlist<T> *par_vertices)
+bool DI_graphtraversal<T>::_is_acyclic(T node1, T node2, vertexlist<T> *vertices, markerlist<T> *markedvertices, markerlist<T> *par_vertices)
 {
     elist<T> *neighbours = (*vertices).edges(node2);
     if (neighbours != 0)
@@ -1562,19 +1561,13 @@ bool DI_graphtraversal<T>::_is_acyclic(T node1, T node2, vertexlist<T> *vertices
             if ((*markedvertices).ismarked(nextnode))
             {
                 if ((*par_vertices).ismarked(nextnode))
-                {
                     return false;
-                }
-                else
-                {
-                    _traverse_nontreeedge(node2, nextnode);
-                }
             }
             else
             {
                 (*markedvertices).mark(nextnode);
                 (*par_vertices).mark(nextnode);
-                if (!_is_acyclic(node2, nextnode, vertices, output, markedvertices, par_vertices))
+                if (!_is_acyclic(node2, nextnode, vertices, markedvertices, par_vertices))
                     return false;
             }
             cursor = (*cursor).getnext();
