@@ -1,4 +1,4 @@
-# The Not-So-Smart Medical Treatment System (SMTS) (version 2.0)
+# The Not-So-Smart Medical Treatment System (SMTS)
 
 Copyright (C) 2022 Zhejiang University
 
