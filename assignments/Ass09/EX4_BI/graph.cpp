@@ -300,10 +300,11 @@ bool vertexlist<T>::find_pair(vertex<T> *pt, edgelist<T> *edges)
             if (!item || find_pair(item2ptr->retrieve(*item), edges))
             {
                 result = true;
-                edges->add(pt->getitem(),pt->getgender(),pt_neighbour->getitem(), pt_neighbour->getgender());
+                edges->add(pt->getitem(), pt->getgender(), pt_neighbour->getitem(), pt_neighbour->getgender());
                 return result;
             }
         }
+        pt_neighbour = (*pt_neighbour).getnext();
     }
     return result;
 }
@@ -316,22 +317,37 @@ edgelist<T> *vertexlist<T>::perfectly_match()
     vertexmap = new hashmap<T, bool>;
     for (int i = 0; i < numvertices; ++i)
     {
+        if (!pt1->getgender())
+        {
+            pt1 = pt1->getnext();
+            continue;
+        }
         vertexmap->add(pt1->getitem(), false);
-        pt1=pt1->getnext();
+        pt1 = pt1->getnext();
     }
-    pt1=dummy->getnext();
+    pt1 = dummy->getnext();
     edgelist<T> *result = new edgelist<T>();
     for (int i1 = 0; i1 < numvertices; i1++)
     {
+        if (pt1->getgender())
+        {
+            pt1 = pt1->getnext();
+            continue;
+        }
         if (!find_pair(pt1, result))
             return 0;
         vertex<T> *pt2 = (*dummy).getnext();
         for (int i2 = 0; i2 < numvertices; ++i2)
         {
+            if (!pt2->getgender())
+            {
+                pt2 = pt2->getnext();
+                continue;
+            }
             vertexmap->modify(pt2->getitem(), false);
-            pt2=pt2->getnext();
+            pt2 = pt2->getnext();
         }
-        pt1=pt1->getnext();
+        pt1 = pt1->getnext();
     }
     return result;
 }
@@ -616,6 +632,7 @@ int edgelist<T>::getnumedges(void)
 template <class T>
 void edgelist<T>::add(T item1, bool item1_gender, T item2, bool item2_gender)
 {
+    delete_edge(item1);
     edge<T> *newedge = new edge<T>(item1, item1_gender, item2, item2_gender);
     reprarray[numedges] = newedge;
     ++numedges;
@@ -632,6 +649,24 @@ void edgelist<T>::prettyprint(void)
     }
     cout << "\n      --------\n";
     return;
+}
+
+template <class T>
+void edgelist<T>::delete_edge(T item1)
+{
+    for (int i = 0; i < numedges; i++)
+    {
+        if (reprarray[i]->origin() == item1)
+        {
+            delete reprarray[i];
+            for (int j = i; j < numedges - 1; j++)
+            {
+                reprarray[j] = reprarray[j + 1];
+            }
+            numedges--;
+            i--;
+        }
+    }
 }
 
 /* A graph object just contains a pointer to a vertexlist. */

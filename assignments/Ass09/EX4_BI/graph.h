@@ -143,6 +143,7 @@ public:
     T* contain(T item, bool gender);
     void add(T item1, bool item1_gender, T item2, bool item2_gender);
     void prettyprint(void); // only for testing
+    void delete_edge(T item1);
 private:
     edge<T> **reprarray;
     int numedges;
