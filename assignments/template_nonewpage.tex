@@ -1,0 +1,94 @@
+%        -----------------------------
+%        | Group Assignment Template |
+%        -----------------------------
+%         Author: Zhong Tiantian
+%         Date Created: Feb 21, 2022
+%         Date Modified: Feb 22, 2022
+%         Version: 2.0
+%
+% -------------------------------------------
+
+\documentclass[12pt]{article}
+\usepackage[scale=0.8]{geometry}
+
+\usepackage{fancyhdr}
+\usepackage{graphicx}   % 支持图像
+\usepackage{hyperref}   % 支持引用（书签引用）
+\usepackage{amsmath}    % 支持数学
+\usepackage{amsfonts}   % 支持数学字体
+\usepackage{amssymb}    % 支持数学符号
+\usepackage{enumerate}
+% \usepackage{bm}
+% \usepackage{mathptmx}
+\usepackage[ruled,hangingcomment,nofillcomment,shortend]{algorithm2e}% 支持伪代码
+\usepackage{listings}
+\usepackage{fontspec}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{fontenc}
+\usepackage{kpfonts-otf}
+\usepackage{cleveref}
+
+\usetikzlibrary {graphs, graphdrawing}
+\usegdlibrary {trees}
+
+% \everymath{\displaystyle}
+% \setmainfont{Times New Roman}
+% \setmonofont{Courier New}
+% \setsansfont{Arial}
+\lstset{                  %设置代码块
+    basicstyle=\small\ttfamily,% 基本风格
+    numbers=left,    % 行号
+    numbersep=10pt,  % 行号间隔
+    tabsize=4,       % 缩进
+    extendedchars=true, % 扩展符号？
+    breaklines=true, % 自动换行
+    frame=shadowbox,  % 框架左边竖线
+    xleftmargin=19pt,% 竖线左边间距
+    showspaces=false,% 空格字符加下划线
+    showstringspaces=false,% 字符串中的空格加下划线
+    showtabs=false,  % 字符串中的tab加下划线
+    % keywordstyle=\bfseries\color{NavyBlue}, % 设置关键字为粗体，颜色为 NavyBlue
+}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textsc\COURSECODE \\ \textbf\HWTITLE}
+\fancyhead[C]{}
+\fancyhead[R]{Last Modified on \\ \today}
+\fancyfoot[L]{\copyright \AUTHOR}
+\fancyfoot[C]{}
+\fancyfoot[R]{--\thepage--}
+
+\fancypagestyle{firstPage}{
+    \fancyhf{}
+    \fancyfoot[R]{--\thepage--}
+}
+
+\newcommand{\E}{\text{e}}
+\newcommand{\Diff}{\text{d}}
+
+\title{\textsc\COURSECODE \\ \textbf{\HWTITLE}}
+\author{\Large{\AUTHOR}}
+\date{\textit{Last Modified on \today}}
+
+\newenvironment{questions}{\begin{enumerate}[Ex. 1]}{\end{enumerate}}
+\newenvironment{parts}{\begin{enumerate}[(i)]}{\end{enumerate}}
+\newcommand{\question}[1]{\item \textsc{\textbf{Our Answer.}} (This part is written by #1)\newline}
+\renewcommand\part{\item}
+\newcommand\makeMyTitle{\maketitle
+                        \input{../memberInfo.tex}
+                        \vspace{5cm}}
+
+\renewcommand{\baselinestretch}{1.2}
+% \setlength{\parskip}{0ex}
+
+\newcommand{\forcond}{$i=0$ \KwTo $n$}
+\SetKwData{Null}{null}
+\SetKwProg{Fn}{Function}{}{}
+\SetKwProg{Proc}{Procedure}{}{}
+\SetKw{Exit}{exit}
+\SetKw{Call}{call}
+\SetKwInOut{In}{input}
+\SetKwInOut{Out}{output}
+\SetKwData{True}{true}
+\SetKwData{False}{false}

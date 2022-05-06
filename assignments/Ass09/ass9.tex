@@ -1,0 +1,36 @@
+\input{../template_nonewpage.tex}
+
+
+\def\HWTITLE{Assignment 9}
+\def\COURSECODE{CS 225: Data Structures}
+\def\AUTHOR{Group D1}
+
+
+\begin{document}
+\makeMyTitle
+
+\thispagestyle{empty}
+\begin{questions}
+    \question{Zhou Ruidi}
+    \begin{parts}
+        \part
+        We can design an algorithm which is similar to Kruskal algorithm (Kruskal algorithm: All edges in the connected network are sorted in ascending order according to their weights, and the edge with the smallest weight is selected from the beginning. If this edge does not form a loop together with the selected edges, it can be selected to form a minimum spanning tree). We just need to choose the largest cost (weight) so that we can form the maximum spanning tree.
+
+        \part
+        We allowed the negative edge costs, the essence of the Kruskal algorism will be the same: If we add a large enough number which can be a fixed number then we will gain a traditional Kruskal algorism. In other words, the costs change in the same step. As a result, we can also get the minimal spanning tree.
+    \end{parts}
+
+    \question{Zhou Ruidi}
+    \begin{parts}
+        \part  We just need to add up some special edges with costs to make the original graphs connected. And we can delete the added edges at last (after finishing).
+
+        \part As all edge costs are pairwise different, we can have only one minimal spanning tree cause if there is another minimal spanning tree, as all edge costs are pairwise different, there must be at least one different edge cost (the uniqueness of cost) which means the costs between them are different, which is contradictory to the definition of minimal spanning tree (minimal spanning tree has only one cost which is the smallest), in other words, it destroys the uniqueness.
+
+        \part ~
+        \begin{enumerate}
+            \item No, if there exists negative costs, they will be the ``useless part'' which means they can't form the part of a tree, so it can't be a tree.
+            \item Yes, if all edge costs are positive, it will satisfy the demands of the tree (All the costs will be useful and will be used to form a tree). It is qualified for minimal cost in a positive cost structure, as well as satisfying spanning tree of the positive costs edges so that it can form a tree.
+        \end{enumerate}
+    \end{parts}
+\end{questions}
+\end{document}
