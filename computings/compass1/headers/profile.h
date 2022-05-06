@@ -28,7 +28,7 @@ typedef struct personal_profile
     string WeChat;
     string email;
     int64_t ID; 
-    int64_t *vaccination_sequence;
+    int64_t *vaccination_sequence;  // ???? Why is a vaccination sequence here in a patient's profile?
     int profession; // I to VIII
     int risk;       // 0-3
     int agegroup;   // 1-7
