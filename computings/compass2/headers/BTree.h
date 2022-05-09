@@ -4,7 +4,7 @@
 #include<bits/stdc++.h>
 
 namespace BT {
-	template<typename T>
+	template<class T>
 	struct Node {
 		int n;
 		struct Node<T>** child;   //孩子的地址
@@ -15,7 +15,7 @@ namespace BT {
 	};
 }
 
-template<typename T>
+template<class T>
 class BTree {
 public:
     BTree(int m = 2) { t = m;root = new BT::Node<T>;node_num = 0; }
@@ -51,7 +51,7 @@ private:
     int node_num;       //结点个数
 };
 
-template<typename T>
+template<class T>
 BT::Node<T>* BTree<T>::search(BT::Node<T>* x, const T& k) {
 	int i = 0;
 	while (i<x->n&&k>x->key[i]) {
@@ -68,7 +68,7 @@ BT::Node<T>* BTree<T>::search(BT::Node<T>* x, const T& k) {
 	}
 }
 
-template<typename T>
+template<class T>
 void BTree<T>::B_Tree_Split_Child(BT::Node<T>* x, int i) { //i是数组的下标
 	BT::Node<T>* y = x->child[i];
 	BT::Node<T>*L, *R;   //L R是新裂变的两个片段
@@ -110,7 +110,7 @@ void BTree<T>::B_Tree_Split_Child(BT::Node<T>* x, int i) { //i是数组的下标
 	delete y;
 }
 
-template<typename T>
+template<class T>
 void BTree<T>::Insert(BT::Node<T>* &r, const T& k) {
 	if (B_Tree_Search(k)) {
 		return;
@@ -131,7 +131,7 @@ void BTree<T>::Insert(BT::Node<T>* &r, const T& k) {
     node_num++;  //结点个数增加
 }
 
-template<typename T>
+template<class T>
 void BTree<T>::B_Tree_Insert_NonFull(BT::Node<T>* x, const T& k) {
 	int i = x->n - 1;
 	if (x->leaf) {  //叶子结点直接插入
@@ -159,7 +159,7 @@ void BTree<T>::B_Tree_Insert_NonFull(BT::Node<T>* x, const T& k) {
 
 }
 
-template<typename T>
+template<class T>
 void BTree<T>::Merge_Node(BT::Node<T>*& x, int i, BT::Node<T>*& y, BT::Node<T>*& z) {
 	y->key = (T*)realloc(y->key, (2 * t - 1) * sizeof(T));
 	for (int j = 0;j < t - 1;++j) {
@@ -193,7 +193,7 @@ void BTree<T>::Merge_Node(BT::Node<T>*& x, int i, BT::Node<T>*& y, BT::Node<T>*&
 	z = nullptr;
 }
 
-template<typename T>
+template<class T>
 T BTree<T>::Search_Predecessor(BT::Node<T>* y) {
 	BT::Node<T>* x = y;//->child[y->n];
 	while (!x->leaf) {
@@ -202,7 +202,7 @@ T BTree<T>::Search_Predecessor(BT::Node<T>* y) {
 	return x->key[x->n - 1];
 }
 
-template<typename T>
+template<class T>
 T BTree<T>::Search_Successor(BT::Node<T>* z) {
 	BT::Node<T>* x = z;//->child[0];
 	while (!x->leaf) {
@@ -211,7 +211,7 @@ T BTree<T>::Search_Successor(BT::Node<T>* z) {
 	return x->key[0];
 }
 
-template<typename T>
+template<class T>
 void BTree<T>::Shift_To_Left_Child(BT::Node<T>*& x, int i, BT::Node<T>*& y, BT::Node<T>*& z) {
 	if (y == nullptr) {  //防止出现空指针
 		y = new BT::Node<T>;
@@ -237,7 +237,7 @@ void BTree<T>::Shift_To_Left_Child(BT::Node<T>*& x, int i, BT::Node<T>*& y, BT::
 	z->key = (T*)realloc(z->key, z->n * sizeof(T));
 }
 
-template<typename T>
+template<class T>
 void BTree<T>::Shift_To_Right_Child(BT::Node<T>*& x, int i, BT::Node<T>*& y, BT::Node<T>*& z) {
 	if (z == nullptr) { //防止出现空指针
 		z = new BT::Node<T>;
@@ -263,7 +263,7 @@ void BTree<T>::Shift_To_Right_Child(BT::Node<T>*& x, int i, BT::Node<T>*& y, BT:
 	y->key = (T*)realloc(y->key, y->n * sizeof(T));
 }
 
-template<typename T>
+template<class T>
 void BTree<T>::B_Tree_Delete_NoNone(BT::Node<T>* x, const T &k) {
 	//下面提到的各种情况全部参照算法导论
 	if (x->leaf) {   //情况1
@@ -327,7 +327,7 @@ void BTree<T>::B_Tree_Delete_NoNone(BT::Node<T>* x, const T &k) {
 	}
 }
  
-template<typename T>
+template<class T>
 void BTree<T>::B_Tree_Delete(const T &k) {
 	BT::Node<T>* r = root;
 	if (root->n == 1 && root->child == nullptr) {  //删除最后一个元素
@@ -355,7 +355,7 @@ void BTree<T>::B_Tree_Delete(const T &k) {
     --node_num;  //结点个数减少一个
 }
 
-template<typename T>
+template<class T>
 void BTree<T>::Print() {
     BT::Node<T> *last = root;//last表示当前层的最右结点
 	BT::Node<T>* p = root;
@@ -392,7 +392,7 @@ void BTree<T>::Print() {
     std::cout << std::endl;
 }
 
-template<typename T>
+template<class T>
 void BTree<T>::PostOrder_Delete(BT::Node<T>*& cur) {
     if (cur->leaf) {  //直接删除叶子结点
 		delete[] cur->key;
