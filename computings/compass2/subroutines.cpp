@@ -14,7 +14,28 @@
 #include "profile.cpp"
 #include "fiboheap.cpp"
 using namespace std;
-treatment::treatment(int32_t risk_type = 0)
+
+bool cmp_by_name(personal_profile *file1, personal_profile *file2)
+{
+    return file1->name < file2->name;
+}
+
+bool cmp_by_pof(personal_profile *file1, personal_profile *file2)
+{
+    return file1->profession < file2->profession;
+}
+
+bool cmp_by_agegp(personal_profile *file1, personal_profile *file2)
+{
+    return file1->agegroup < file2->agegroup;
+}
+
+bool cmp_by_ddl(personal_profile *file1, personal_profile *file2)
+{
+    return (file1->inoculate_date - file2->inoculate_date) < 0;
+}
+
+treatment::treatment(int32_t risk_type)
 {
     if (risk_type < 0 || risk_type > 2)
     {
@@ -22,31 +43,6 @@ treatment::treatment(int32_t risk_type = 0)
         this->risk_type = 0;
     }
     this->risk_type = risk_type;
-}
-
-bool treatment::compare_by_dist(int64_t num1, int64_t num2)
-{
-    return dist[num1] < dist[num2];
-}
-
-bool treatment::cmp_by_name(personal_profile *file1, personal_profile *file2)
-{
-    return file1->name < file2->name;
-}
-
-bool treatment::cmp_by_pof(personal_profile *file1, personal_profile *file2)
-{
-    return file1->profession < file2->profession;
-}
-
-bool treatment::cmp_by_agegp(personal_profile *file1, personal_profile *file2)
-{
-    return file1->agegroup < file2->agegroup;
-}
-
-bool treatment::cmp_by_ddl(personal_profile *file1, personal_profile *file2)
-{
-    return (file1->inoculate_date - file2->inoculate_date) < 0;
 }
 
 void treatment::alloc_for_reg()
@@ -109,10 +105,26 @@ void treatment::calc_reg_dist()
             if (_ == 0)                                                                                                                                // update the daily process number
                 daily[i] = ino_pro[i]->daily_processnum;
         }
-        sort(reg_pro[_]->vaccination_sequence, reg_pro[_]->vaccination_sequence + num_ino, compare_by_dist); // sort the vaccination sequence by distance between registration point and inoculation point
+        // selection sort of the vaccination sequence
+        for (int i = 0; i < num_ino; i++)
+        {
+            int64_t temp;
+            int min = dist[i];
+            int min_index = i;
+            for (int j = i + 1; j < num_ino; j++)
+            {
+                if (dist[j] < min)
+                {
+                    min = dist[j];
+                    min_index = j;
+                }
+                temp = reg_pro[_]->vaccination_sequence[i];
+                reg_pro[_]->vaccination_sequence[i] = reg_pro[_]->vaccination_sequence[min_index];
+                reg_pro[_]->vaccination_sequence[min_index] = temp;
+            }
+        }
     }
 }
-
 int treatment::calc_agegroup(CDate *birthdate)
 {
     int64_t dateDiff = date->year - birthdate->year;

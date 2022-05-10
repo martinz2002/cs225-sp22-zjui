@@ -19,13 +19,6 @@
 
 using std::string;
 
-class treatment
-{
-public:
-    treatment(int32_t risk_type = 0);
-    CDate *date = new CDate(time(NULL)); // Current date being processed by the system
-    int64_t assign_waiting = 0;          // number of people who haven't been inoculated but have already sent the priority letter
-    int64_t queue_waiting = 0;           // number of people who haven't been inoculated but did not send the priority letter
     /**
      * @brief a subroutine for comparation between distance for num1 and num2, return 1 if distance for num1 is the smaller one
      *
@@ -75,6 +68,13 @@ public:
      * @return false
      */
     bool cmp_by_ddl(personal_profile *file1, personal_profile *file2);
+class treatment
+{
+public:
+treatment(int32_t risk_type=0);
+    CDate *date = new CDate(time(NULL)); // Current date being processed by the system
+    int64_t assign_waiting = 0;          // number of people who haven't been inoculated but have already sent the priority letter
+    int64_t queue_waiting = 0;           // number of people who haven't been inoculated but did not send the priority letter
 
     /**
      * @brief reallocate for larger memory space to contain registration profile
