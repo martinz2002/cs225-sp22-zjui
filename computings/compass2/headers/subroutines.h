@@ -15,7 +15,7 @@
 #include "date.h"
 #include "fiboheap.h"
 #include "profile.h"
-#include "id_hash.h"
+#include "BPlusTree.cpp"
 
 using std::string;
 
@@ -264,9 +264,9 @@ private:
 
     int64_t *dist; // the temporary distance sequence
 
-    hashmap<int64_t, int64_t> priority2ID = hashmap<int64_t, int64_t>(20); // hashmap from priority to ID
+    BPlusTree<int64_t> priority2ID = BPlusTree<int64_t>(); // BPlusTree from priority to ID
 
-    hashmap<int64_t, personal_profile *> ID2ptr = hashmap<int64_t, personal_profile *>(20); // hashmap from ID to personal profile
+    BPlusTree<personal_profile *> ID2ptr = BPlusTree<personal_profile *>(); // BPlusTree from ID to personal profile
 
     FibHeap *Queueing_heap = fib_heap_make(); // queuing heap; containing risk level 0, 1, and 2
                                               // when popping risk 2 patients will be pushed back to delay_personal_file

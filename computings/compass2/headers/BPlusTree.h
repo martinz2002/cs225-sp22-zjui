@@ -1,3 +1,4 @@
+
 #ifndef BPLUSTREE_H
 #define BPLUSTREE_H
 #include <bits/stdc++.h>
@@ -73,7 +74,7 @@ public:
     // 获取和设置某个元素，对中间结点指键值，对叶子结点指数据
     virtual KEY_TYPE GetElement(int i) {return 0;}
     virtual DATA_TYPE GetData(int i) {return 0;}
-    virtual void SetElement(int i, KEY_TYPE value) { }
+    virtual void SetElement(int i, KEY_TYPE value,DATA_TYPE data) { }
    
     // 获取和设置某个指针，对中间结点指指针，对叶子结点无意义
     virtual CNode<DATA_TYPE>* GetPointer(int i) {return NULL;}
@@ -120,7 +121,7 @@ public:
             return INVALID;
         }
     }
-    void SetElement(int i, KEY_TYPE key)
+    void SetElement(int i, KEY_TYPE key,DATA_TYPE data)
     {
         if ((i > 0 ) && (i <= MAXNUM_KEY))
         {
@@ -165,7 +166,7 @@ public:
 protected:
 
     KEY_TYPE m_Keys[MAXNUM_KEY];           // 键数组
-    CNode* m_Pointers[MAXNUM_POINTER];     // 指针数组
+    CNode<DATA_TYPE>* m_Pointers[MAXNUM_POINTER];     // 指针数组
 
 };
 
@@ -250,6 +251,7 @@ public:
 
     // 查找指定的数据
     bool Search(KEY_TYPE data, char* sPath);
+    DATA_TYPE Search_data(KEY_TYPE data);
     // 插入指定的数据
     bool Insert(KEY_TYPE data, DATA_TYPE value);
     // 删除指定的数据

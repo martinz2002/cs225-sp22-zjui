@@ -10,7 +10,6 @@
  */
 
 #include "headers/subroutines.h"
-#include "id_hash.cpp"
 #include "profile.cpp"
 #include "fiboheap.cpp"
 using namespace std;
@@ -213,7 +212,7 @@ void treatment::add_profile(string name, string address, string phone, string We
     default:
         return;
     }
-    if (ID2ptr.retrieve(ID) != NULL) // if the ID is already in the database
+    if (ID2ptr.Search_data(ID) != NULL) // if the ID is already in the database
     {
         cout << "The ID is already in the database." << endl; // print error message
         delete dateBirthdate;                                 // free the memory space
@@ -225,8 +224,8 @@ void treatment::add_profile(string name, string address, string phone, string We
     my_personal_file = newprofile(name, address, phone, WeChat, email, risk, ID, profession, agegroup, dateBirthdate, *date, RegID);
     my_personal_file->priority_num = pri_num; // update the priority number
     registration_sequence_calculation(my_personal_file, reg_pro[RegID]);
-    priority2ID.add(pri_num, ID);                       // update the priority number to ID mapping
-    ID2ptr.add(ID, my_personal_file);                   // update the ID to pointer mapping
+    priority2ID.Insert(pri_num, ID);                       // update the priority number to ID mapping
+    ID2ptr.Insert(ID, my_personal_file);                   // update the ID to pointer mapping
     queueing_personal_file.push_back(my_personal_file); // update the queueing list
     if (risk <= 2)
     {
@@ -310,7 +309,7 @@ void treatment::DDL_letter(int64_t ID, string sDDL)
         delete DDL; // free the memory space
         return;
     }
-    personal_profile *ptr = ID2ptr.retrieve(ID); // get the pointer of the person
+    personal_profile *ptr = ID2ptr.Search_data(ID); // get the pointer of the person
     if (ptr == NULL)                             // if the person is not in the database
     {
         cout << "The ID is not in the database." << endl; // print error message
@@ -402,7 +401,7 @@ void treatment::change_pro(int64_t ID, int64_t prof)
         cout << "Invalid profession." << endl;
         return;
     }
-    personal_profile *ptr = ID2ptr.retrieve(ID);
+    personal_profile *ptr = ID2ptr.Search_data(ID);
     if (ptr == NULL) // if the person is not in the database
     {
         cout << "The ID is not in the database." << endl; // print error message
@@ -440,8 +439,8 @@ void treatment::change_pro(int64_t ID, int64_t prof)
         return;
         ptr->priority_num = pri_num;                                                  // set the new priority number to the person
         ptr->profession = prof;                                                       // set the new profession to the person
-        priority2ID.remove(pre_prio_num);                                             // remove the person from the priority hash table
-        priority2ID.add(pri_num, ID);                                                 // add the person to the priority hash table
+        priority2ID.Delete(pre_prio_num);                                             // remove the person from the priority hash table
+        priority2ID.Insert(pri_num, ID);                                                 // add the person to the priority hash table
         if (ptr->is_delay || ptr->withdraw || ptr->is_inoculated || ptr->is_assigned) // if the person is in the delay list or the withdraw list or the assigned list or the inoculated list
             return;
         if (ptr->risk != 3)                                        // if the person is not a high risk person
@@ -458,7 +457,7 @@ void treatment::change_risks(int64_t ID, int64_t Risks)
         cout << "The risk is not in the range." << endl; // print error message
         return;
     }
-    personal_profile *ptr = ID2ptr.retrieve(ID);
+    personal_profile *ptr = ID2ptr.Search_data(ID);
     if (ptr == NULL) // if the person is not in the database
     {
         cout << "The ID is not in the database." << endl; // print error message
@@ -508,7 +507,7 @@ void treatment::change_risks(int64_t ID, int64_t Risks)
 
 void treatment::withdraw(int64_t ID)
 {
-    personal_profile *ptr = ID2ptr.retrieve(ID);
+    personal_profile *ptr = ID2ptr.Search_data(ID);
     if (ptr == NULL) // if the person is not in the database
     {
         cout << "The ID is not in the database." << endl; // print error message
@@ -572,7 +571,7 @@ void treatment::withdraw(int64_t ID)
 
 void treatment::cancel_withdraw(int64_t ID)
 {
-    personal_profile *ptr = ID2ptr.retrieve(ID);
+    personal_profile *ptr = ID2ptr.Search_data(ID);
     if (ptr == NULL) // if the person is not in the database
     {
         cout << "The ID is not in the database." << endl; // print error message
@@ -646,8 +645,8 @@ void treatment::treat_queue(int64_t *copy_daily, int64_t *copy_total)
     while (*copy_total > 0 && fib_heap_get_min(Queueing_heap, prio_num))
     {
         fib_heap_extract_min(Queueing_heap);  // extract the person with the minimum priority number from the queueing heap
-        id = priority2ID.retrieve(*prio_num); // find the corresponding ID
-        ptr = ID2ptr.retrieve(id);            // find the corresponding person in the database
+        id = priority2ID.Search_data(*prio_num); // find the corresponding ID
+        ptr = ID2ptr.Search_data(id);            // find the corresponding person in the database
         if (ptr->risk <= 1 && ptr->once_withdraw == false)
         {
             ptr->is_inoculated = true;
@@ -745,8 +744,8 @@ void treatment::treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
     while ((*copy_total) > 0 && fib_heap_get_min(hrisk_heap, prio_num))
     {
         fib_heap_extract_min(hrisk_heap);     // extract the person with the minimum priority number from the high risk queueing heap
-        id = priority2ID.retrieve(*prio_num); // find the corresponding ID
-        ptr = ID2ptr.retrieve(id);            // find the corresponding person in the database
+        id = priority2ID.Search_data(*prio_num); // find the corresponding ID
+        ptr = ID2ptr.Search_data(id);            // find the corresponding person in the database
 
         ptr->is_inoculated = true;
         ptr->is_assigned = false;
