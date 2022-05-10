@@ -14,8 +14,9 @@ using namespace std;
 
 int main()
 {
+    treatment* mytreatment=new treatment();
     cout << "Welcome to the Silly Medical Treatment System (SMTS). Current date:\n";
-    (*date).print();
+    mytreatment->date->print();
 
     int report_op;
     cout << "Please choose the type of ordering scheme for weekly report: ";
@@ -33,7 +34,7 @@ int main()
     freopen("result.out", "w", stdout);
     cout << endl
          << "****************************************\n The system starts on ";
-    (*date).print();
+    mytreatment->date->print();
     cout << "****************************************" << endl
          << endl;
     // import registration points
@@ -43,7 +44,7 @@ int main()
     while (EOF != reg_pts_file.peek())
     {
         reg_pts_file >> x >> y;
-        reg_reg(x, y);
+        mytreatment->reg_reg(x, y);
     }
 
     // import inoculation points
@@ -53,9 +54,9 @@ int main()
     while (EOF != inoc_pts_file.peek())
     {
         inoc_pts_file >> x_ >> y_ >> c_;
-        reg_ino(x_, y_, c_);
+        mytreatment->reg_ino(x_, y_, c_);
     }
-    calc_reg_dist(); // Calculate the distance between registration points and inoculation points
+    mytreatment->calc_reg_dist(); // Calculate the distance between registration points and inoculation points
 
     // import profiles
     static CDate *next_profile_date = new CDate;         // date of next profile
@@ -92,46 +93,46 @@ int main()
     // "EOF" is a random string to help checking if the file is ended
     // If the file ends, temp_data will read nothing and thus should be an empty stirng
     {
-        while ((*next_profile_date) <= (*date) && temp_date != "EOF") // if the today we have to add a profile
+        while ((*next_profile_date) <= *(mytreatment->date) && temp_date != "EOF") // if the today we have to add a profile
         {
             profile_stream >> name >> address >> phone >> WeChat >> email >> birthdate >> risk >> profession >> ID >> RegID;
-            add_profile(name, address, phone, WeChat, email, risk, ID, profession, birthdate, RegID);
+            mytreatment->add_profile(name, address, phone, WeChat, email, risk, ID, profession, birthdate, RegID);
             profile_stream >> temp_date;
             next_profile_date->set(temp_date);
         }
-        while ((*next_withdraw_date) <= (*date) && temp_date_for_withdraw != "EOF") // if today we have to perform a withdrawal/cancellation
+        while ((*next_withdraw_date) <= *(mytreatment->date) && temp_date_for_withdraw != "EOF") // if today we have to perform a withdrawal/cancellation
         {
             withdraw_stream >> op_withdraw;
             withdraw_stream >> ID;
             if (op_withdraw == 0)
             {
                 // cancel withdraw
-                cancel_withdraw(ID);
+                mytreatment->cancel_withdraw(ID);
             }
             else if (op_withdraw == 1)
             {
                 // withdraw
-                withdraw(ID);
+                mytreatment->withdraw(ID);
             }
             else
             {
                 // illegal withdraw operation code
                 cout << "[Error] Illegal entry at date:";
-                (*date).print();
+                mytreatment->date->print();
                 cout << "    ID: " << ID << endl;
             }
             withdraw_stream >> temp_date_for_withdraw;
             next_withdraw_date->set(temp_date_for_withdraw);
         }
-        while ((*next_priority_date) <= (*date) && temp_date_priority_letter != "EOF") // if today we have to import a priority letter
+        while ((*next_priority_date) <= *(mytreatment->date) && temp_date_priority_letter != "EOF") // if today we have to import a priority letter
         {
             priority_letter_stream >> ID;
             priority_letter_stream >> temp_date_priority_letter;
-            DDL_letter(ID, temp_date_priority_letter);
+            mytreatment->DDL_letter(ID, temp_date_priority_letter);
             priority_letter_stream >> temp_date_priority_letter;
             next_priority_date->set(temp_date_priority_letter);
         }
-        while ((*next_modify_profiles_date) <= (*date) && temp_date_modification != "EOF") // if today we have to modify profiles
+        while ((*next_modify_profiles_date) <= *(mytreatment->date) && temp_date_modification != "EOF") // if today we have to modify profiles
         {
             modify_profile_stream >> op_change_profile;
             if (op_change_profile == 0)
@@ -139,38 +140,38 @@ int main()
                 // change risk
                 modify_profile_stream >> ID;
                 modify_profile_stream >> risk;
-                change_risks(ID, risk);
+                mytreatment->change_risks(ID, risk);
             }
             else if (op_change_profile == 1)
             {
                 // change profession
                 modify_profile_stream >> ID;
                 modify_profile_stream >> profession;
-                change_pro(ID, profession);
+                mytreatment->change_pro(ID, profession);
             }
             else
             {
                 // illegal modify profile operation code
                 cout << "[Error] Illegal entry at date:";
-                (*date).print();
+                mytreatment->date->print();
                 cout << "    ID: " << ID << endl;
             }
             modify_profile_stream >> temp_date_modification;
             next_modify_profiles_date->set(temp_date_modification);
         }
-        next_day_for_auto(report_op); // go to next day
+        mytreatment->next_day_for_auto(report_op); // go to next day
     }
-    while (assign_waiting > 0 || queue_waiting > 0)
+    while (mytreatment->assign_waiting > 0 || mytreatment->queue_waiting > 0)
     {
-        next_day_for_auto(report_op); // go to next day
+        mytreatment->next_day_for_auto(report_op); // go to next day
     }
     // Print the final report
     cout << "*****************************************" << endl;
     cout << "              FINAL REPORT"<< endl;
     cout << "*****************************************" << endl;
-    monthly_report();
+    mytreatment->monthly_report();
     cout << "\nSystem quites normally on ";
-    (*date).print();
+    mytreatment->date->print();
     cout << "*****************************************" << endl;
     cout << "           END OF FINAL REPORT"<< endl;
     cout << "*****************************************" << endl;

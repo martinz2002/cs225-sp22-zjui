@@ -14,33 +14,42 @@
 #include "profile.cpp"
 #include "fiboheap.cpp"
 using namespace std;
+treatment::treatment(int32_t risk_type = 0)
+{
+    if (risk_type < 0 || risk_type > 2)
+    {
+        cout << "Invalid risk type.\n";
+        this->risk_type = 0;
+    }
+    this->risk_type = risk_type;
+}
 
-bool compare_by_dist(int64_t num1, int64_t num2)
+bool treatment::compare_by_dist(int64_t num1, int64_t num2)
 {
     return dist[num1] < dist[num2];
 }
 
-bool cmp_by_name(personal_profile *file1, personal_profile *file2)
+bool treatment::cmp_by_name(personal_profile *file1, personal_profile *file2)
 {
     return file1->name < file2->name;
 }
 
-bool cmp_by_pof(personal_profile *file1, personal_profile *file2)
+bool treatment::cmp_by_pof(personal_profile *file1, personal_profile *file2)
 {
     return file1->profession < file2->profession;
 }
 
-bool cmp_by_agegp(personal_profile *file1, personal_profile *file2)
+bool treatment::cmp_by_agegp(personal_profile *file1, personal_profile *file2)
 {
     return file1->agegroup < file2->agegroup;
 }
 
-bool cmp_by_ddl(personal_profile *file1, personal_profile *file2)
+bool treatment::cmp_by_ddl(personal_profile *file1, personal_profile *file2)
 {
     return (file1->inoculate_date - file2->inoculate_date) < 0;
 }
 
-void alloc_for_reg()
+void treatment::alloc_for_reg()
 {
     max_num_reg *= 2; // double the size of the array
     registration_profile **new_reg = new registration_profile *[max_num_reg];
@@ -51,7 +60,7 @@ void alloc_for_reg()
     reg_pro = new_reg; // update the pointer
 }
 
-void alloc_for_ino()
+void treatment::alloc_for_ino()
 {
     max_num_ino *= 2;                                                   // double the size of the array
     inoculate_profile **new_ino = new inoculate_profile *[max_num_ino]; // allocate new memory space
@@ -62,7 +71,7 @@ void alloc_for_ino()
     ino_pro = new_ino; // update the pointer
 }
 
-static void reg_reg(int64_t x, int64_t y)
+void treatment::reg_reg(int64_t x, int64_t y)
 {
     reg_pro[num_reg] = new registration_profile; // allocate new memory space
     reg_pro[num_reg]->x_coordinate = x;          // update the x coordinate
@@ -73,7 +82,7 @@ static void reg_reg(int64_t x, int64_t y)
         alloc_for_reg();
 }
 
-static void reg_ino(int64_t x, int64_t y, int cap)
+void treatment::reg_ino(int64_t x, int64_t y, int cap)
 {
     ino_pro[num_ino] = new inoculate_profile; // allocate new memory space
     ino_pro[num_ino]->x_coordinate = x;       // update the x coordinate
@@ -86,7 +95,7 @@ static void reg_ino(int64_t x, int64_t y, int cap)
         alloc_for_ino(); // reallocate if more memory space is required
 }
 
-static void calc_reg_dist()
+void treatment::calc_reg_dist()
 {
     dist = new int64_t[num_ino];      // allocate new memory space
     daily = new int64_t[num_ino];     // allocate new memory space
@@ -104,7 +113,7 @@ static void calc_reg_dist()
     }
 }
 
-static int calc_agegroup(CDate *birthdate)
+int treatment::calc_agegroup(CDate *birthdate)
 {
     int64_t dateDiff = date->year - birthdate->year;
     if ((*date) - (*birthdate) < 0) // if the current date is earlier than the birthdate
@@ -141,7 +150,7 @@ static int calc_agegroup(CDate *birthdate)
     }
 }
 
-static void add_profile(string name, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, string birthdate, int64_t RegID)
+void treatment::add_profile(string name, string address, string phone, string WeChat, string email, int risk, int64_t ID, int profession, string birthdate, int64_t RegID)
 {
     if (RegID >= num_reg)
     {
@@ -163,13 +172,35 @@ static void add_profile(string name, string address, string phone, string WeChat
         return;
     }
     int64_t pri_num;
-    pri_num = profession;
-    pri_num <<= 5;
-    pri_num += agegroup;
-    pri_num <<= 25;
-    pri_num += (*date) - (*first_date);
-    pri_num <<= 20;
-    pri_num += total_reg_person;
+    switch (risk_type)
+    {
+    case 0 /* constant-expression */:
+        /* code */
+        pri_num = profession;
+        pri_num <<= 5;
+        pri_num += agegroup;
+        pri_num <<= 25;
+        pri_num += (*date) - (*first_date);
+        pri_num <<= 20;
+        pri_num += total_reg_person;
+        break;
+    case 1:
+        pri_num = agegroup;
+        pri_num <<= 25;
+        pri_num += (*date) - (*first_date);
+        pri_num <<= 20;
+        pri_num += total_reg_person;
+        break;
+    case 2:
+        pri_num = profession;
+        pri_num <<= 20;
+        pri_num += (*date) - (*first_date);
+        pri_num <<= 20;
+        pri_num += total_reg_person;
+        break;
+    default:
+        return;
+    }
     if (ID2ptr.retrieve(ID) != NULL) // if the ID is already in the database
     {
         cout << "The ID is already in the database." << endl; // print error message
@@ -195,7 +226,7 @@ static void add_profile(string name, string address, string phone, string WeChat
     }
 }
 
-static void weekly_report(int op)
+void treatment::weekly_report(int op)
 {
 
     switch (op)
@@ -248,7 +279,7 @@ static void weekly_report(int op)
     sort(assigned_personal_file.begin(), assigned_personal_file.end(), cmp_by_ddl);
 }
 
-static void monthly_report()
+void treatment::monthly_report()
 { // print the monthly report
     cout << "\nTotal Registered: " << total_reg_person << "\n";
     cout << "Waiting in queue: " << queue_waiting << "\n";
@@ -258,7 +289,7 @@ static void monthly_report()
     cout << "Average waiting time: " << aver_waiting << endl;
 }
 
-static void DDL_letter(int64_t ID, string sDDL)
+void treatment::DDL_letter(int64_t ID, string sDDL)
 {
     CDate *DDL = new CDate;
     if (!DDL->set(sDDL))
@@ -352,7 +383,7 @@ static void DDL_letter(int64_t ID, string sDDL)
     ptr->withdraw = false;
 }
 
-static void change_pro(int64_t ID, int64_t prof)
+void treatment::change_pro(int64_t ID, int64_t prof)
 {
     if (prof < 1 || prof > 8)
     {
@@ -368,26 +399,47 @@ static void change_pro(int64_t ID, int64_t prof)
     if (prof == ptr->profession) // if the profession is the same as the current one
         return;
     int64_t pre_prio_num = ptr->priority_num; // get the priority number of the person
-    int64_t now_prio_num = prof;              // get the new priority number of the person
-    now_prio_num <<= 5;
-    now_prio_num += ptr->agegroup;
-    now_prio_num <<= 25;
-    now_prio_num += ptr->registrationdate - (*first_date);
-    now_prio_num <<= 20;
-    now_prio_num += total_reg_person;
-    ptr->priority_num = now_prio_num;                                             // set the new priority number to the person
-    ptr->profession = prof;                                                       // set the new profession to the person
-    priority2ID.remove(pre_prio_num);                                             // remove the person from the priority hash table
-    priority2ID.add(now_prio_num, ID);                                            // add the person to the priority hash table
-    if (ptr->is_delay || ptr->withdraw || ptr->is_inoculated || ptr->is_assigned) // if the person is in the delay list or the withdraw list or the assigned list or the inoculated list
+    int64_t pri_num = prof;                   // get the new priority number of the person
+    switch (risk_type)
+    {
+    case 0 /* constant-expression */:
+        /* code */
+        pri_num <<= 5;
+        pri_num += ptr->agegroup;
+        pri_num <<= 25;
+        pri_num += ptr->registrationdate - (*first_date);
+        pri_num <<= 20;
+        pri_num += total_reg_person;
+        break;
+    case 1:
+        pri_num = ptr->agegroup;
+        pri_num <<= 25;
+        pri_num += ptr->registrationdate - (*first_date);
+        pri_num <<= 20;
+        pri_num += total_reg_person;
+        break;
+    case 2:
+        pri_num <<= 20;
+        pri_num += ptr->registrationdate - (*first_date);
+        pri_num <<= 20;
+        pri_num += total_reg_person;
+        break;
+    default:
         return;
-    if (ptr->risk != 3)                                             // if the person is not a high risk person
-        fib_heap_update(Queueing_heap, pre_prio_num, now_prio_num); // add the person to the queueing heap
-    else                                                            // if the person is a high risk person
-        fib_heap_update(hrisk_heap, pre_prio_num, now_prio_num);    // add the person to the high risk heap
+        ptr->priority_num = pri_num;                                                  // set the new priority number to the person
+        ptr->profession = prof;                                                       // set the new profession to the person
+        priority2ID.remove(pre_prio_num);                                             // remove the person from the priority hash table
+        priority2ID.add(pri_num, ID);                                                 // add the person to the priority hash table
+        if (ptr->is_delay || ptr->withdraw || ptr->is_inoculated || ptr->is_assigned) // if the person is in the delay list or the withdraw list or the assigned list or the inoculated list
+            return;
+        if (ptr->risk != 3)                                        // if the person is not a high risk person
+            fib_heap_update(Queueing_heap, pre_prio_num, pri_num); // add the person to the queueing heap
+        else                                                       // if the person is a high risk person
+            fib_heap_update(hrisk_heap, pre_prio_num, pri_num);    // add the person to the high risk heap
+    }
 }
 
-static void change_risks(int64_t ID, int64_t Risks)
+void treatment::change_risks(int64_t ID, int64_t Risks)
 {
     if (Risks < 0 || Risks > 3) // if the risk is not in the range
     {
@@ -442,7 +494,7 @@ static void change_risks(int64_t ID, int64_t Risks)
     }
 }
 
-static void withdraw(int64_t ID)
+void treatment::withdraw(int64_t ID)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
     if (ptr == NULL) // if the person is not in the database
@@ -506,7 +558,7 @@ static void withdraw(int64_t ID)
     ptr->withdraw = true;
 }
 
-static void cancel_withdraw(int64_t ID)
+void treatment::cancel_withdraw(int64_t ID)
 {
     personal_profile *ptr = ID2ptr.retrieve(ID);
     if (ptr == NULL) // if the person is not in the database
@@ -544,7 +596,7 @@ static void cancel_withdraw(int64_t ID)
     }
 }
 
-void treat_assigned(int64_t *copy_daily, int64_t *copy_total)
+void treatment::treat_assigned(int64_t *copy_daily, int64_t *copy_total)
 {
     vector<personal_profile *>::iterator i = assigned_personal_file.begin(); // set the iterator to the beginning of the assigned list
     personal_profile *ptr;
@@ -573,7 +625,7 @@ void treat_assigned(int64_t *copy_daily, int64_t *copy_total)
     }
 }
 
-void treat_queue(int64_t *copy_daily, int64_t *copy_total)
+void treatment::treat_queue(int64_t *copy_daily, int64_t *copy_total)
 {
     vector<personal_profile *>::iterator i = queueing_personal_file.begin();
     int64_t ino_id = 0;
@@ -632,7 +684,7 @@ void treat_queue(int64_t *copy_daily, int64_t *copy_total)
     }
 }
 
-void treat_delay(int64_t *copy_daily, int64_t *copy_total)
+void treatment::treat_delay(int64_t *copy_daily, int64_t *copy_total)
 {
     vector<personal_profile *>::iterator i = queueing_personal_file.begin(); // set the iterator to the beginning of the queueing list
     vector<personal_profile *>::iterator i_d = delay_personal_file.begin();  // set the iterator to the beginning of the delay list
@@ -668,7 +720,7 @@ void treat_delay(int64_t *copy_daily, int64_t *copy_total)
     }
 }
 
-void treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
+void treatment::treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
 {
     if (!delay_personal_file.empty()) // if there are people in the delay list
     {
@@ -710,7 +762,7 @@ void treat_hrisk(int64_t *copy_daily, int64_t *copy_total)
     }
 }
 
-static void next_day()
+void treatment::next_day()
 {
     if (((*date) - (*first_date)) % 7 == 6)
     {
@@ -749,7 +801,7 @@ static void next_day()
          << endl;
 }
 
-static void next_day_for_auto(int op)
+void treatment::next_day_for_auto(int op)
 {
     if (((*date) - (*first_date)) % 7 == 6 || ((*date) - (*first_date)) % 30 == 29)
     {
