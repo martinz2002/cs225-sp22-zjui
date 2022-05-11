@@ -92,7 +92,7 @@ CInternalNode<DATA_TYPE>::~CInternalNode()
 /*疑问：中间结点需要插入值吗？在插入值时，通常都是先找到在叶子结点中的位置，然后再插入。
 中间结点通常当叶子结点需要分裂时将分裂后的两个孩子结点插入其中*/
 template <class DATA_TYPE>
-bool CInternalNode<DATA_TYPE>::Insert(KEY_TYPE value, CNode<DATA_TYPE>* pNode)
+bool CInternalNode<DATA_TYPE>::Insert(KEY_TYPE value, CNode<DATA_TYPE>* pNode,DATA_TYPE data)
 {
     int i;
     // 如果中间结点已满，直接返回失败

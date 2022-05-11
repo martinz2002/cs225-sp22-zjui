@@ -152,7 +152,7 @@ public:
     }
 
     // 在结点pNode上插入键value
-    bool Insert(KEY_TYPE value, CNode<DATA_TYPE>* pNode);
+    bool Insert(KEY_TYPE value, CNode<DATA_TYPE>* pNode,DATA_TYPE data);
     // 删除键value
     bool Delete(KEY_TYPE value);
 

@@ -13,9 +13,10 @@ using namespace std;
 
 int main()
 {
+    treatment *mytreatment = new treatment();
     // (Trying to) make a user-friendly CLI
     cout << "Welcome to the Silly Medical Treatment System (SMTS). Current date: ";
-    (*date).print();
+    mytreatment->date->print();
     int type;
     int registration_point_order = 0;
     // Handle with registration pts and inoculation pts
@@ -42,7 +43,7 @@ int main()
             cout << "plz provide the y-coordinate of registration point:\n";
             cin >> y;
             registration_point_order++;
-            reg_reg(x, y);
+            mytreatment->reg_reg(x, y);
             break;
         }
         case 2: // Add inoculation point
@@ -56,18 +57,18 @@ int main()
             // Read capacity; capacity should be a natural number; zero capacity indicates the point is closed
             cout << "plz provide the daily capacity of inoculation of the very point:\n";
             cin >> c;
-            while(c < 0)
+            while (c < 0)
             {
                 cout << "Invalid capacity.\n";
                 cin >> c;
             }
-            reg_ino(x, y, c);
+            mytreatment->reg_ino(x, y, c);
             break;
         }
         }
     } while (type != 3);
 
-    calc_reg_dist();
+    mytreatment->calc_reg_dist();
 
     int op;
     do
@@ -81,7 +82,7 @@ int main()
         cout << "7. Quit\n";
         cin >> op;
 
-        if (op != 1 && op != 2 && op != 3 && op != 4 && op != 5 && op != 6 && op != 7)  // Invalid operaiton code
+        if (op != 1 && op != 2 && op != 3 && op != 4 && op != 5 && op != 6 && op != 7) // Invalid operaiton code
         {
             cout << "You must choose 1 or 2 or 3 or 4 or 5 or 6 or 7\n";
             continue;
@@ -114,10 +115,10 @@ int main()
             cin >> phone;
             cout << "WeChat\n";
             cin >> WeChat;
-            cout << "email\n";  // Assume in this world email address can be any kind of format, even without "@"
+            cout << "email\n"; // Assume in this world email address can be any kind of format, even without "@"
             cin >> email;
             cout << "profession\n";
-            cin >> profession;  // Profession ranges from 1 to 8
+            cin >> profession; // Profession ranges from 1 to 8
             while (profession <= 0 || profession > 8)
             {
                 cout << "plz enter a value between 1 and 8\n";
@@ -132,12 +133,12 @@ int main()
             // }
             cout << "risk\n";
             cin >> risk;
-            while (risk < 0 || risk > 3)    // valid risk should be 1, 2 or 3
+            while (risk < 0 || risk > 3) // valid risk should be 1, 2 or 3
             {
                 cout << "plz enter a value between 0 and 3\n";
                 cin >> risk;
             }
-            add_profile(name, address, phone, WeChat, email, risk, ID, profession, birthdate, regID - 1);   // Register the profile
+            mytreatment->add_profile(name, address, phone, WeChat, email, risk, ID, profession, birthdate, regID - 1); // Register the profile
             break;
         }
         case 2: // Withdrawl a profile with index ID
@@ -145,7 +146,7 @@ int main()
             int64_t ID;
             cout << "plz enter the ID:\n";
             cin >> ID;
-            withdraw(ID);
+            mytreatment->withdraw(ID);
             break;
         }
         case 3: // Modify (change) a profile with ID
@@ -176,7 +177,7 @@ int main()
                     cout << "plz enter a value between 1 and 8\n";
                     cin >> profession;
                 }
-                change_pro(ID, profession);
+                mytreatment->change_pro(ID, profession);
                 break;
             }
             case 2: // Change the risk
@@ -188,7 +189,7 @@ int main()
                     cout << "plz enter a value between 0 and 3\n";
                     cin >> risk;
                 }
-                change_risks(ID, risk);
+                mytreatment->change_risks(ID, risk);
                 break;
             }
             }
@@ -203,12 +204,12 @@ int main()
             cin >> ID;
             cout << "plz enter the corresponding requested due date (yyyy-mm-dd):\n";
             cin >> DDL;
-            DDL_letter(ID, DDL);
+            mytreatment->DDL_letter(ID, DDL);
             break;
         }
         case 5: // Start the next day
         {
-            next_day();
+            mytreatment->next_day();
             break;
         }
         case 6:
@@ -216,7 +217,7 @@ int main()
             int64_t ID;
             cout << "plz enter the ID:\n";
             cin >> ID;
-            cancel_withdraw(ID);
+            mytreatment->cancel_withdraw(ID);
             break;
         }
         }
