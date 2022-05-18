@@ -31,7 +31,6 @@ public:
     }
 };
 
-
 class Graph
 {
 public:
@@ -43,54 +42,78 @@ public:
     vector<vertex> vertex_set;
     void printGraph();
     void kruskalMST();
-
-
 };
 
-void Graph::kruskalMST(){
+void Graph::kruskalMST()
+{
     int V = v_size;
     vector<Edge> result;
     vector<Edge> edges;
-    int _new_v=0;
-    bool is_edge=false;
+    int _new_v = 0;
+    bool is_edge = false;
     for (int i = 0; i < V; i++)
     {
         for (int j = 0; j < vertex_set[i].edges.size(); j++)
         {
             edges.push_back(vertex_set[i].edges[j]);
-            is_edge=true;
+            is_edge = true;
         }
-        if(!is_edge){
-            is_edge=false;
+        if (!is_edge)
+        {
+            is_edge = false;
             _new_v--;
         }
     }
-    V+=_new_v;
-    sort(edges.begin(), edges.end(), [](Edge a, Edge b) { return a.weight < b.weight; });
+    V += _new_v;
+    sort(edges.begin(), edges.end(), [](Edge a, Edge b)
+         { return a.weight < b.weight; });
     int i = 0;
     int e = 0;
     vector<Edge> mst;
+    int now_color = 0;
+    int *color = new int[V];
+    for (int v = 0; v < V; v++)
+        color[v] = 0;
     while (e < V - 1)
     {
         Edge next_edge = edges[i++];
-        int src = next_edge.src;
-        int dest = next_edge.dest;
+        int src = color[next_edge.src];
+        int dest = color[next_edge.dest];
         bool isCycle = false;
-        for (int j = 0; j < mst.size(); j++)
+        if (src == 0 && dest == 0)
         {
-            if (mst[j].src == dest || mst[j].dest == src)
-            {
-                isCycle = true;
-                break;
-            }
+            color[next_edge.src] = ++now_color;
+            color[next_edge.dest] = now_color;
+            mst.push_back(next_edge);
+            e++;
         }
-        if (!isCycle)
+        else if (src == 0)
         {
+            color[next_edge.src] = color[next_edge.dest];
+            mst.push_back(next_edge);
+            e++;
+        }
+        else if (dest == 0)
+        {
+            color[next_edge.dest] = color[next_edge.src];
+            mst.push_back(next_edge);
+            e++;
+        }
+        else if (src == dest)
+        {
+            isCycle = true;
+        }
+        else
+        {
+            for (int j = 0; j < V; j++)
+            {
+                if (color[j] == src)
+                    color[j] = dest;
+            }
             mst.push_back(next_edge);
             e++;
         }
     }
-
     for (int i = 0; i < mst.size(); i++)
     {
         cout << mst[i].src << " - " << mst[i].dest << " : " << mst[i].weight << endl;
@@ -107,19 +130,11 @@ Graph::Graph(int V)
     }
 }
 
-
 void Graph::addEdge(int v, int w, int64_t weight)
 {
-    vertex_set[v].addEdge(w,weight);
-    vertex_set[w].addEdge(v,weight);
-
+    vertex_set[v].addEdge(w, weight);
+    vertex_set[w].addEdge(v, weight);
 }
-
-
-
-
-
-
 
 void Graph::DFSUtil(int v, bool visited[])
 {
@@ -140,7 +155,6 @@ void Graph::DFS(int v)
         visited[i] = false;
     DFSUtil(v, visited);
 }
-
 
 void Graph::printGraph()
 {
