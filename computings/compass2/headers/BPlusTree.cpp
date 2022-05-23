@@ -1,5 +1,7 @@
 #include "BPlusTree.h"
 
+
+
 template <class DATA_TYPE>
 CNode<DATA_TYPE>::CNode()
 {
@@ -78,6 +80,7 @@ CInternalNode<DATA_TYPE>::CInternalNode()
     {
         m_Pointers[i] = NULL;
     }
+    m_Count = 0;
 }
 template <class DATA_TYPE>
 CInternalNode<DATA_TYPE>::~CInternalNode()
@@ -350,6 +353,7 @@ CLeafNode<DATA_TYPE>::CLeafNode()
 
     m_pPrevNode = NULL;
     m_pNextNode = NULL;
+    m_Count = 0;
 }
 template <class DATA_TYPE>
 CLeafNode<DATA_TYPE>::~CLeafNode()
@@ -1070,7 +1074,7 @@ bool BPlusTree<DATA_TYPE>::InsertInternalNode(CInternalNode<DATA_TYPE>* pNode, K
     // 结点未满，直接插入
     if (pNode->GetCount() < MAXNUM_KEY)
     {
-        return pNode->Insert(key, pRightSon);
+        return pNode->Insert(key, pRightSon, NULL);
     }
 
     CInternalNode<DATA_TYPE>* pBrother = new CInternalNode<DATA_TYPE>;  //C++中new 类名表示分配一个类需要的内存空间，并返回其首地址；
@@ -1080,11 +1084,11 @@ bool BPlusTree<DATA_TYPE>::InsertInternalNode(CInternalNode<DATA_TYPE>* pNode, K
 
     if (pNode->GetCount() < pBrother->GetCount())
     {
-        pNode->Insert(key, pRightSon);
+        pNode->Insert(key, pRightSon,NULL);
     }
     else if (pNode->GetCount() > pBrother->GetCount())
     {
-         pBrother->Insert(key, pRightSon);
+         pBrother->Insert(key, pRightSon,NULL);
     }
     else    // 两者相等，即键值在第V和V+1个键值中间的情况，把字节点挂到新结点的第一个指针上
     {
