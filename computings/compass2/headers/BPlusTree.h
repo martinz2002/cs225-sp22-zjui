@@ -150,10 +150,7 @@ public:
             m_Pointers[i - 1] = pointer;
         }
     }
-    int GetCount()
-    {
-        return m_Count;
-    }
+
     // 在结点pNode上插入键value
     bool Insert(KEY_TYPE value, CNode<DATA_TYPE>* pNode,DATA_TYPE data);
     // 删除键value
@@ -168,7 +165,6 @@ public:
 
 protected:
 
-    int m_Count;
     KEY_TYPE m_Keys[MAXNUM_KEY];           // 键数组
     CNode<DATA_TYPE>* m_Pointers[MAXNUM_POINTER];     // 指针数组
 
@@ -184,7 +180,6 @@ public:
     virtual ~CLeafNode();
 
     // 获取和设置数据
-    int GetCount() { return m_Count; }
     KEY_TYPE GetElement(int i)
     {
         if ((i > 0 ) && (i <= MAXNUM_DATA))
@@ -242,7 +237,6 @@ protected:
 
     KEY_TYPE m_Datas[MAXNUM_DATA];    // 数据数组
     DATA_TYPE U_Data[MAXNUM_DATA];                 // 叶子结点中的数据
-    int m_Count;
 
 };
 
