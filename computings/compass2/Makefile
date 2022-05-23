@@ -1,6 +1,6 @@
 default: manual
 auto: runsys.cpp
-	g++ -g -w runsys.cpp -o auto -fpremissive
+	g++ -g -w runsys.cpp -o auto -fpermissive
 manual: main.cpp
 	g++ -g -w main.cpp -o manual -fpermissive
 clean:
