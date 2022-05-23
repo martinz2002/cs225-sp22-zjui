@@ -1,7 +1,5 @@
 #include "BPlusTree.h"
 
-
-
 template <class DATA_TYPE>
 CNode<DATA_TYPE>::CNode()
 {
@@ -80,7 +78,6 @@ CInternalNode<DATA_TYPE>::CInternalNode()
     {
         m_Pointers[i] = NULL;
     }
-    m_Count = 0;
 }
 template <class DATA_TYPE>
 CInternalNode<DATA_TYPE>::~CInternalNode()
@@ -353,7 +350,6 @@ CLeafNode<DATA_TYPE>::CLeafNode()
 
     m_pPrevNode = NULL;
     m_pNextNode = NULL;
-    m_Count = 0;
 }
 template <class DATA_TYPE>
 CLeafNode<DATA_TYPE>::~CLeafNode()
@@ -1074,7 +1070,7 @@ bool BPlusTree<DATA_TYPE>::InsertInternalNode(CInternalNode<DATA_TYPE>* pNode, K
     // 结点未满，直接插入
     if (pNode->GetCount() < MAXNUM_KEY)
     {
-        return pNode->Insert(key, pRightSon, NULL);
+        return pNode->Insert(key, pRightSon,NULL);
     }
 
     CInternalNode<DATA_TYPE>* pBrother = new CInternalNode<DATA_TYPE>;  //C++中new 类名表示分配一个类需要的内存空间，并返回其首地址；
