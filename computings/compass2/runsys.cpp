@@ -25,7 +25,7 @@ int main()
     cout << "1. order of agegroup\n";
     cout << "2. order of profession\n";
     cin >> report_op;
-    time_t start_time, end_time;
+    time_t start_time, end_time,init_time;
     start_time = clock();
     while (report_op < 0 || report_op > 2) // check if the input is valid
     {
@@ -90,6 +90,8 @@ int main()
     next_priority_date->set(temp_date_priority_letter);
     modify_profile_stream >> temp_date_modification;
     next_modify_profiles_date->set(temp_date_modification);
+    init_time = clock();
+    cout << "\nInitial time used: " << (double)(init_time - start_time) / CLOCKS_PER_SEC << " seconds" << endl;
     // Iterate through profile entries and withdrawals and record them
     while (temp_date != "EOF" || temp_date_for_withdraw != "EOF")
     // "EOF" is a random string to help checking if the file is ended
