@@ -25,6 +25,8 @@ int main()
     cout << "1. order of agegroup\n";
     cout << "2. order of profession\n";
     cin >> report_op;
+    time_t start_time, end_time;
+    start_time = clock();
     while (report_op < 0 || report_op > 2) // check if the input is valid
     {
         cout << "Please enter a value between 0 and 2\n";
@@ -172,6 +174,8 @@ int main()
     mytreatment->monthly_report();
     cout << "\nSystem quites normally on ";
     mytreatment->date->print();
+    end_time = clock();
+    cout << "\nTotal time used: " << (double)(end_time - start_time) / CLOCKS_PER_SEC << " seconds" << endl;
     cout << "*****************************************" << endl;
     cout << "           END OF FINAL REPORT"<< endl;
     cout << "*****************************************" << endl;
