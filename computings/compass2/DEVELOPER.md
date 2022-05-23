@@ -28,19 +28,17 @@ A person object includes the following information:
 - ==**Profile ID `ID`:**== The ID of the profile. It must be a `int64` number. **This field should NOT be allowed to modify since it serves as a primary key of this relation.**
 - **Registration Point ID `regID`:** The ID of the registration point where the patient get registered.
 - **Inoculation Point ID `inoID`:** The ID of the inoculation point where the patient get treatment.
-- **Vaccination Sequence `vaccination_sequence`** ???
-- **Withdraw status `once_withdraw`:** ???
-- **`withdraw`:** ???
+- **Vaccination Sequence `vaccination_sequence`**
 - [new] **Type of Treatment:** The type of treatment the patient is to receive. Labelled with type 0, 1 and 2. Type 0 treatment has the highest priority (such as an emergency aid request) while 2 has the lowest.
 - **Assignment Status `is_assigned`:** Whether the patient has been assigned a date to receive treatment.
 - **Treatment Status `is_inoculated`:** The status recording whether the patient has  his treatment.
 
 ### Medical_Status
 
-| Field    | Name | Comment                     |
-| -------- | ---- | --------------------------- |
-| ==Date== |      | Date of the entry.          |
-| Status   |      | Current status of that day. |
+| Field    | Comment                     |
+| -------- | --------------------------- |
+| ==Date== | Date of the entry.          |
+| Status   | Current status of that day. |
 
 The **status** object:
 
@@ -55,11 +53,11 @@ The **status** object:
 
 This relation records all registration operations.
 
-| Field                 | Name | Comment |
-| --------------------- | ---- | ------- |
-| ==Profile ID==        |      |         |
-| Date of Registration  |      |         |
-| Registration Point ID |      |         |
+| Field                 | Comment |
+| --------------------- | ------- |
+| ==Profile ID==        |         |
+| Date of Registration  |         |
+| Registration Point ID |         |
 
 
 
@@ -67,27 +65,16 @@ This relation records all registration operations.
 
 This relation records all treatment operations, including a submission of a priority letter (aka. DDL letter). It contains the following fields:
 
-| Field                           | Name | Comment |
-| ------------------------------- | ---- | ------- |
-| ==Profile ID==                  |      |         |
-| Date of Treatment (Inoculation) |      |         |
-| Inoculating Point ID            |      |         |
+| Field                           | Comment |
+| ------------------------------- | ------- |
+| ==Profile ID==                  |         |
+| Date of Treatment (Inoculation) |         |
+| Type of Treatment               |         |
+| Inoculating Point ID            |         |
 
 
 
 ## New Operations
-
-### Registration
-
-
-
-### Priority Calculation
-
-
-
-### Appointment Scheduling
-
-
 
 ### Reporting (File I/O)
 
