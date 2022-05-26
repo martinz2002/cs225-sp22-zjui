@@ -43,6 +43,7 @@ template<class T> class vertexlist
 {
 public:
     vertexlist(void);
+    vertex<T> * getvertex(T item);
     int getlength(void);
     int countedges(void);
     void append(T item);
@@ -145,11 +146,11 @@ public:
     /* The decisive addition is the function to create a topological order */
     elist<T> * topol_order(T startnode);
 private:
+    bool suitablestart(T item);
     void _dfs(T node, vertexlist<T> * vertices, elist<T> * output, markerlist<T> * markedvertices);
         // simplified dfs for topological sorting
     void _traverse_nontreeedge(T node, elist<T> * output);
         // This function will check, if the graph contains a cycle through node.
-    bool suitablestart(T item);
     /* for topological sort we need to check, if the given item can be used as a start node */
 };
 
