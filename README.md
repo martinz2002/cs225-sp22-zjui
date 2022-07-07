@@ -5,7 +5,7 @@ This repo contains all our group assignments and computing assignments for CS225
 We are proud to identify ourselves: we are students from Zhejiang University. We are Group D.
 
 ## Group Members
-Li Rong (inwin_leo);
+Li Rong (inwin_leo)
 
 Zhong Tiantian (martinz.2002; yjgzztt)
 
